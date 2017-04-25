@@ -19,3 +19,12 @@
  1199  git commit -a -m "commit3"
  1200  git push origin master
 
+
+ 1208  vi git_add_to_repo_instructions
+ 1209  ls
+ 1210  git add -A .
+ 1211  git status
+ 1212  git commit -a -m "commit4"
+ 1213  git push origin master
+ 1214  history
+
