@@ -1,0 +1,788 @@
+
+  434  sudo yum -y install yum-utils
+  436  sudo yum -y groupinstall development
+  440  sudo yum -y install https://centos7.iuscommunity.org/ius-release.rpm
+  442  sudo yum -y install python36u
+  443  python3.6 -V
+  444  sudo yum -y install python36u-pip
+  445  sudo yum -y install python36u-devel
+  446  python -V
+  447  python3.6 -V
+  448  python3.5 -V
+
+
+  467  cd python-virtual-env/
+  469  python3.6 -m venv my_nginx_python
+  471  source my_nginx_python/bin/activate
+  472  python -V
+  474  deactivate
+  475  python -V
+  476  source my_nginx_python/bin/activate
+  477  python -V
+  478  pip install django
+  479  pip install uwsgi
+  480  deactivate
+  481  systemctl status nginx
+  482  systemctl stop nginx
+  560  python -m django --version
+
+  654  ls
+  655  cd ../
+  656  ls
+  657  cd logs
+  658  ls
+  659  cd er
+  660  vi error.log 
+  661  sudo nginx -s reload
+  662  vi error.log 
+  663  date
+  664  vi /etc/nginx/nginx.conf
+  665  cd ../www/
+  666  l
+  667  ls
+  668  cd my
+  669  cd my2
+  670  ls
+  671  mv my1.html my2.html
+  672  ls
+  673  vi ~/.bashrc
+  674  src
+  675  source ~/.bashrc
+  676  lst
+  677  vi nginx.conf
+  678  nginx -s reload
+  679  nginx -s stop
+  680  rm conf.d/my1.conf 
+  681  nginx -s stop
+  682  ps aux | grep nginx
+  683  ps aux | grep nginx
+  684  systemctl start nginx
+  685  ps aux | grep nginx
+  686  pwd
+  687  cd /etc/nginx/
+  688  ls
+  689  vi nginx.conf
+  690  ls
+  691  :q
+  692  vi nginx.conf
+  693  cd conf.d/
+  694  ls
+  695  cd ../
+  696  ls
+  697  cd default.d/
+  698  ls
+  699  cd ../
+  700  ls
+  701  vi fastcgi.conf
+  702  vi fastcgi.conf.default 
+  703  vi nginx.conf
+  704  vi /usr/share/nginx/html
+  705  vi /usr/share/nginx/html/index.html 
+  706  vi /usr/share/nginx/html/index.html 
+  707  hi reload
+  708  nginx -s reload
+  709  vi /usr/share/nginx/html/index.html 
+  710  pwd
+  711  cd /etc/nginx/
+  712  ls
+  713  pwd
+  714  ps aux | grep ngi
+  715  ps aux | grep ngin
+  716  ps aux | grep nginx
+  717  cd /usr/sbin
+  718  ls
+  719  ls -ltr nginx 
+  720  date
+  721  nginx -s stop
+  722  ps aux | grep nginx
+  723  hi start
+  724  systemctl start nginx
+  725  vi /usr/share/nginx/html/index.html 
+  726  cd /etc/nginx/
+  727  ls
+  728  vi default.d/
+  729  vi nginx.conf
+  730  cd /data/
+  731  namei -om .
+  732  namei -om www/
+  733  namei -om www/my1.html 
+  734  chmod 777 www/my1.html 
+  735  nginx -s reload
+  736  hi stop
+  737  nginx -s stop
+  738  hi start
+  739  systemctl start nginx
+  740  pwd
+  741  cd ../
+  742  cd /etc/n
+  743  cd /etc/
+  744  ls
+  745  cd nginx/
+  746  ls
+  747  vi nginx.conf
+  748  cd /var/log/nginx/
+  749  ls
+  750  vi access.log 
+  751  vi error.log 
+  752  cd /data/www/
+  753  ls
+  754  cd -
+  755  vi error.log 
+  756  pwd
+  757  cd /etc/nginx/
+  758  ls
+  759  vi nginx.conf
+  760  cd /data/www/
+  761  ls
+  762  mkdir my1
+  763  mv my1.html my1/
+  764  ls
+  765  chmod 777 my1/
+  766  hi reload
+  767  nginx -s reload
+  768  nginx -s stop
+  769  systemctl start nginx
+  770  cd -
+  771  vi /var/log/nginx/error.log 
+  772  vi /var/log/nginx/error.log 
+  773  namei -om /daa/
+  774  namei -om /data
+  775  namei -om /data/www
+  776  namei -om /data/www/my1/
+  777  namei -om /data/www/my1/my1.html 
+  778  chmod 777 /
+  779  namei -om /data/www/my1/my1.html 
+  780  cd /usr/share/nginx/html/
+  781  ls
+  782  cd -
+  783  pwd
+  784  vi nginx.conf
+  785  pwd
+  786  cd /usr/share/nginx/html/
+  787  ls
+  788  mkdir my1
+  789  chmod 777 my1
+  790  cp /data/www/my1/my1.html my1/my1.html
+  791  pwd
+  792  ls
+  793  cd my1/
+  794  ls
+  795  vi my1.html my1.html 
+  796  pwd
+  797  ls
+  798  pwd
+  799  ls
+  800  pwd
+  801  ls
+  802  cd ../
+  803  ls
+  804  ls
+  805  cd /etc/nginx/
+  806  ls
+  807  vi fastcgi.conf
+  808  vi nginx.conf
+  809  nginx -s reload
+  810  pwd
+  811  cd /data
+  812  ls
+  813  cd www/
+  814  ls
+  815  cd my1/
+  816  ping localhost
+  817  ip addr
+  818  ping www.google.com |
+  819  ip addr | grep "inet "
+  820  ping 192.168.1.116
+  821  ping 192.168.99.1
+  822  ping 192.168.72.1
+  823  ping 192.168.91.1
+  824  ping www.google.com
+  825  ping 172.217.6.36
+  826  ip route get 172.217.6.36
+  827  ip addr | grep "inet "
+  828  ping 192.168.1.1
+  829  ping 172.217.6.36
+  830  ping 172.217.6.36
+  831  ip route get 172.217.6.36
+  832  ip arp
+  833  ping 172.217.6.36
+  834  ping 172.217.6.36
+  835  ping 172.217.6.36
+  836  ip route get 172.217.6.36
+  837  ip route get 172.217.6.36
+  838  ping 172.217.6.36
+  839  ip route get 172.217.6.36
+  840  pwd
+  841  pwd
+  842  vi /etc/nginx/nginx.conf
+  843  vi /var/log/nginx/error.log 
+  844  nginx -s stop
+  845  systemctl start nginx
+  846  vi /var/log/nginx/error.log 
+  847  vi /var/log/nginx/error.log 
+  848  pwd
+  849  uname -a
+  850  uname -r
+  851  cd
+  852  pwd
+  853  cd -
+  854  ping 172.217.6.3
+  855  ip route get 172.217.6.36
+  856  pwd
+  857  ls
+  858  pwd
+  859  ls
+  860  pwd
+  861  pwd
+  862  python
+  863  pwd
+  864  cd /etc/nginx/
+  865  ls
+  866  vi fastcgi.conf
+  867  grep handl * 
+  868  which python
+  869  python
+  870  hi reload
+  871  hi start
+  872  hi systemctl
+  873  cd
+  874  ps aux | grep myapp
+  875  vi /data/logs/error.log 
+  876  dae
+  877  date
+  878  vi /data/logs/access.log 
+  879  date
+  880  pwd
+  881  cd /tmp
+  882  ls -ltr
+  883  cd /www/logs
+  884  ls
+  885  cd /data/logs
+  886  ls
+  887  vi access.log 
+  888  vi error.log 
+  889  vi error.log 
+  890  pwd
+  891  cd
+  892  pwd
+  893  cd myapp/
+  894  ls
+  895  vi wsgi.py 
+  896  vi wsgi.py 
+  897  vi *ini
+  898  vi wsgi.py 
+  899  ls
+  900  ls -ltr
+  901  pwd
+  902  vi wsgi.py 
+  903  vi *ini
+  904  pwd
+  905  cd /etc/nginx/
+  906  ls
+  907  mkdir sites-available
+  908  vi myapp
+  909  vi nginx.conf
+  910  mv myapp sites-available/
+  911  sudo ln -s /etc/nginx/sites-available/myapp /etc/nginx/sites-enabled
+  912  sudo service nginx configtest
+  913  sudo systemctl nginx configtest
+  914  systemctl stop nginx
+  915  systemctl start nginx
+  916  systemctl start nginx
+  917  systemctl stop nginx
+  918  systemctl start nginx
+  919  systemctl start nginx
+  920  systemctl status nginx -l
+  921  vi /etc/nginx/nginx.conf
+  922  cd sites-available/
+  923  ls
+  924  cd ..
+  925  ls
+  926  pwd
+  927  cat sites-
+  928  cat sites-enabled 
+  929  vi /etc/nginx/nginx.conf
+  930  pwd
+  931  vi /etc/nginx/sites-available/myapp 
+  932  hi start
+  933  systemctl start nginx
+  934  systemctl status nginx -l
+  935  systemctl stop nginx
+  936  systemctl start nginx
+  937  vi /etc/nginx/nginx.conf
+  938  systemctl stop nginx
+  939  systemctl start nginx
+  940  vi /etc/nginx/nginx.conf
+  941  vi /usr/share/nginx/html/index.html 
+  942  vi /etc/nginx/nginx.conf
+  943  cd /etc/nginx/conf.d/
+  944  ls *conf
+  945  cd ../default.d/
+  946  ls
+  947  cd ../
+  948  ls
+  949  cat sites-
+  950  cat sites-enabled 
+  951  pwd
+  952  ls
+  953  rm -fR sites-enabled 
+  954  mkdir site-enabled
+  955  ls
+  956  mv site-enabled/ sites-enabled
+  957  ls
+  958  cd sites-
+  959  cd sites-available/
+  960  ls
+  961  vi myapp 
+  962  sudo ln -s /etc/nginx/sites-available/myapp /etc/nginx/sites-enabled/
+  963  systemctl stop nginx
+  964  systemctl start nginx
+  965  nc
+  966  src
+  967  exit
+  968  pwd
+  969  docker images
+  970  pwd
+  971  ping www.google.com
+  972  docker images
+  973  pwd
+  974  ls
+  975  pwd
+  976  df -k .
+  977  du -Ah
+  978  du -h
+  979  du -ah
+  980  du -Sah
+  981  pwd
+  982  ls
+  983  cd c-kafka/
+  984  du -ah .
+  985  pwd
+  986  df -k .
+  987  df .
+  988  pwd
+  989  cd ../
+  990  ls -ltr
+  991  docker
+  992  ls
+  993  du -sh c-kafka/
+  994  du -sh Desktop/
+  995  cd Desktop/
+  996  ls
+  997  cd ..
+  998  cd Downloads/
+  999  cd ..
+ 1000  du sh 
+ 1001  du -sh 
+ 1002  du -sh .
+ 1003* l
+ 1004  du -sh Downloads/
+ 1005  cd Do
+ 1006  cd Downloads/
+ 1007  ls
+ 1008  cd Postman/
+ 1009  ls
+ 1010  ls -F
+ 1011  ls -ltr
+ 1012  cd ../
+ 1013  rm -fR Postman/
+ 1014  ls
+ 1015  cd ../
+ 1016  du -sh .
+ 1017    
+ 1018  ls
+ 1019  du -sh java-kafka/
+ 1020  du -sh kafka/
+ 1021  cd kafka/
+ 1022  ls
+ 1023  sl
+ 1024  df -k .
+ 1025  df -sk .
+ 1026  pwd
+ 1027  cd ../
+ 1028  df -sk .
+ 1029  df -k.
+ 1030  df -k .
+ 1031  cd ../
+ 1032  ls
+ 1033  du -sk .
+ 1034  pwd
+ 1035  ls
+ 1036  cd ../
+ 1037  du -sk .
+ 1038  pwd
+ 1039  ls
+ 1040  du -sh bin/
+ 1041  cd bin/
+ 1042  ls
+ 1043  ls -ltr
+ 1044   netstat
+ 1045   netstat -tulpn
+ 1046  du -sh .
+ 1047  cd ../
+ 1048  ls
+ 1049  du -sh boot/
+ 1050  cd boot/
+ 1051  ls
+ 1052  ls -ltr
+ 1053  pwd
+ 1054  cd ../
+ 1055  ls
+ 1056  du -sh data/
+ 1057  du -sh dev
+ 1058  du -sh etc
+ 1059  du -sh hom
+ 1060  du -sh home
+ 1061  cd home/
+ 1062  ls
+ 1063  cd ../
+ 1064  du -sh lib
+ 1065  du -sh lib64
+ 1066  du -sh media
+ 1067  du -sh mnt
+ 1068  du -sh opt
+ 1069  cd opt
+ 1070  ls
+ 1071  pwd
+ 1072  ls
+ 1073  cd VBoxGuestAdditions-5.1.6/
+ 1074  ls
+ 1075  du -sh .
+ 1076  cd ../
+ 1077  ls
+ 1078* cd 
+ 1079  ls
+ 1080  pwd
+ 1081  du -sh proc/
+ 1082  du -sh root
+ 1083  du -sh run
+ 1084  du -sh srv
+ 1085  du -sh sys
+ 1086  du -sh tmp
+ 1087  du -sh usr
+ 1088  du -sh var
+ 1089  cd /usr
+ 1090  ls
+ 1091  du -sh
+ 1092  ls -l | du -sh
+ 1093  du -sh *
+ 1094  cd share
+ 1095  ls
+ 1096  ls -ltr
+ 1097  cd ../
+ 1098  du -sh *
+ 1099  cd ../
+ 1100  ls
+ 1101  du -sh var
+ 1102  cd var
+ 1103  du -sh *
+ 1104  cd cache/
+ 1105  ls
+ 1106  ls -ltr
+ 1107  du -sh *
+ 1108  cd yum/
+ 1109  l
+ 1110  ls
+ 1111  cd x86_64/
+ 1112  ls
+ 1113  cd 7/
+ 1114  ls
+ 1115  du -sh *
+ 1116  cd ../
+ 1117  cd -
+ 1118  cd updates/
+ 1119  ls
+ 1120  du -sh .
+ 1121  du -sh *
+ 1122  cd gen
+ 1123  ls
+ 1124  dc
+ 1125  cd
+ 1126  ls
+ 1127  pwd
+ 1128  du -sh *
+ 1129  cd myapp/
+ 1130  ls
+ 1131  pwd
+ 1132  cd ../
+ 1133  cd
+ 1134  ls
+ 1135  pwd
+ 1136  cd /home/sundar/
+ 1137  ls
+ 1138  mkdir mydocker
+ 1139  ls
+ 1140  pwd
+ 1141  ls
+ 1142  pwd
+ 1143  ls
+ 1144  cd Music/
+ 1145  ls
+ 1146  cd ../
+ 1147  rm -fR Music/
+ 1148  ls
+ 1149  rm -fR Pictures/
+ 1150  ls
+ 1151  cd Videos/
+ 1152  ls
+ 1153  cd ../
+ 1154  rm -fR Videos/
+ 1155  ls
+ 1156  pwd
+ 1157  docker
+ 1158   history
+ 1159   ls
+ 1160  pwd
+ 1161  docker --version
+ 1162  ps aux | grep dock
+ 1163  systemctl start docker
+ 1164  systemctl status docker.service
+ 1165  systemctl status docker.service -l
+ 1166  systemctl start docker
+ 1167  systemctl reset-failed docker.service 
+ 1168  systemctl start docker.service 
+ 1169  journalctl -xe
+ 1170  pwd
+ 1171  yum install docker
+ 1172  sestaus
+ 1173  sestatus
+ 1174  setenforce 1
+ 1175  systemctl reset-failed docker.service 
+ 1176  systemctl start docker.service 
+ 1177  yum install docker
+ 1178  sestatus
+ 1179  yum install docker --skip-broken
+ 1180  yum install epel-release
+ 1181  yum install docker-io
+ 1182  sudo yum remove docker docker-common container-selinux docker-selinux docker-engine
+ 1183  sudo yum install -y yum-utils
+ 1184  sudo yum-config-manger --add-repo https://download.docker.com/linux/centos/docker-ce.repro
+ 1185  sudo yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repro
+ 1186  cd /etc/
+ 1187  ls
+ 1188  cd yum.repos.d/
+ 1189  ls
+ 1190  du -sh *
+ 1191  uname -r
+ 1192  ls
+ 1193  pwd
+ 1194  sudo yum install -y yum-utils
+ 1195  ping www.google.com
+ 1196  sudo yum install -y yum-utils
+ 1197  sudo yum makecache fast
+ 1198  ping www.google.com
+ 1199  sudo yum makecache fast
+ 1200   uname 
+ 1201   uname -r
+ 1202  hostnamectl
+ 1203  lsb_release -d
+ 1204  lsb_release --d
+ 1205  lsb_release -d
+ 1206  cat /etc/centos-release
+ 1207  hi docker
+ 1208  sudo yum remove docker docker-common container-selinux docker-selinux docker-engine
+ 1209  hi yum
+ 1210  sudo yum install -y yum-utils
+ 1211  yum --disablerepo=download.docker.com_linux_centos_docker-ce.repro 
+ 1212  sudo yum install -y yum-utils
+ 1213  yum-config-manager --disable download.docker.com_linux_centos_docker-ce.repro
+ 1214  sudo yum install -y yum-utils
+ 1215  hi repo
+ 1216  sudo yum-config-manager     --add-repo     https://download.docker.com/linux/centos/docker-ce.repo
+ 1217  sudo yum install -y yum-utils
+ 1218  sudo yum makecache fast
+ 1219  sudo yum install docker-ce
+ 1220  sudo systemctl start docker
+ 1221   systemctl start docker
+ 1222  systemctl status docker.service 
+ 1223  systemctl status docker.service  -l
+ 1224  docker version
+ 1225  sudo systemctl start docker
+ 1226  cd /var/lib/docker/
+ 1227  ls
+ 1228  rm -fr /var/lib/docker
+ 1229  systemctl status docker.service  -l
+ 1230  pwd
+ 1231  ls
+ 1232  cd ../
+ 1233  ls
+ 1234  cd ../
+ 1235  dockerd -D
+ 1236  systemctl start docker
+ 1237  systemctl status docker.service 
+ 1238  ps aux | grep docker
+ 1239  cd
+ 1240  ls
+ 1241  s
+ 1242  ls
+ 1243  pwd
+ 1244  ls
+ 1245  cd /home/sundar/
+ 1246  ls
+ 1247  cd mydocker/
+ 1248  ls
+ 1249  docker images
+ 1250  docker run hello-world
+ 1251  docker images
+ 1252  ip addr
+ 1253  pwd
+ 1254  ls
+ 1255  mkdir src
+ 1256  cd src
+ 1257  vi my1.php
+ 1258  cd ../
+ 1259  vi Dockerfile
+ 1260  mv src/my1.php src/index.php
+ 1261  ls
+ 1262  vi Dockerfile 
+ 1263  pwd
+ 1264  ls
+ 1265  docker build -t hello-world .
+ 1266  docker images
+ 1267  docker rmi 48b5124b2768
+ 1268  docker stop hello-world
+ 1269  docker ps
+ 1270  docker rm hello-world
+ 1271  docker ps
+ 1272  docker rm 2b7725a71f5a
+ 1273  ls
+ 1274  docker rmi 48b5124b2768
+ 1275  docker images
+ 1276  wpd
+ 1277  docker run -p 80:80 hello-world
+ 1278  docker ps
+ 1279  ps aux | grep nginx
+ 1280  ps aux | grep uwsgi
+ 1281  systemctl status nginx
+ 1282  systemctl stop nginx
+ 1283  systemctl status nginx
+ 1284  ps aux | grep uwsgi
+ 1285  ps aux | grep nginx
+ 1286  docker run -p 80:80 hello-world
+ 1287  pwd
+ 1288  docker run -p 80:80 -v /home/sundar/mydocker/src/:/var/www/html/ hello-world
+ 1289    
+ 1290  ls
+ 1291  mkdir php_hello
+ 1292  mv * php_hello/
+ 1293  ls
+ 1294  cd php_hello/
+ 1295  ls
+ 1296  hi build
+ 1297  hi run
+ 1298  ls
+ 1299  vi Dockerfile 
+ 1300  hi build
+ 1301  ls
+ 1302  docker ps
+ 1303  docker ps -l
+ 1304  docker ps 
+ 1305  pwd
+ 1306  ls
+ 1307  docker stop stoic_liskov 
+ 1308  ls
+ 1309  docker ps 
+ 1310  pwd
+ 1311  cd ../
+ 1312  ls
+ 1313  mkdir prod_serv
+ 1314  cd prod_serv/
+ 1315  ls
+ 1316  vi api.py
+ 1317  vi requirements.txt
+ 1318  vi Dockerfile
+ 1319  hi build
+ 1320  cd ../
+ 1321  mv prod_serv/ dock_compose/
+ 1322  ls
+ 1323  cd dock_compose/ls
+ 1324  cd dock_compose/
+ 1325  ls
+ 1326  mkdir product
+ 1327  mv * product/
+ 1328  ls
+ 1329  pwd
+ 1330  ls
+ 1331  cd ../
+ 1332  ls
+ 1333  cd dock_compose/
+ 1334  ls
+ 1335  vi docker-compose.yml
+ 1336  docker-compose up
+ 1337  cd ../
+ 1338  ls
+ 1339  cd dock_compose/
+ 1340  ls
+ 1341  yum install epel-release
+ 1342  yum install -y python-pip
+ 1343  pip install docker-compose
+ 1344  pip install --upgrade pip
+ 1345  yum upgrade python*
+ 1346  nano temp.txt
+ 1347  cat temp.txt 
+ 1348  rm temp.txt 
+ 1349  cat docker-compose.yml 
+ 1350  docker-compose up
+ 1351  ls
+ 1352  cd product/
+ 1353  ls
+ 1354  vi api.py 
+ 1355  pwd
+ 1356  cd ../
+ 1357  ls
+ 1358  docker-compose up
+ 1359  vi product/api.py 
+ 1360  docker-compose up
+ 1361  ls
+ 1362  docker-compose up
+ 1363  ls
+ 1364  vi docker-compose.yml 
+ 1365  docker-compose up
+ 1366  vi docker-compose.yml 
+ 1367  docker-compose up
+ 1368  vi docker-compose.yml  
+ 1369  ls
+ 1370  vi docker-compose.yml  
+ 1371  vi website/index.php 
+ 1372  vi product/api.py 
+ 1373  vi website/index.php 
+ 1374  docker-compose up
+ 1375  pip uninstall docker-py
+ 1376   pip uninstall docker
+ 1377   pip install docker
+ 1378  docker-compose up
+ 1379  docker-compose up -d
+ 1380  docker ps
+ 1381  docker-compose stop
+ 1382  docker-compose ps
+ 1383  pwd
+ 1384  docker-compose 
+ 1385  docker-compose up
+ 1386  docker-compose up -d
+ 1387  python ps
+ 1388  docker ps
+ 1389  cd. ./
+ 1390  ls
+ 1391  pwd
+ 1392  hi
+ 1393  hi build
+ 1394  history
+ 1395   pwd
+ 1396  ls
+ 1397  cd ../
+ 1398  ls
+ 1399  cd php_hello/
+ 1400  ls
+ 1401  vi git_inst
+ 1402   vi git_inst
+ 1403  ls
+ 1404   
+ 1405  pwd
+ 1406  ls
+ 1407  cd ../
+ 1408  ls
+ 1409  cd dock_compose/
+ 1410  ls
+ 1411  pwd
+ 1412  ls
+ 1413  history > git_cli_hist

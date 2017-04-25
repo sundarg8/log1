@@ -1,0 +1,16 @@
+ 1270  docker build -t hello-world .
+ 1271  docker images
+ 1272  docker rm 2b7725a71f5a
+ 1274  docker rmi 48b5124b2768
+ 1277  docker run -p 80:80 hello-world
+ 1278  docker ps
+ 1279  ps aux | grep nginx
+ 1280  ps aux | grep uwsgi
+ 1281  systemctl status nginx
+ 1282  systemctl stop nginx
+ 1283  systemctl status nginx
+
+ 1286  docker run -p 80:80 hello-world
+ 1287  pwd
+ 1288  docker run -p 80:80 -v /home/sundar/mydocker/php_hello/src/:/var/www/html/ hello-world
+

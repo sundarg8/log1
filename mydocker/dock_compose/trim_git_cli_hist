@@ -1,0 +1,101 @@
+
+ 1161  docker --version
+ 1163  systemctl start docker
+ 1165  systemctl status docker.service -l
+ 1170  pwd
+ 1172  sestaus
+ 1174  setenforce 1
+ 1177  yum install docker
+ 1178  sestatus
+
+ 1179  yum install docker --skip-broken
+ 1180  yum install epel-release
+ 1181  yum install docker-io
+ 1182  sudo yum remove docker docker-common container-selinux docker-selinux docker-engine
+ 1183  sudo yum install -y yum-utils
+ 1184  sudo yum-config-manger --add-repo https://download.docker.com/linux/centos/docker-ce.repro
+ 1185  sudo yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repro
+
+ 1195  ping www.google.com
+ 1196  sudo yum install -y yum-utils
+ 1197  sudo yum makecache fast
+ 1198  ping www.google.com
+ 1199  sudo yum makecache fast
+ 1208  sudo yum remove docker docker-common container-selinux docker-selinux docker-engine
+ 1210  sudo yum install -y yum-utils
+ 1211  yum --disablerepo=download.docker.com_linux_centos_docker-ce.repro 
+ 1212  sudo yum install -y yum-utils
+ 1213  yum-config-manager --disable download.docker.com_linux_centos_docker-ce.repro
+ 1214  sudo yum install -y yum-utils
+ 1215  hi repo
+ 1216  sudo yum-config-manager     --add-repo     https://download.docker.com/linux/centos/docker-ce.repo
+ 1217  sudo yum install -y yum-utils
+ 1218  sudo yum makecache fast
+ 1219  sudo yum install docker-ce
+ 1220  sudo systemctl start docker
+ 1221   systemctl start docker
+ >>>>> 
+    1228  rm -fr /var/lib/docker
+ <<<<<<
+ 1235  dockerd -D
+ 1236  systemctl start docker
+ 1237  systemctl status docker.service 
+ 1238  ps aux | grep docker
+
+ 1246  ls
+ 1247  cd mydocker/
+ 1265  docker build -t hello-world .
+ 1266  docker images
+ 1277  docker run -p 80:80 hello-world
+ 1288  docker run -p 80:80 -v /home/sundar/mydocker/src/:/var/www/html/ hello-world
+ 1289    
+ 1291  mkdir php_hello
+ 1292  mv * php_hello/
+ 1293  ls
+ 1294  cd php_hello/
+ 1311  cd ../
+ 1313  mkdir prod_serv
+ 1314  cd prod_serv/
+ 1315  ls
+ 1316  vi api.py
+ 1317  vi requirements.txt
+ 1318  vi Dockerfile
+ 1319  hi build
+ 1320  cd ../
+ 1321  mv prod_serv/ dock_compose/
+ 1322  ls
+ 1323  cd dock_compose/ls
+ 1324  cd dock_compose/
+ 1325  ls
+ 1326  mkdir product
+ 1327  mv * product/
+ 1328  ls
+ 1329  pwd
+ 1330  ls
+ 1331  cd ../
+ 1332  ls
+ 1333  cd dock_compose/
+ 1334  ls
+ 1335  vi docker-compose.yml
+
+>>>>>>>>>>>>>
+ 1336  docker-compose up
+<<<<<<<<<<<<<<<
+ 1341  yum install epel-release
+ 1342  yum install -y python-pip
+ 1343  pip install docker-compose
+ 1344  pip install --upgrade pip
+ 1345  yum upgrade python*
+
+ 1362  docker-compose up
+ 1375  pip uninstall docker-py
+ 1376   pip uninstall docker
+ 1377   pip install docker
+ 1378  docker-compose up
+ 1379  docker-compose up -d
+ 1381  docker-compose stop
+ 1387  python ps
+ 1388  docker ps
+ 1389  cd. ./
+<<<<<<<<<
+
