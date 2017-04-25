@@ -1,0 +1,26 @@
+CMD::: http://192.168.1.120:4000/
+Exp.Output --- HTML format
+Hello world!
+Hostname: d75a3510206d
+Visits: cannot connect to Redis, counter disabled
+
+ 1518  docker-compose stop
+ 1485  mkdir tutorial_part2
+ 1486  cd tutorial_part2/
+ 1500  vi requirements.txt 
+ 1501  vi app.py 
+ 1502  vi Dockerfile 
+ 1508  docker build -t friendlyhello .
+ 1551  docker images
+ 1552  docker run -p 4000:80 friendlyhello
+ 1553  docker run -p 4000:80 friendlyhello -d
+ 1554  docker run -d -p 4000:80 friendlyhello 
+ 1555  docker ps
+ 1557  docker images
+ 1558  docker login
+ 1559  docker tag friendlyhello sundarg38/log1
+ 1560  docker push sundarg38/log1
+ 1561  docker tag friendlyhello sundarg38/log1:v1
+ 1562  docker push sundarg38/log1:v1
+ 1564  docker run -p 4000:80 sundarg38/log1:v1
+ 1565  docker run -p 4000:80 sundarg38/log1
