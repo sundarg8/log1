@@ -1,0 +1,29 @@
+ 1574  pwd
+ 1575  mkdir tutorial_part3
+ 1576  ls
+ 1577  cd tutorial_part
+ 1578  cd tutorial_part3
+ 1579  ls
+ 1580    
+ 1581  vi docker-compose.yml
+ 1582  docker swarm init
+ 1583  docker swarm init --advertise-addr 192.168.1.120
+ 1584  docker stack deploy -c docker-compose.yml getstartedlab
+ 1585  docker stack ps getstartedlab
+ 1586  ls
+ 1587  vi docker-compose.yml 
+ 1588  docker stack rm getstartedlab 
+ 1589  docker stack ps getstartedlab
+ 1590  docker ps
+ 1591  history > myhelp.txt
+ 1592  vi myhelp.txt 
+
+
+ 1630  vi docker-compose.yml 
+ 1632  docker swarm ps
+ 1635  docker stack ps getstartedlab
+ 1642  docker swarm init --advertise-addr 192.168.1.120
+ 1643  docker stack deploy -c docker-compose.yml getstartedlab
+ 1644  docker stack ps getstartedlab
+ 1645  docker swarm leave --force
+ 1715  history > myhelp_2.txt

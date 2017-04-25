@@ -1,0 +1,12 @@
+ 1575  mkdir tutorial_part3
+ 1578  cd tutorial_part3
+ 1581  vi docker-compose.yml
+ 1582  docker swarm init
+ 1583  docker swarm init --advertise-addr 192.168.1.120
+ 1584  docker stack deploy -c docker-compose.yml getstartedlab
+ 1585  docker stack ps getstartedlab
+ 1587  vi docker-compose.yml 
+ 1588  docker stack rm getstartedlab 
+ 1589  docker stack ps getstartedlab
+ 1590  docker ps
+ 1591  history > myhelp.txt
