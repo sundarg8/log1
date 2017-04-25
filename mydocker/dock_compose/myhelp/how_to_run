@@ -1,0 +1,25 @@
+CMDLINE::: docker-compose up 
+CMDLINE::: docker-compose up  -d
+CMDLINE::: docker-compose stop
+A) PRODUCT service
+http://192.168.1.120:5001/my3/ OR  http://localhost:5001/my3/ OR http://0.0.0.0:5001/my3/ 
+Exp.Output----- JSON o/p format
+{
+    "products": [
+        "Ice cream",
+        "Chocolate",
+        "Fruit",
+        "Eggs"
+    ]
+}
+
+B) Website Service
+http://192.168.1.120:5000/ OR  http://localhost:5000/ OR http://0.0.0.0:5000/ 
+Exp.Output----- HTML Page
+ Welcome to my Shop
+
+    Ice cream
+    Chocolate
+    Fruit
+    Eggs
+
