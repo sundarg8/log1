@@ -1,0 +1,21 @@
+ 1137  mkdir ~/mygit
+ 1139  cd mygit/
+ 1165  git init 
+ 1166  git add README.md
+ 1167  git commit -m "first commit"
+ 1168  git remote add origin https://github.com/sundarg8/log1.git
+ 1169  git push -u origin master
+ 1172  git status
+ 1174  git add -rf mydocker/
+ 1175  git add -A mydocker
+ 1176  git status
+ 1177  git commit -a -m "commit2"
+ 1178  git push origin master
+ 1195  hi git
+
+
+ 1196  git add -A mydocker
+ 1198  git status
+ 1199  git commit -a -m "commit3"
+ 1200  git push origin master
+
