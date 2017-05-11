@@ -1,7 +1,9 @@
 #include <iostream>
+#include <string>
+#include <stdexcept>
 using namespace std;
 
-int fn_print_gpp_version();
+
 
 
 int printTime();
@@ -16,5 +18,8 @@ int nlfl(char *str);
 #define NL printf("\n")
 #define NLFL(str) \
     cout << ">>>  " << __FUNCTION__ <<":" <<  __LINE__ <<  "  <<<   " << str << "\n"
-#define ct(str) cout << str << "\n"
-#define cts(str) cout << str
+#define ct(str) cout << __FUNCTION__ << "\t-- "  << #str << " -->\t\t " << str << "\n";
+#define ctp(str) cout << __FUNCTION__ << "\t-- "  << str << "\n";
+
+//#define ct(str) cout << str << "\n";
+//#define cts(str) cout << str;
