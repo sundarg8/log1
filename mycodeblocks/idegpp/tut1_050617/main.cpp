@@ -2,6 +2,7 @@
 #include "p5_utils.h"
 #include "p4_classes.h"
 #include "u2_utils.h"
+#include "u3_utils.h"
 
 using namespace std;
 
@@ -22,7 +23,8 @@ void u2_fns() {
 }
 
 void u3_fns() {
-    //u3_f1_start_txn();
+    u3_g1_ut_start();
+    //3_f1_start_txn();
     //u3_f2_add_msg_to_txn();
     //u3_f3_enqueue();
     //u3_f4_txn_end();
@@ -33,7 +35,7 @@ int y1_global;
 int main(int argc, char **argv)  {
     pre_run(argc , argv);
 
-    u2_fns();
+    u3_fns();
 
     post_run();
     return 0;
