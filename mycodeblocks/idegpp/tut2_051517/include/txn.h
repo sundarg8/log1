@@ -19,17 +19,14 @@ class txn
         int get_txn_num() {
             return txn_no;
         }
-        cookie add_obj(sample_object &, enum action_t  , cookie);
-        cookie v2_add_obj(sample_object, enum action_t  , cookie);
-        void display_actions_map();
-        void v2_display_actions_map();
+        cookie v3_add_obj(sample_object *, enum action_t  , cookie);
+        void v3_display_actions_map();
 
     protected:
     private:
         int txn_no;
         int object_id;
-        map<int, sample_object &> actions_map;
-        map<int, sample_object>   v2_actions_map;
+        map<int, sample_object>   v3_actions_map;
 
 };
 

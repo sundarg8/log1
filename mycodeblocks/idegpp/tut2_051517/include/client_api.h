@@ -15,8 +15,8 @@ class client_api
     public:
         client_api() ;
         virtual ~client_api();
-        static cookie perform_action_on_obj(sample_object &, enum  action_t  , cookie );
-        static cookie v2_perform_action_on_obj(sample_object, enum  action_t  , cookie );
+        static cookie v3_perform_action_on_obj(sample_object *,enum  action_t , cookie);
+
         static void flush_obj_actions();
         static void display_client_txn_map();
 
