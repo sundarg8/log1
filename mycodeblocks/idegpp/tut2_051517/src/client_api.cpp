@@ -2,63 +2,70 @@
 #include <iostream>
 
 
-int client_api::thread_local_txn_num = 22;
-map<int, txn*> client_api::client_txn_map;
 
-client_api::client_api() {
-    //ctor
+NxClientApi::NxClientApi() {
+    txnNum_ = 22;
 }
 
-client_api::~client_api() {
-    //dtor
+NxClientApi::~NxClientApi() {
 }
 
 
 
-cookie client_api::v3_perform_action_on_obj(sample_object *intf,
+cookie NxClientApi::PerformActionOnObj(TestObject *intf,
             enum  action_t  action_type, cookie req_cookie) {
 
-    map<int, txn*>::iterator iter;
-    txn* p_txn = nullptr;
+    map<int, NxClientTxn*>::iterator iter;
+    NxClientTxn* p_NxClientTxn = nullptr;
     cookie alloted_id;
 
-    iter = client_txn_map.find(thread_local_txn_num);
-    if (iter == client_txn_map.end()) {
-        //create txn object and initialize.
-        ///cout << " \n Creating new txnObj for txn_id " << thread_local_txn_num << endl;
-        p_txn = new txn();
-        p_txn->set_txn_num(thread_local_txn_num);
-        client_txn_map[thread_local_txn_num] = p_txn;
+    iter = txnMap_.find(txnNum_);
+
+    if (iter == txnMap_.end()) {
+        p_NxClientTxn = new NxClientTxn();
+        p_NxClientTxn->SetNxClientTxnNum(txnNum_);
+        txnMap_[txnNum_] = p_NxClientTxn;
     } else {
-        ///cout << "\n Adding to existing txn obj for txn_id " << thread_local_txn_num << endl;
-        p_txn = iter->second;
+        p_NxClientTxn = iter->second;
     }
 
-    alloted_id= p_txn->v3_add_obj(intf, action_type, req_cookie);
+    alloted_id= p_NxClientTxn->TxnAddObj(intf, action_type, req_cookie);
     return alloted_id;
 }
 
 
 
-void client_api::flush_obj_actions() {
-    ///call transport send() for the current active txn..
+void NxClientApi::FlushObjActions() {
+    ///call transport send() for the current active NxClientTxn..
+    map<int, NxClientTxn*>::iterator iter;
+    NxClientTxn* p_NxClientTxn = nullptr;
 
-    ++thread_local_txn_num;
-    cout << "\n Incrementing txn_id to " << thread_local_txn_num << endl;
+    iter = txnMap_.find(txnNum_);
+    cout << " ---- Start of Flush TXN  --> "  <<  txnNum_ << "\n\n";
+    if (iter != txnMap_.end()) {
+        p_NxClientTxn = iter->second;
+        p_NxClientTxn->PrintPrintMe();
+        p_NxClientTxn->ConvertToBuffer();
+    }
+    cout <<  " \n #### End of Flush TXN  --> "  << txnNum_ <<  "\n\n\n";
+    ++txnNum_;
 
 }
 
 
-void client_api::display_client_txn_map() {
 
-    map<int, txn*>::iterator iter;
-    txn* p_txn = nullptr;
+void NxClientApi::PrintPrintMe() {
+    map<int, NxClientTxn*>::iterator iter;
+    NxClientTxn* p_NxClientTxn = nullptr;
 
-    for (iter = client_txn_map.begin(); iter != client_txn_map.end(); iter++ ) {
+    for (iter = txnMap_.begin(); iter != txnMap_.end(); iter++ ) {
         cout << __FUNCTION__ << setw(9) << iter->first << " : " << iter->second  << endl;
-        p_txn = iter->second;
-        p_txn->v3_display_actions_map();
+        p_NxClientTxn = iter->second;
+        p_NxClientTxn->PrintPrintMe();
         cout << endl;
     }
 
+
 }
+
+

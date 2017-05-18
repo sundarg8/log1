@@ -1,6 +1,7 @@
-#ifndef CLIENT_API_H
-#define CLIENT_API_H
+#ifndef NxClientApi_H
+#define NxClientApi_H
 
+#include "NxProcObj.h"
 #include "sample_object.h"
 #include "txn.h"
 #include <map>
@@ -10,21 +11,25 @@ using namespace std;
 
 typedef int cookie;
 
-class client_api
+
+class NxClientApi : public NxProcObj
 {
     public:
-        client_api() ;
-        virtual ~client_api();
-        static cookie v3_perform_action_on_obj(sample_object *,enum  action_t , cookie);
+        NxClientApi() ;
+        virtual ~NxClientApi();
+        cookie PerformActionOnObj(TestObject *,enum  action_t , cookie);
+        void FlushObjActions();
 
-        static void flush_obj_actions();
-        static void display_client_txn_map();
+        virtual void PrintPrintMe();  //{}
+        virtual void PrintReflection() {}
+        virtual void LogMe(){}
+
 
     protected:
     private:
-        static int thread_local_txn_num;
-        static map<int, txn*> client_txn_map;
+        int txnNum_;
+        map<int, NxClientTxn*> txnMap_;
 
 };
 
-#endif // CLIENT_API_H
+#endif // NxClientApi_H

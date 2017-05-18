@@ -1,49 +1,65 @@
-#ifndef SAMPLE_OBJECT_H
-#define SAMPLE_OBJECT_H
+#ifndef TestObject_H
+#define TestObject_H
 #include <string>
 #include <iostream>
+#include <cstring>
 #include <iomanip>
+#include <NxProcObj.h>
 using namespace std;
 
-//enum class obj_action_types { GET, CREATE , MODIFY , DELETE };
-
 enum  action_t  { GET, CREATE , MODIFY , DELETE };
+#define nameSz 8
 
-class sample_object
+///class TestObject : NxProcObj
+class TestObject
 {
     public:
 
-        sample_object();
-        virtual ~sample_object();
+        TestObject();
+        virtual ~TestObject();
 
+        //virtual void PrintPrintMe() {}
+        ///virtual void PrintReflection() {}
+        ///virtual void LogMe(){}
 
-        sample_object(const sample_object &obj) {
-            intf_name = obj.intf_name;
-            speed     = obj.speed;
-            stats     = obj.stats;
-            //cout << setw(9) << "Copy Constructor called for Sample_object" << endl;
-            //display_obj();
-            ++no_of_copy_ctors;
+        TestObject(const TestObject &obj) {
+            //IntfName_ =  obj.IntfName_;
+            strncpy(IntfName_, obj.IntfName_, nameSz);
+            Speed_     = obj.Speed_;
+            Stats_     = obj.Stats_;
+            ++NumCopyCtors_;
         }
 
+        int ConvertToBuffer(char *buf,  int max_length );
+        void PrintBytes(const char *buf , const int bytes);
 
-        void set_obj_params(string val_name, int val_speed, int val_stats) {
-            intf_name = val_name;
-            speed = val_speed;
-            stats = val_stats;
+        ///void SetParams(string val_name, int val_Speed_, int val_Stats_) {
+        ///void SetParams( int val_Speed_, int val_Stats_) {
+            ///IntfName_ = val_name;
+        void SetParams(char  *val_name, int val_Speed_, int val_Stats_) {
+
+            strncpy(IntfName_, val_name, nameSz);
+
+            Speed_ = val_Speed_;
+            Stats_ = val_Stats_;
         }
-        void display_obj() {
-            cout << setw(10) << "Attr_name: " << intf_name
-                            << "   Attr_speed: " << speed
-                            << "   Attr_stats: " << stats <<  endl;
+
+        ///virtual void PrintPrintMe() {
+        void PrintPrintMe() {
+            cout << setw(10) << "Attr_name: " << IntfName_
+                             << "  Attr_Speed_: " << Speed_
+            ///cout << setw(10)  << "   Attr_Speed_: " << Speed_
+                            << "   Attr_Stats_: " << Stats_ <<  endl;
         }
-        static int no_of_copy_ctors;
+        static int NumCopyCtors_;
 
     protected:
     private:
-        string  intf_name;
-        int     speed;
-        int     stats;
+        unsigned int     Speed_;
+        unsigned int     Stats_;
+        //string  IntfName_;
+        char IntfName_[nameSz];
+
 };
 
-#endif // SAMPLE_OBJECT_H
+#endif // TestObject_H
