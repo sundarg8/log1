@@ -2,23 +2,22 @@
 <CodeBlocks_project_file>
 	<FileVersion major="1" minor="6" />
 	<Project>
-		<Option title="tut2_051517" />
+		<Option title="tut4_051817" />
 		<Option pch_mode="2" />
 		<Option compiler="gcc" />
 		<Build>
 			<Target title="Debug">
-				<Option output="bin/Debug/tut2_051517" prefix_auto="1" extension_auto="1" />
+				<Option output="bin/Debug/tut4_051817" prefix_auto="1" extension_auto="1" />
 				<Option object_output="obj/Debug/" />
 				<Option type="1" />
 				<Option compiler="gcc" />
 				<Compiler>
-					<Add option="-pedantic-errors" />
-					<Add option="-std=c++11" />
+					<Add option="-g" />
 					<Add directory="include" />
 				</Compiler>
 			</Target>
 			<Target title="Release">
-				<Option output="bin/Release/tut2_051517" prefix_auto="1" extension_auto="1" />
+				<Option output="bin/Release/tut4_051817" prefix_auto="1" extension_auto="1" />
 				<Option object_output="obj/Release/" />
 				<Option type="1" />
 				<Option compiler="gcc" />
@@ -37,11 +36,13 @@
 		</Compiler>
 		<Unit filename="include/NxProcObj.h" />
 		<Unit filename="include/client_api.h" />
+		<Unit filename="include/nn_msg.h" />
 		<Unit filename="include/sample_object.h" />
 		<Unit filename="include/txn.h" />
 		<Unit filename="main.cpp" />
 		<Unit filename="src/NxProcObj.cpp" />
 		<Unit filename="src/client_api.cpp" />
+		<Unit filename="src/nn_msg.cpp" />
 		<Unit filename="src/sample_object.cpp" />
 		<Unit filename="src/txn.cpp" />
 		<Extensions>
