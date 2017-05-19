@@ -1,30 +1,30 @@
 #include "txn.h"
 
-const int NxClientTxn::MAX_TXN_BUFFER_SZ = 512;
+const int NxTxnMgr::MAX_TXN_BUFFER_SZ = 512;
 
-NxClientTxn::NxClientTxn() {
+NxTxnMgr::NxTxnMgr() {
     ObjectId_ = 0;
     memset(TxnBuffer, 0, sizeof(TxnBuffer));
 }
 
-NxClientTxn::~NxClientTxn() {}
+NxTxnMgr::~NxTxnMgr() {}
 
-void NxClientTxn::SetNxClientTxnNum(int val_NxClientTxn) {
-    TxnNo_ = val_NxClientTxn;
+void NxTxnMgr::SetNxTxnMgrNum(int val_NxTxnMgr) {
+    TxnNo_ = val_NxTxnMgr;
 }
 
-int NxClientTxn::GetNxClientTxnNum() {
+int NxTxnMgr::GetNxTxnMgrNum() {
     return TxnNo_;
 }
 
-cookie NxClientTxn::TxnAddObj(TestObject *obj_data, enum action_t action_type , cookie req_cookie) {
+cookie NxTxnMgr::TxnAddObj(TestObject *obj_data, enum action_t action_type , cookie req_cookie) {
     ++ObjectId_;
     ActionsMap_.insert(pair<int, TestObject&> (ObjectId_, *obj_data));
     return ObjectId_;
 }
 
 
-void NxClientTxn::PrintPrintMe() {
+void NxTxnMgr::PrintPrintMe() {
     map<int, TestObject >::iterator  iter;
     TestObject r_obj; // = nullptr;
     for (iter = ActionsMap_.begin(); iter != ActionsMap_.end(); iter++ ) {
@@ -34,7 +34,7 @@ void NxClientTxn::PrintPrintMe() {
     }
 }
 
-void NxClientTxn::ConvertToBuffer() {
+void NxTxnMgr::ConvertToBuffer() {
     map<int, TestObject >::iterator  iter;
     TestObject r_obj; // = nullptr;
     int ret_length;
@@ -47,7 +47,7 @@ void NxClientTxn::ConvertToBuffer() {
 /* ////////////////////////BACKUP CODE /////////////////////////////////////////////////////////
 
 #if 0
-cookie NxClientTxn::TxnAddObj(TestObject *obj_data, enum action_t action_type , cookie req_cookie) {
+cookie NxTxnMgr::TxnAddObj(TestObject *obj_data, enum action_t action_type , cookie req_cookie) {
     //TestObject *curr_obj = new TestObject();
     //(*curr_obj) = obj_data;
     ++ObjectId_;

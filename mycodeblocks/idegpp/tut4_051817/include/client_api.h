@@ -29,7 +29,7 @@ class NxClientApi : public NxProcObj
 
     protected:
     private:
-        map<int, NxClientTxn*>      txnMap_;
+        map<int, NxTxnMgr*>      txnMap_;
         int                         txnNum_;
 
 };

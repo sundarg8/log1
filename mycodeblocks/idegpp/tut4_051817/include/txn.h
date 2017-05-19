@@ -1,5 +1,5 @@
-#ifndef NxClientTxn_H
-#define NxClientTxn_H
+#ifndef NxTxnMgr_H
+#define NxTxnMgr_H
 
 #include "NxProcObj.h"
 #include <iostream>
@@ -11,13 +11,13 @@ using namespace std;
 //#define MAX_TXN_BUFFER_SZ 512
 typedef int cookie;
 
-class NxClientTxn : public NxProcObj
+class NxTxnMgr : public NxProcObj
 {
     public:
-        NxClientTxn();
-        virtual ~NxClientTxn();
+        NxTxnMgr();
+        virtual ~NxTxnMgr();
 
-        void SetNxClientTxnNum(int val_NxClientTxn);
+        void SetNxTxnMgrNum(int val_NxTxnMgr);
         cookie TxnAddObj(TestObject *, enum action_t  , cookie);
         void ConvertToBuffer();
 
@@ -34,10 +34,10 @@ class NxClientTxn : public NxProcObj
         char                    TxnBuffer[512];
 
         static const int        MAX_TXN_BUFFER_SZ;
-        int GetNxClientTxnNum();
+        int GetNxTxnMgrNum();
 
 
 
 };
 
-#endif // NxClientTxn_H
+#endif // NxTxnMgr_H
