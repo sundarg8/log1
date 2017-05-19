@@ -5,26 +5,33 @@
 #include <nnxx/message.h>
 #include <nnxx/pair.h>
 #include <nnxx/socket.h>
+
 using namespace std;
 #define SOCKET_ADDR_SZ 64
 
 class NanoMsg
 {
     public:
-        NanoMsg(const char *);
-        //NanoMsg();
+        enum ConnType { ConnClient , ConnServer };
+
+        NanoMsg(const char *, ConnType);
         virtual ~NanoMsg();
-        int SetupClient();
-        int SetupServer();
-        int SendFromClient(const char *);
-        int RecvOnServer(char *);
-        int RecvAndPrintOnServer();
+
+        int SetupConnection();
+        int Send(const char *);
+        int Recv(const char *);
+        int RunUT();
 
     protected:
+
     private:
-        nnxx::socket ClientSock_ { nnxx::SP, nnxx::PAIR };
-        nnxx::socket ServerSock_ { nnxx::SP, nnxx::PAIR };
-        char SockAddr_[SOCKET_ADDR_SZ];
+
+        char            SockAddr_[SOCKET_ADDR_SZ];
+        ConnType        ConnType_;
+        nnxx::socket    NanoMsgSock_ { nnxx::SP, nnxx::PAIR};
+
+        int RunAsServerUT();
+        int RunAsClientUT();
 
 };
 

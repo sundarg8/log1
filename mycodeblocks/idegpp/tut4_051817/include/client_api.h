@@ -5,7 +5,7 @@
 #include "sample_object.h"
 #include "txn.h"
 #include <map>
-#include <iomanip>
+//#include <iomanip>
 
 using namespace std;
 
@@ -17,19 +17,21 @@ class NxClientApi : public NxProcObj
     public:
         NxClientApi() ;
         virtual ~NxClientApi();
+
         cookie PerformActionOnObj(TestObject *,enum  action_t , cookie);
         void FlushObjActions();
         //abort add
 
-        virtual void PrintPrintMe();  //{}
+        virtual void PrintPrintMe();
         virtual void PrintReflection() {}
         virtual void LogMe(){}
 
 
     protected:
     private:
-        int txnNum_;
-        map<int, NxClientTxn*> txnMap_;
+        map<int, NxClientTxn*>      txnMap_;
+        int                         txnNum_;
+
 };
 
 /**

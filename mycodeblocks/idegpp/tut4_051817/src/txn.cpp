@@ -2,16 +2,20 @@
 
 const int NxClientTxn::MAX_TXN_BUFFER_SZ = 512;
 
-NxClientTxn::NxClientTxn()
-{
+NxClientTxn::NxClientTxn() {
     ObjectId_ = 0;
     memset(TxnBuffer, 0, sizeof(TxnBuffer));
 }
 
-NxClientTxn::~NxClientTxn()
-{
+NxClientTxn::~NxClientTxn() {}
+
+void NxClientTxn::SetNxClientTxnNum(int val_NxClientTxn) {
+    TxnNo_ = val_NxClientTxn;
 }
 
+int NxClientTxn::GetNxClientTxnNum() {
+    return TxnNo_;
+}
 
 cookie NxClientTxn::TxnAddObj(TestObject *obj_data, enum action_t action_type , cookie req_cookie) {
     ++ObjectId_;
@@ -36,8 +40,6 @@ void NxClientTxn::ConvertToBuffer() {
     int ret_length;
     for (iter = ActionsMap_.begin(); iter != ActionsMap_.end(); iter++ ) {
         r_obj = iter->second;
-        //r_obj.PrintPrintMe();
-
         ret_length = r_obj.ConvertToBuffer(TxnBuffer, MAX_TXN_BUFFER_SZ);
     }
 }

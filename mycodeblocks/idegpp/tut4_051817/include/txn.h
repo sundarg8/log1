@@ -16,28 +16,26 @@ class NxClientTxn : public NxProcObj
     public:
         NxClientTxn();
         virtual ~NxClientTxn();
-        static const int MAX_TXN_BUFFER_SZ;
 
-        void SetNxClientTxnNum(int val_NxClientTxn) {
-            TxnNo_ = val_NxClientTxn;
-        }
-        int GetNxClientTxnNum() {
-            return TxnNo_;
-        }
+        void SetNxClientTxnNum(int val_NxClientTxn);
         cookie TxnAddObj(TestObject *, enum action_t  , cookie);
+        void ConvertToBuffer();
 
         virtual void PrintPrintMe();
         virtual void PrintReflection() {}
         virtual void LogMe(){}
-        void ConvertToBuffer();
 
 
     protected:
     private:
-        int TxnNo_;
-        int ObjectId_;
-        map<int, TestObject>   ActionsMap_;
-        char TxnBuffer[512];
+        map<int, TestObject>    ActionsMap_;
+        int                     TxnNo_;
+        int                     ObjectId_;
+        char                    TxnBuffer[512];
+
+        static const int        MAX_TXN_BUFFER_SZ;
+        int GetNxClientTxnNum();
+
 
 
 };
