@@ -2,6 +2,8 @@
 #include <cstring>
 #include <unistd.h>
 #include <system_error>
+#include <iomanip>
+
 
 
 NanoMsg::NanoMsg(const char *sock_addr, ConnType type)
@@ -34,10 +36,80 @@ int NanoMsg::Recv(const char *buf) {
 }
 
 
+int NanoMsg::Send(const char *buf, int len, int flags, int *total_sent_bytes) {
+    *total_sent_bytes = 0;
+    *total_sent_bytes = NanoMsgSock_.send(buf, len, flags);
+    cout <<  " Sent Bytes -- "  << *total_sent_bytes << endl;
+    return 0;
+}
+
+int NanoMsg::Recv(char *buf , int buf_len, int flags, int *total_recv_bytes) {
+    *total_recv_bytes = 0;
+    *total_recv_bytes = NanoMsgSock_.recv(buf, buf_len, flags);
+    cout <<  " Actual Rcvd  Bytes -- "  << *total_recv_bytes << endl;
+    return 0;
+}
+
+
+int NanoMsg::RunUT() {
+    char *buf = nullptr;
+    int bytes=16;
+
+    if  (ConnClient == ConnType_) {
+        bytes = 16;
+        SetupConnection();        //RunAsClientUT();
+        SendByteStream(SockBuffer_, SOCKET_BUFFER_LEN, 0, &bytes);
+
+    }
+    else {
+        bytes = 8;
+        SetupConnection();        //RunAsServerUT();
+        RecvByteStream(SockBuffer_, SOCKET_BUFFER_LEN, 0, &bytes);
+    }
+    return 0;
+}
+
+
+int NanoMsg::SendByteStream(char *buf , int len, int flags, int *sent_bytes) {
+    char byteArr[64] = {0x18,0x03,0x00,0x00,0x02,0x00,0x00,0x00,
+                        0x41,0x35,0x34,0x00,0x00,0x00,0x00,0x00 };
+    len = 16;
+    for (int i =0 ; i< 5; i ++) {
+        byteArr[15] =i*2;
+        Send(byteArr, len, 0, sent_bytes);
+        PrintBytes(byteArr, *sent_bytes); cout << endl;
+        sleep(1);
+    }
+    sleep(5);
+
+    //Send(buf, len, flags, sent_bytes);
+}
+
+int NanoMsg::RecvByteStream(char *buf , int len, int flags, int *recv_bytes)  {
+    for  (int i =0 ; i < 5; i++) {
+        Recv(SockBuffer_, SOCKET_BUFFER_LEN, 0, recv_bytes);
+        PrintBytes(SockBuffer_, *recv_bytes);
+        sleep(2);
+    }
+    sleep(2);
+}
+
+
+void NanoMsg::PrintBytes(const char *pBytes , const int nBytes) {
+
+    for (int i = 0; i != nBytes; i++)
+    {
+        std::cout << std::hex << std::setw(2) << std::setfill('0')
+            << static_cast<unsigned int>(pBytes[i]) << " ";
+    }
+    cout << std::dec << std::endl;
+
+}
+
 int NanoMsg::RunAsServerUT() {
     const char *buf;
   try {
-    SetupConnection();
+    //SetupConnection();
 
     while (1) {
         Recv(buf);
@@ -53,7 +125,7 @@ int NanoMsg::RunAsServerUT() {
 
 int NanoMsg::RunAsClientUT() {
   try {
-    SetupConnection();
+    //SetupConnection();
 
     Send("TUT4_3--Class -- msg1 -- Hello World-my-V2!");
     cout << "\n after send1 " << endl;
@@ -72,17 +144,11 @@ int NanoMsg::RunAsClientUT() {
   }
   catch (const std::system_error &e) {
     std::cerr << e.what() << std::endl;
+    //e8 03 00 00 02 00 00 00 41 35 34 00 00 00 00 00
     return 1;
   }
 }
 
-int NanoMsg::RunUT() {
-    if  (ConnClient == ConnType_)
-        RunAsClientUT();
-    else
-        RunAsServerUT();
-
-}
 
 /// //////////////////////////////////////////////////////////////////
 #if 0

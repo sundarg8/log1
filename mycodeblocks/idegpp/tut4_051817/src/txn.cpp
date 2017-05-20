@@ -44,6 +44,13 @@ void NxTxnMgr::ConvertToBuffer() {
     }
 }
 
+void NxTxnMgr::SendTxnBuffer(NanoMsg *p_txnSock) {
+    int sent_bytes = 0;
+    p_txnSock->Send(TxnBuffer, 32, 0, &sent_bytes);
+    cout << __FUNCTION__ << " Sent Bytes to Svr : " << sent_bytes << endl;
+
+}
+
 /* ////////////////////////BACKUP CODE /////////////////////////////////////////////////////////
 
 #if 0

@@ -4,6 +4,7 @@
 #include "NxProcObj.h"
 #include "sample_object.h"
 #include "txn.h"
+#include "nn_msg.h"
 #include <map>
 //#include <iomanip>
 
@@ -20,6 +21,7 @@ class NxClientApi : public NxProcObj
 
         cookie PerformActionOnObj(TestObject *,enum  action_t , cookie);
         void FlushObjActions();
+        int  SetApiNanoMsg(NanoMsg *ptr);
         //abort add
 
         virtual void PrintPrintMe();
@@ -27,10 +29,13 @@ class NxClientApi : public NxProcObj
         virtual void LogMe(){}
 
 
+
     protected:
     private:
         map<int, NxTxnMgr*>      txnMap_;
-        int                         txnNum_;
+        int                      txnNum_;
+        NanoMsg                  * p_nnSock;
+
 
 };
 

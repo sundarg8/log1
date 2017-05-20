@@ -1,12 +1,21 @@
 #include "client_api.h"
 #include <iostream>
+#include <unistd.h>
+
+
 //123456789012345678901234567890123456789012345678901234567890123456789012345678
 
 
-NxClientApi::NxClientApi() { txnNum_ = 22;}
+NxClientApi::NxClientApi() {
+    txnNum_         = 22;
+    p_nnSock        = nullptr;
+}
 
 NxClientApi::~NxClientApi() {}
 
+int NxClientApi::SetApiNanoMsg(NanoMsg *ptr) {
+    p_nnSock = ptr;
+}
 
 cookie NxClientApi::PerformActionOnObj(TestObject *intf,
             enum  action_t  action_type, cookie req_cookie) {
@@ -38,7 +47,7 @@ cookie NxClientApi::PerformActionOnObj(TestObject *intf,
 void NxClientApi::FlushObjActions() {
     ///call transport send() for the current active NxTxnMgr..
     map<int, NxTxnMgr*>::iterator       iter;
-    NxTxnMgr*                           p_NxTxnMgr = nullptr;
+    NxTxnMgr                            *p_NxTxnMgr = nullptr;
 
     iter = txnMap_.find(txnNum_);
     cout << " ---- Start of Flush TXN  --> "  <<  txnNum_ << "\n\n";
@@ -46,10 +55,13 @@ void NxClientApi::FlushObjActions() {
         p_NxTxnMgr = iter->second;
         p_NxTxnMgr->PrintPrintMe();
         p_NxTxnMgr->ConvertToBuffer();
+        if (p_nnSock !=nullptr) {
+            p_NxTxnMgr->SendTxnBuffer(p_nnSock);
+        }
     }
-    cout <<  " \n #### End of Flush TXN  --> "  << txnNum_ <<  "\n\n\n";
+    cout <<  " \n #### End of Flush TXN  --> "  << txnNum_ <<  "\n\n ..Sleeping for 2 secs\n";
+    sleep(2);
     ++txnNum_;
-
 }
 
 

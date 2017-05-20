@@ -2,12 +2,14 @@
 #define NN_MSG_H
 
 #include <iostream>
+
 #include <nnxx/message.h>
 #include <nnxx/pair.h>
 #include <nnxx/socket.h>
 
 using namespace std;
 #define SOCKET_ADDR_SZ 64
+#define SOCKET_BUFFER_LEN 1024
 
 class NanoMsg
 {
@@ -20,6 +22,8 @@ class NanoMsg
         int SetupConnection();
         int Send(const char *);
         int Recv(const char *);
+        int Send(const char *buf,  int buf_len, int flags, int *total_sent_bytes);
+        int Recv(char       *buf , int buf_len, int flags, int *total_recv_bytes);
         int RunUT();
 
     protected:
@@ -29,9 +33,15 @@ class NanoMsg
         char            SockAddr_[SOCKET_ADDR_SZ];
         ConnType        ConnType_;
         nnxx::socket    NanoMsgSock_ { nnxx::SP, nnxx::PAIR};
+        char            SockBuffer_[SOCKET_BUFFER_LEN];
 
         int RunAsServerUT();
         int RunAsClientUT();
+        int SendByteStream(char *buf , int len, int flags, int *total_sent_bytes);
+        int RecvByteStream(char *buf , int len, int flags, int *total_sent_bytes);
+        void PrintBytes(const char *pBytes , const int nBytes);
+
+
 
 };
 

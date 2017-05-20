@@ -5,6 +5,7 @@
 #include <iostream>
 #include <map>
 #include "sample_object.h"
+#include "nn_msg.h"
 using namespace std;
 
 
@@ -20,6 +21,7 @@ class NxTxnMgr : public NxProcObj
         void SetNxTxnMgrNum(int val_NxTxnMgr);
         cookie TxnAddObj(TestObject *, enum action_t  , cookie);
         void ConvertToBuffer();
+        void SendTxnBuffer(NanoMsg *p_txnSock);
 
         virtual void PrintPrintMe();
         virtual void PrintReflection() {}
