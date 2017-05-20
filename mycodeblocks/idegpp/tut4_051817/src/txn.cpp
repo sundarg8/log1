@@ -17,7 +17,7 @@ int NxTxnMgr::GetNxTxnMgrNum() {
     return TxnNo_;
 }
 
-cookie NxTxnMgr::TxnAddObj(TestObject *obj_data, enum action_t action_type , cookie req_cookie) {
+int NxTxnMgr::TxnAddObj(TestObject *obj_data, enum action_t action_type , cookie req_cookie) {
     ++ObjectId_;
     ActionsMap_.insert(pair<int, TestObject&> (ObjectId_, *obj_data));
     return ObjectId_;

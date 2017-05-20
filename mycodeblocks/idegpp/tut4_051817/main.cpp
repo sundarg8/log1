@@ -24,8 +24,12 @@ void ut1_client(int argc, char **argv) {
 
     if (argc > 1) {
         apiObj.SetApiNanoMsg(p_nanoMsg);
-        p_nanoMsg->SetupConnection();
+        if (argc == 3) { //server mode
+            //apiObj.RecvNnMsgs();
+        }
     }
+
+
 
 
     intf1.SetParams("A54",  1000, 2);
@@ -52,7 +56,7 @@ void ut2_nnmsg(int argc, char **argv) {
         p_nanoMsg = new  NanoMsg(SOCKET_ADDR, NanoMsg::ConnClient);
         p_nanoMsg->RunUT();
     }
-    if (argc == 3) {
+    if (argc == 4) {
         p_nanoMsg = new  NanoMsg(SOCKET_ADDR, NanoMsg::ConnServer);
         p_nanoMsg->RunUT();
     }
@@ -65,8 +69,8 @@ int main(int argc, char**argv) {
     //if (argc ==1)    ut1_client(argc, argv);
     //if (argc > 1)    ut2_nnmsg (argc, argv);
 
-    if (argc < 3)       ut1_client(argc, argv);
-    if (argc == 3)      ut2_nnmsg(argc,argv);
+    if (argc < 4)       ut1_client(argc, argv);
+    if (argc == 4)      ut2_nnmsg(argc,argv);
 
     cout << "May19-v2  exec of ut1_client "  << endl;
     return 0;

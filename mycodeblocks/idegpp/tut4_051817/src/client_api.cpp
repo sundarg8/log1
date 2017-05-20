@@ -15,7 +15,13 @@ NxClientApi::~NxClientApi() {}
 
 int NxClientApi::SetApiNanoMsg(NanoMsg *ptr) {
     p_nnSock = ptr;
+    p_nnSock->SetupConnection();
 }
+
+//int NxClientApi::RecvNnMsgs() {
+    //p_nnSock->RunUT();
+
+//}
 
 cookie NxClientApi::PerformActionOnObj(TestObject *intf,
             enum  action_t  action_type, cookie req_cookie) {

@@ -22,6 +22,8 @@ class NxClientApi : public NxProcObj
         cookie PerformActionOnObj(TestObject *,enum  action_t , cookie);
         void FlushObjActions();
         int  SetApiNanoMsg(NanoMsg *ptr);
+        int  SetupSockConnection();
+        //int  RecvNnMsgs();
         //abort add
 
         virtual void PrintPrintMe();

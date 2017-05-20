@@ -19,7 +19,7 @@ class NxTxnMgr : public NxProcObj
         virtual ~NxTxnMgr();
 
         void SetNxTxnMgrNum(int val_NxTxnMgr);
-        cookie TxnAddObj(TestObject *, enum action_t  , cookie);
+        int TxnAddObj(TestObject *, enum action_t  , cookie);
         void ConvertToBuffer();
         void SendTxnBuffer(NanoMsg *p_txnSock);
 
