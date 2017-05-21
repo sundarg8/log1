@@ -54,8 +54,9 @@ void NxTxnMgr::SendTxnBuffer(NanoMsg *p_txnSock) {
 
 void NxTxnMgr::RecvTxnBuffer(NanoMsg *p_txnSock) {
     int recv_bytes = 0;
+    static int Recv_txn_count = 0;
     p_txnSock->Recv(TxnBuffer, 512, 0, &recv_bytes);
-    cout << __FUNCTION__ << " May20 Recv Bytes from  Client : " << recv_bytes << endl;
+    cout <<  " \n Recv Buf- " << Recv_txn_count++ << "  : " << "Recv Bytes from  Client : " << recv_bytes << endl;
     p_txnSock->PrintBytes(TxnBuffer, recv_bytes);
     sleep(1);
 }

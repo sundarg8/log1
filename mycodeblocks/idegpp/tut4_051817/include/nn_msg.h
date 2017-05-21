@@ -27,6 +27,8 @@ class NanoMsg
         int Send(const char *buf,  int buf_len, int flags, int *total_sent_bytes);
         int Recv(char       *buf , int buf_len, int flags, int *total_recv_bytes);
         int SetClientApiRef(NxClientApi *);
+        bool IsClient();
+
         int RunUT();
         void PrintBytes(const char *pBytes , const int nBytes);
 

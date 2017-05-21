@@ -23,6 +23,9 @@ class NxClientApi : public NxProcObj
         void    FlushObjActions();
         int     SetupSockConnection(NanoMsg *ptr);
         int     StartRecvTxnAndWaitOnRecv();
+        bool    IsClientMode();
+        bool    IsServerMode();
+
         //int  RecvNnMsgs();
         //abort add
 

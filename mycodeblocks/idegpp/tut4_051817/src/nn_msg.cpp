@@ -25,6 +25,11 @@ int NanoMsg::ConnectToEndPoint() {
         NanoMsgSock_.connect(SockAddr_);
 }
 
+bool NanoMsg::IsClient() {
+    return ((ConnClient == ConnType_) ? true : false);
+}
+
+
 int NanoMsg::SetClientApiRef(NxClientApi *parent_client) {
     p_ParentClientApi = parent_client;
 }
@@ -50,7 +55,7 @@ int NanoMsg::Send(const char *buf, int len, int flags, int *total_sent_bytes) {
 int NanoMsg::Recv(char *buf , int buf_len, int flags, int *total_recv_bytes) {
     *total_recv_bytes = 0;
     *total_recv_bytes = NanoMsgSock_.recv(buf, buf_len, flags);
-    cout <<  " Actual Rcvd  Bytes -- "  << *total_recv_bytes << endl;
+    //cout <<  " Actual Rcvd  Bytes -- "  << *total_recv_bytes << endl;
     return 0;
 }
 

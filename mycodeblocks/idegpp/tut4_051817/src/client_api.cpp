@@ -19,6 +19,14 @@ int NxClientApi::SetupSockConnection(NanoMsg *ptr) {
     p_nnSock->SetClientApiRef(this);
 }
 
+
+bool NxClientApi::IsClientMode() {
+    return (p_nnSock->IsClient());
+}
+
+bool NxClientApi::IsServerMode() {
+    return (p_nnSock->IsClient() == false);
+}
 //int NxClientApi::RecvNnMsgs() {
     //p_nnSock->RunUT();
 
