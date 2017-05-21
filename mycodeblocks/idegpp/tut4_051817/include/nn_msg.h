@@ -9,7 +9,9 @@
 
 using namespace std;
 #define SOCKET_ADDR_SZ 64
-#define SOCKET_BUFFER_LEN 1024
+//#define SOCKET_BUFFER_LEN 1024
+
+class NxClientApi;
 
 class NanoMsg
 {
@@ -19,12 +21,15 @@ class NanoMsg
         NanoMsg(const char *, ConnType);
         virtual ~NanoMsg();
 
-        int SetupConnection();
+        int ConnectToEndPoint();
         int Send(const char *);
         int Recv(const char *);
         int Send(const char *buf,  int buf_len, int flags, int *total_sent_bytes);
         int Recv(char       *buf , int buf_len, int flags, int *total_recv_bytes);
+        int SetClientApiRef(NxClientApi *);
         int RunUT();
+        void PrintBytes(const char *pBytes , const int nBytes);
+
 
     protected:
 
@@ -33,13 +38,13 @@ class NanoMsg
         char            SockAddr_[SOCKET_ADDR_SZ];
         ConnType        ConnType_;
         nnxx::socket    NanoMsgSock_ { nnxx::SP, nnxx::PAIR};
-        char            SockBuffer_[SOCKET_BUFFER_LEN];
+        //char            SockBuffer_[SOCKET_BUFFER_LEN];
+        NxClientApi     *p_ParentClientApi;
 
         int RunAsServerUT();
         int RunAsClientUT();
         int SendByteStream(char *buf , int len, int flags, int *total_sent_bytes);
         int RecvByteStream(char *buf , int len, int flags, int *total_sent_bytes);
-        void PrintBytes(const char *pBytes , const int nBytes);
 
 
 

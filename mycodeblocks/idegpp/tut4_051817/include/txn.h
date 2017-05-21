@@ -22,6 +22,7 @@ class NxTxnMgr : public NxProcObj
         int TxnAddObj(TestObject *, enum action_t  , cookie);
         void ConvertToBuffer();
         void SendTxnBuffer(NanoMsg *p_txnSock);
+        void RecvTxnBuffer(NanoMsg *p_txnSock);
 
         virtual void PrintPrintMe();
         virtual void PrintReflection() {}

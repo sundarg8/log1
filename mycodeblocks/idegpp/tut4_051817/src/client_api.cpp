@@ -13,15 +13,25 @@ NxClientApi::NxClientApi() {
 
 NxClientApi::~NxClientApi() {}
 
-int NxClientApi::SetApiNanoMsg(NanoMsg *ptr) {
+int NxClientApi::SetupSockConnection(NanoMsg *ptr) {
     p_nnSock = ptr;
-    p_nnSock->SetupConnection();
+    p_nnSock->ConnectToEndPoint();
+    p_nnSock->SetClientApiRef(this);
 }
 
 //int NxClientApi::RecvNnMsgs() {
     //p_nnSock->RunUT();
 
 //}
+
+int NxClientApi::StartRecvTxnAndWaitOnRecv() {
+    NxTxnMgr*       p_NxTxnMgr = new NxTxnMgr;
+    txnMap_[txnNum_]    =   p_NxTxnMgr;
+    if (p_nnSock !=nullptr) {
+        p_NxTxnMgr->RecvTxnBuffer(p_nnSock);
+    }
+
+}
 
 cookie NxClientApi::PerformActionOnObj(TestObject *intf,
             enum  action_t  action_type, cookie req_cookie) {

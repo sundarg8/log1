@@ -18,11 +18,15 @@ NanoMsg::~NanoMsg()
     //dtor
 }
 
-int NanoMsg::SetupConnection() {
+int NanoMsg::ConnectToEndPoint() {
     if (ConnClient == ConnType_)
         NanoMsgSock_.bind(SockAddr_);
     else
         NanoMsgSock_.connect(SockAddr_);
+}
+
+int NanoMsg::SetClientApiRef(NxClientApi *parent_client) {
+    p_ParentClientApi = parent_client;
 }
 
 int NanoMsg::Send(const char *buf) {
@@ -57,14 +61,14 @@ int NanoMsg::RunUT() {
 
     if  (ConnClient == ConnType_) {
         bytes = 16;
-        SetupConnection();        //RunAsClientUT();
-        SendByteStream(SockBuffer_, SOCKET_BUFFER_LEN, 0, &bytes);
+        ConnectToEndPoint();        //RunAsClientUT();
+        ///SendByteStream(SockBuffer_, SOCKET_BUFFER_LEN, 0, &bytes);
 
     }
     else {
         bytes = 8;
-        SetupConnection();        //RunAsServerUT();
-        RecvByteStream(SockBuffer_, SOCKET_BUFFER_LEN, 0, &bytes);
+        ConnectToEndPoint();        //RunAsServerUT();
+        ///RecvByteStream(SockBuffer_, SOCKET_BUFFER_LEN, 0, &bytes);
     }
     return 0;
 }
@@ -87,8 +91,8 @@ int NanoMsg::SendByteStream(char *buf , int len, int flags, int *sent_bytes) {
 
 int NanoMsg::RecvByteStream(char *buf , int len, int flags, int *recv_bytes)  {
     for  (int i =0 ; i < 5; i++) {
-        Recv(SockBuffer_, SOCKET_BUFFER_LEN, 0, recv_bytes);
-        PrintBytes(SockBuffer_, *recv_bytes);
+        ///Recv(SockBuffer_, SOCKET_BUFFER_LEN, 0, recv_bytes);
+        ///PrintBytes(SockBuffer_, *recv_bytes);
         sleep(2);
     }
     sleep(2);
@@ -109,7 +113,7 @@ void NanoMsg::PrintBytes(const char *pBytes , const int nBytes) {
 int NanoMsg::RunAsServerUT() {
     const char *buf;
   try {
-    //SetupConnection();
+    //ConnectToEndPoint();
 
     while (1) {
         Recv(buf);
@@ -125,7 +129,7 @@ int NanoMsg::RunAsServerUT() {
 
 int NanoMsg::RunAsClientUT() {
   try {
-    //SetupConnection();
+    //ConnectToEndPoint();
 
     Send("TUT4_3--Class -- msg1 -- Hello World-my-V2!");
     cout << "\n after send1 " << endl;

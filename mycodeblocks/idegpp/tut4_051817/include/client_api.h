@@ -19,10 +19,10 @@ class NxClientApi : public NxProcObj
         NxClientApi() ;
         virtual ~NxClientApi();
 
-        cookie PerformActionOnObj(TestObject *,enum  action_t , cookie);
-        void FlushObjActions();
-        int  SetApiNanoMsg(NanoMsg *ptr);
-        int  SetupSockConnection();
+        cookie  PerformActionOnObj(TestObject *,enum  action_t , cookie);
+        void    FlushObjActions();
+        int     SetupSockConnection(NanoMsg *ptr);
+        int     StartRecvTxnAndWaitOnRecv();
         //int  RecvNnMsgs();
         //abort add
 
@@ -32,7 +32,9 @@ class NxClientApi : public NxProcObj
 
 
 
+
     protected:
+
     private:
         map<int, NxTxnMgr*>      txnMap_;
         int                      txnNum_;
@@ -42,15 +44,15 @@ class NxClientApi : public NxProcObj
 };
 
 /**
-typdef struct NxClientConnection_ {
-    uint nm_handle;
+//typdef struct NxClientConnection_ {
+//    uint nm_handle;
 
-}NxClientConenction;
+//}NxClientConenction;
 
-class NxClinetApiUtil {
-    Send(NxCLientConnection *)
-    Recv(NxClientConnection*)
-}
+//class NxClinetApiUtil {
+//    Send(NxCLientConnection *)
+//    Recv(NxClientConnection*)
+//}
 */
 
 #endif // NxClientApi_H

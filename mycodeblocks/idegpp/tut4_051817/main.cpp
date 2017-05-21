@@ -23,15 +23,22 @@ void ut1_client(int argc, char **argv) {
     TestObject intf1, intf2;
 
     if (argc > 1) {
-        apiObj.SetApiNanoMsg(p_nanoMsg);
+
+        apiObj.SetupSockConnection(p_nanoMsg);
+
         if (argc == 3) { //server mode
-            //apiObj.RecvNnMsgs();
+
+            for  (int i =0 ; i < 5; i++) { //while (1)
+                apiObj.StartRecvTxnAndWaitOnRecv();
+                //sleep(1);
+                //start a new txn and call recv again
+            }
+            return
+            ; //return from server.
         }
     }
 
-
-
-
+    //Client Mode.
     intf1.SetParams("A54",  1000, 2);
     cookies[0] = apiObj.PerformActionOnObj(&intf1, CREATE, 0);
     /*
@@ -72,6 +79,6 @@ int main(int argc, char**argv) {
     if (argc < 4)       ut1_client(argc, argv);
     if (argc == 4)      ut2_nnmsg(argc,argv);
 
-    cout << "May19-v2  exec of ut1_client "  << endl;
+    cout << "May20-v3  exec of ut1_client "  << endl;
     return 0;
 }

@@ -1,4 +1,5 @@
 #include "txn.h"
+#include <unistd.h>
 
 const int NxTxnMgr::MAX_TXN_BUFFER_SZ = 512;
 
@@ -49,6 +50,14 @@ void NxTxnMgr::SendTxnBuffer(NanoMsg *p_txnSock) {
     p_txnSock->Send(TxnBuffer, 32, 0, &sent_bytes);
     cout << __FUNCTION__ << " Sent Bytes to Svr : " << sent_bytes << endl;
 
+}
+
+void NxTxnMgr::RecvTxnBuffer(NanoMsg *p_txnSock) {
+    int recv_bytes = 0;
+    p_txnSock->Recv(TxnBuffer, 512, 0, &recv_bytes);
+    cout << __FUNCTION__ << " May20 Recv Bytes from  Client : " << recv_bytes << endl;
+    p_txnSock->PrintBytes(TxnBuffer, recv_bytes);
+    sleep(1);
 }
 
 /* ////////////////////////BACKUP CODE /////////////////////////////////////////////////////////
