@@ -62,11 +62,12 @@ void ut1_client(NxClientApi *p_apiObj) {
     cout <<  tempstr << " -- Start in Client Send Mode ---- " << endl;
     intf1.SetParams("A54012348765",  1000, 2);
     cookies[0] = p_apiObj->PerformActionOnObj(&intf1, CREATE, 0);
-    /*
+
     intf1.SetParams("B56", 1003, 5);
     cookies[1] = p_apiObj->PerformActionOnObj(&intf1, MODIFY, 0);
-    p_apiObj.FlushObjActions();
+    /*
 
+    p_apiObj.FlushObjActions();
 
     intf2.SetParams("eth2", 2000, 3);
     cookies[2] = p_apiObj->PerformActionOnObj(&intf2, CREATE, 0);

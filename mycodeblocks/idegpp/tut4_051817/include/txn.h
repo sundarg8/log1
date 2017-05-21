@@ -16,10 +16,11 @@ typedef int cookie;
 
 
 typedef struct  TxnPayload_ {
-    int txn_sz;
-    int txn_type;
-    int txn_curr_index;
     int txn_ret_status;
+    int txn_sz;
+
+    int txn_curr_index;
+    int txn_type;
     int txn_flags;
     char obj_pyld_start[512];
 } TxnPayload_t;
@@ -33,8 +34,8 @@ class NxTxnMgr : public NxProcObj
 
         void SetNxTxnMgrNum(int val_NxTxnMgr);
         int TxnAddObj(TestObject *, enum action_t  , cookie);
-        void ConvertToBuffer();
-        void SendTxnBuffer(NanoMsg *p_txnSock);
+        int ConvertToBuffer();
+        void SendTxnBuffer(NanoMsg *p_txnSock, int pld_bytes);
         void RecvTxnBuffer(NanoMsg *p_txnSock);
 
         virtual void PrintPrintMe();

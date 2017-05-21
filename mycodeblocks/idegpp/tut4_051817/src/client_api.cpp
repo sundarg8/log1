@@ -75,9 +75,9 @@ void NxClientApi::FlushObjActions() {
     if (iter != txnMap_.end()) {
         p_NxTxnMgr = iter->second;
         p_NxTxnMgr->PrintPrintMe();
-        p_NxTxnMgr->ConvertToBuffer();
+        int pld_bytes = p_NxTxnMgr->ConvertToBuffer();
         if (p_nnSock !=nullptr) {
-            p_NxTxnMgr->SendTxnBuffer(p_nnSock);
+            p_NxTxnMgr->SendTxnBuffer(p_nnSock, pld_bytes);
         }
     }
     cout <<  " \n #### End of Flush TXN  --> "  << txnNum_ <<  "\n\n ..Sleeping for 2 secs\n";

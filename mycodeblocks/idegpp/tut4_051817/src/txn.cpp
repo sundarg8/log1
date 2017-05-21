@@ -36,26 +36,41 @@ void NxTxnMgr::PrintPrintMe() {
     }
 }
 
-void NxTxnMgr::ConvertToBuffer() {
+int NxTxnMgr::ConvertToBuffer() {
     map<int, TestObject >::iterator  iter;
     TestObject r_obj; // = nullptr;
     int ret_length;
+    char *obj_pld_ptr ;
+
+    TxnPayload_t *p_pld = (TxnPayload_t *)TxnBuffer;
+    p_pld->txn_curr_index = TxnNo_;
+    p_pld->txn_flags      = 0;
+    p_pld->txn_ret_status = 0x01020403;
+    p_pld->txn_sz         = sizeof(TxnPayload_t) - sizeof(p_pld->obj_pyld_start);
+    cout << "Sundar ::: " << p_pld->txn_sz << endl;
 
     //add the heade
+    obj_pld_ptr = p_pld->obj_pyld_start;
 
     //TxnBuffer[0] =
     for (iter = ActionsMap_.begin(); iter != ActionsMap_.end(); iter++ ) {
         r_obj = iter->second;
-        ret_length = r_obj.ConvertToBuffer(TxnBuffer, MAX_TXN_BUFFER_SZ);
-    }
+        //ret_length = r_obj.ConvertToBuffer(TxnBuffer, MAX_TXN_BUFFER_SZ);
+        ret_length = r_obj.ConvertToBuffer(obj_pld_ptr, MAX_TXN_BUFFER_SZ);
 
+        obj_pld_ptr     += ret_length;
+        p_pld->txn_sz   += ret_length;
+
+    }
     //modify the header and footer.
+
+    return p_pld->txn_sz;
 
 }
 
-void NxTxnMgr::SendTxnBuffer(NanoMsg *p_txnSock) {
+void NxTxnMgr::SendTxnBuffer(NanoMsg *p_txnSock, int pld_bytes) {
     int sent_bytes = 0;
-    int payload_size = 20;
+    int payload_size = pld_bytes;
     p_txnSock->Send(TxnBuffer, payload_size, 0, &sent_bytes);
     cout << __FUNCTION__ << " Sent Bytes to Svr : " << sent_bytes << endl;
 
