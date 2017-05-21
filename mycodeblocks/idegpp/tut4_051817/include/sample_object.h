@@ -10,7 +10,7 @@ using namespace std;
 
 
 enum  action_t  { GET, CREATE , MODIFY , DELETE };
-#define nameSz 8
+#define nameSz 12
 
 ///class TestObject : NxProcObj
 class TestObject

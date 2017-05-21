@@ -10,7 +10,20 @@ using namespace std;
 
 
 //#define MAX_TXN_BUFFER_SZ 512
+
 typedef int cookie;
+
+
+
+typedef struct  TxnPayload_ {
+    int txn_sz;
+    int txn_type;
+    int txn_curr_index;
+    int txn_ret_status;
+    int txn_flags;
+    char obj_pyld_start[512];
+} TxnPayload_t;
+
 
 class NxTxnMgr : public NxProcObj
 {
@@ -35,6 +48,7 @@ class NxTxnMgr : public NxProcObj
         int                     TxnNo_;
         int                     ObjectId_;
         char                    TxnBuffer[512];
+        int                     TxnPyldSz_;
 
         static const int        MAX_TXN_BUFFER_SZ;
         int GetNxTxnMgrNum();

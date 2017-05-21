@@ -4,7 +4,8 @@
 const int NxTxnMgr::MAX_TXN_BUFFER_SZ = 512;
 
 NxTxnMgr::NxTxnMgr() {
-    ObjectId_ = 0;
+    ObjectId_   = 0;
+    TxnPyldSz_  = 0;
     memset(TxnBuffer, 0, sizeof(TxnBuffer));
 }
 
@@ -39,15 +40,23 @@ void NxTxnMgr::ConvertToBuffer() {
     map<int, TestObject >::iterator  iter;
     TestObject r_obj; // = nullptr;
     int ret_length;
+
+    //add the heade
+
+    //TxnBuffer[0] =
     for (iter = ActionsMap_.begin(); iter != ActionsMap_.end(); iter++ ) {
         r_obj = iter->second;
         ret_length = r_obj.ConvertToBuffer(TxnBuffer, MAX_TXN_BUFFER_SZ);
     }
+
+    //modify the header and footer.
+
 }
 
 void NxTxnMgr::SendTxnBuffer(NanoMsg *p_txnSock) {
     int sent_bytes = 0;
-    p_txnSock->Send(TxnBuffer, 32, 0, &sent_bytes);
+    int payload_size = 20;
+    p_txnSock->Send(TxnBuffer, payload_size, 0, &sent_bytes);
     cout << __FUNCTION__ << " Sent Bytes to Svr : " << sent_bytes << endl;
 
 }

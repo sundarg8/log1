@@ -27,10 +27,7 @@ bool NxClientApi::IsClientMode() {
 bool NxClientApi::IsServerMode() {
     return (p_nnSock->IsClient() == false);
 }
-//int NxClientApi::RecvNnMsgs() {
-    //p_nnSock->RunUT();
 
-//}
 
 int NxClientApi::StartRecvTxnAndWaitOnRecv() {
     NxTxnMgr*       p_NxTxnMgr = new NxTxnMgr;
