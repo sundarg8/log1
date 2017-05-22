@@ -8,7 +8,7 @@ using namespace std;
 
 void ut1_client(NxClientApi *);
 void ut2_nnmsg(int argc, char **argv);
-#define tempstr "May20-v5 "
+#define tempstr "May21-v1 "
 
 
 int initInfra(int argc, NxClientApi **p_apiObj)  {
@@ -49,7 +49,7 @@ void ut1_client(NxClientApi *p_apiObj) {
         cout <<  tempstr << " -- Start in Server Listen Mode ---- " << endl;
 
         //Server Mode // while TRUE loop ?
-        for  (int i =0 ; i < 1; i++) {
+        for  (int i =0 ; i < 2; i++) {
                 p_apiObj->StartRecvTxnAndWaitOnRecv();
                 //start a new txn and call recv again
         }
@@ -59,20 +59,20 @@ void ut1_client(NxClientApi *p_apiObj) {
 
     //Client Mode.
     cout <<  tempstr << " -- Start in Client Send Mode ---- " << endl;
-    intf1.SetParams("A54012348765",  1000, 2);
+    intf1.SetParams("A54012348765",  25, 2);
     cookies[0] = p_apiObj->PerformActionOnObj(&intf1, CREATE, 0);
 
-    intf1.SetParams("B56", 1003, 5);
+    intf1.SetParams("B56", 35, 5);
     cookies[1] = p_apiObj->PerformActionOnObj(&intf1, MODIFY, 0);
 
-    /*
-    p_apiObj.FlushObjActions();
 
-    intf2.SetParams("eth2", 2000, 3);
+    p_apiObj->FlushObjActions();
+
+    intf2.SetParams("eth2", 211, 3);
     cookies[2] = p_apiObj->PerformActionOnObj(&intf2, CREATE, 0);
-    intf2.SetParams("eth2", 2001, 6);
+    intf2.SetParams("eth2", 311, 6);
     cookies[3] = p_apiObj->PerformActionOnObj(&intf2, MODIFY, 0);
-    */
+
 
     p_apiObj->FlushObjActions();
     cout << " ------ MAIN OUTPUT ---- " << " Copies --> " << TestObject::NumCopyCtors_ << endl;

@@ -43,6 +43,10 @@ class TestObject
         }
 
         int ConvertToBuffer(int objectId, char *buf,  int max_length );
+        int ConvertToObjInst(char *buf, TestObject **ptr_to_new_obj);
+        int ConvertToObjInst(char *buf, TestObject *ptr_alloc_obj);
+        int ConvertToObjInst(char *buf);
+
         void PrintBytes(const char *buf , const int bytes);
 
         ///void SetParams(string val_name, int val_Speed_, int val_Stats_) {

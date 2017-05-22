@@ -30,6 +30,7 @@ int NxTxnMgr::TxnAddObj(TestObject *obj_data, enum action_t action_type , cookie
 void NxTxnMgr::PrintPrintMe() {
     map<int, TestObject >::iterator  iter;
     TestObject r_obj; // = nullptr;
+    cout << " Txn Number  " << TxnNo_ << endl;
     for (iter = ActionsMap_.begin(); iter != ActionsMap_.end(); iter++ ) {
         cout <<  setw(9) << " ObjectId_ : " << iter->first << "  " ;
         r_obj = iter->second;
@@ -97,6 +98,7 @@ int NxTxnMgr::ConvBufferToTxn(int recv_bytes) {
     ObjPldHeader_t *obj_pld_start;
     int curr_sz = 0;
     char *buff_ptr;
+    int obj_count=0;
 
 
     if (txn_pld->txn_sz != recv_bytes) {
@@ -110,20 +112,22 @@ int NxTxnMgr::ConvBufferToTxn(int recv_bytes) {
     curr_sz             =  sizeof(TxnPayload_t) - sizeof(txn_pld->obj_pyld_start);
     obj_pld_start       =  (ObjPldHeader_t *)txn_pld->obj_pyld_start;
 
-    cout << "Hello1 -- Unit "  << obj_pld_start->unit_id << " sz :: " << obj_pld_start->unit_sz << endl;
-    //obj_pld_start = obj_pld_start + obj_pld_start->unit_sz;
-    buff_ptr        =  (char *)obj_pld_start + obj_pld_start->unit_sz;
-    obj_pld_start   = (ObjPldHeader_t *)buff_ptr;
-    cout << "Hello2 -- Unit "  << obj_pld_start->unit_id << " sz :: " << obj_pld_start->unit_sz << endl;
 
-    /*
-    while (recv_bytes >=  (curr_sz + obj_pld_start->unit_sz)) {
-        cout << "Hello -- "  << obj_pld_start->unit_id << " sz :: " << obj_pld_start->unit_sz << endl;
+    while ((curr_sz + obj_pld_start->unit_sz) <= recv_bytes && (obj_pld_start->unit_sz != 0)) {
+        cout << "Hello -- "  << obj_pld_start->unit_id << " sz :: "
+                << obj_pld_start->unit_sz << endl;
 
-        obj_pld_start = obj_pld_start+obj_pld_start->unit_sz;
+        TestObject  curr_obj;
+        curr_obj.ConvertToObjInst((char *)obj_pld_start->unit_pyld_start );
+        //curr_obj.PrintPrintMe();
+        ActionsMap_.insert(pair<int, TestObject&> (obj_pld_start->unit_id, curr_obj));
+        obj_pld_start = (ObjPldHeader_t *) ((char *)obj_pld_start + obj_pld_start->unit_sz);
         curr_sz       += obj_pld_start->unit_sz;
+        obj_count++;
+
     }
-    */
+
+    PrintPrintMe();
 
     return 0;
 }

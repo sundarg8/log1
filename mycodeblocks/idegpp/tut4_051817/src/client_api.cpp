@@ -40,7 +40,7 @@ int NxClientApi::StartRecvTxnAndWaitOnRecv() {
 
 }
 
-cookie NxClientApi::PerformActionOnObj(TestObject *intf,
+ cookie NxClientApi::PerformActionOnObj(TestObject *intf,
             enum  action_t  action_type, cookie req_cookie) {
 
     map<int, NxTxnMgr*>::iterator    iter;
@@ -56,9 +56,7 @@ cookie NxClientApi::PerformActionOnObj(TestObject *intf,
         txnMap_[txnNum_]    =   p_NxTxnMgr;
 
     } else {
-
         p_NxTxnMgr = iter->second;
-
     }
 
     alloted_id  = p_NxTxnMgr->TxnAddObj(intf, action_type, req_cookie);

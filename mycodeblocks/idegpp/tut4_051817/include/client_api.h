@@ -26,14 +26,11 @@ class NxClientApi : public NxProcObj
         bool    IsClientMode();
         bool    IsServerMode();
 
-        //int  RecvNnMsgs();
         //abort add
 
         virtual void PrintPrintMe();
         virtual void PrintReflection() {}
         virtual void LogMe(){}
-
-
 
 
     protected:

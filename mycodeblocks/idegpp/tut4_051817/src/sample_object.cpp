@@ -25,6 +25,34 @@ void TestObject::PrintBytes(const char *pBytes , const int nBytes) {
 
 }
 
+int TestObject::ConvertToObjInst(char *buf, TestObject **ptr_to_new_obj) {
+    *ptr_to_new_obj = new TestObject();
+    (*ptr_to_new_obj)->Speed_ = (int)*buf;  buf += sizeof(Speed_);
+
+    (*ptr_to_new_obj)->Stats_ = (int)*buf;  buf += sizeof(Stats_);
+
+    strncpy((*ptr_to_new_obj)->IntfName_ , buf, sizeof(IntfName_));
+}
+
+int TestObject::ConvertToObjInst(char *buf, TestObject *ptr_alloc_obj) {
+    (ptr_alloc_obj)->Speed_ = (int)*buf;  buf += sizeof(Speed_);
+    (ptr_alloc_obj)->Stats_ = (int)*buf;  buf += sizeof(Stats_);
+
+    strncpy((ptr_alloc_obj)->IntfName_ , buf, sizeof(IntfName_));
+}
+
+int TestObject::ConvertToObjInst(char *buf) {
+    Speed_ = (int)*buf;  buf += sizeof(Speed_);
+    Stats_ = (int)*buf;  buf += sizeof(Stats_);
+    strncpy(IntfName_ , buf, sizeof(IntfName_));
+    /*
+    (ptr_alloc_obj)->Speed_ = (int)*buf;  buf += sizeof(Speed_);
+    (ptr_alloc_obj)->Stats_ = (int)*buf;  buf += sizeof(Stats_);
+
+    strncpy((ptr_alloc_obj)->IntfName_ , buf, sizeof(IntfName_));
+    */
+}
+
 int TestObject::ConvertToBuffer(int objectId, char *buf,  int max_length) {
     std::size_t count = 0; //sizeof(*this);
     ObjPldHeader_t obj_pld;
