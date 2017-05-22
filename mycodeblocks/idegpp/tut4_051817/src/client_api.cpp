@@ -31,10 +31,12 @@ bool NxClientApi::IsServerMode() {
 
 int NxClientApi::StartRecvTxnAndWaitOnRecv() {
     NxTxnMgr*       p_NxTxnMgr = new NxTxnMgr;
-    txnMap_[txnNum_]    =   p_NxTxnMgr;
+    int recv_bytes = 0;
     if (p_nnSock !=nullptr) {
-        p_NxTxnMgr->RecvTxnBuffer(p_nnSock);
+        p_NxTxnMgr->RecvTxnBuffer_(p_nnSock, &recv_bytes);
+        p_NxTxnMgr->ConvBufferToTxn(recv_bytes);
     }
+    txnMap_[txnNum_]    =   p_NxTxnMgr;  //TBD ?? TxnNum from payload.
 
 }
 
@@ -77,7 +79,7 @@ void NxClientApi::FlushObjActions() {
         p_NxTxnMgr->PrintPrintMe();
         int pld_bytes = p_NxTxnMgr->ConvertToBuffer();
         if (p_nnSock !=nullptr) {
-            p_NxTxnMgr->SendTxnBuffer(p_nnSock, pld_bytes);
+            p_NxTxnMgr->SendTxnBuffer_(p_nnSock, pld_bytes);
         }
     }
     cout <<  " \n #### End of Flush TXN  --> "  << txnNum_ <<  "\n\n ..Sleeping for 2 secs\n";

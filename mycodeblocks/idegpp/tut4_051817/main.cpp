@@ -27,7 +27,6 @@ int initInfra(int argc, NxClientApi **p_apiObj)  {
 
 int main(int argc, char**argv) {
 
-
     cout << " -- Start of Main() ---- " << endl;
     NxClientApi *p_apiObj = nullptr;
 
@@ -50,7 +49,7 @@ void ut1_client(NxClientApi *p_apiObj) {
         cout <<  tempstr << " -- Start in Server Listen Mode ---- " << endl;
 
         //Server Mode // while TRUE loop ?
-        for  (int i =0 ; i < 5; i++) {
+        for  (int i =0 ; i < 1; i++) {
                 p_apiObj->StartRecvTxnAndWaitOnRecv();
                 //start a new txn and call recv again
         }
@@ -65,8 +64,8 @@ void ut1_client(NxClientApi *p_apiObj) {
 
     intf1.SetParams("B56", 1003, 5);
     cookies[1] = p_apiObj->PerformActionOnObj(&intf1, MODIFY, 0);
-    /*
 
+    /*
     p_apiObj.FlushObjActions();
 
     intf2.SetParams("eth2", 2000, 3);
