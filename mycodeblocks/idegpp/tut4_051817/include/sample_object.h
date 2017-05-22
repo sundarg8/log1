@@ -12,6 +12,16 @@ using namespace std;
 enum  action_t  { GET, CREATE , MODIFY , DELETE };
 #define nameSz 12
 
+
+typedef struct tag_ObjPldHeader {
+    int         unit_sz;
+    int         unit_id;
+    action_t    unit_action;
+    int         unit_cookie;
+    int         unit_pyld_start[0];
+} ObjPldHeader_t;
+
+
 ///class TestObject : NxProcObj
 class TestObject
 {
@@ -32,7 +42,7 @@ class TestObject
             ++NumCopyCtors_;
         }
 
-        int ConvertToBuffer(char *buf,  int max_length );
+        int ConvertToBuffer(int objectId, char *buf,  int max_length );
         void PrintBytes(const char *buf , const int bytes);
 
         ///void SetParams(string val_name, int val_Speed_, int val_Stats_) {

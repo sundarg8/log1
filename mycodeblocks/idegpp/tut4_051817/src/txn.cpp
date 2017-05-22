@@ -21,6 +21,7 @@ int NxTxnMgr::GetNxTxnMgrNum() {
 
 int NxTxnMgr::TxnAddObj(TestObject *obj_data, enum action_t action_type , cookie req_cookie) {
     ++ObjectId_;
+    //object_id TO action type map.
     ActionsMap_.insert(pair<int, TestObject&> (ObjectId_, *obj_data));
     return ObjectId_;
 }
@@ -40,6 +41,7 @@ int NxTxnMgr::ConvertToBuffer() {
     map<int, TestObject >::iterator  iter;
     TestObject r_obj; // = nullptr;
     int ret_length;
+    int obj_id;
     char *obj_pld_ptr ;
 
     TxnPayload_t *p_pld = (TxnPayload_t *)TxnBuffer;
@@ -55,10 +57,12 @@ int NxTxnMgr::ConvertToBuffer() {
     //TxnBuffer[0] =
     for (iter = ActionsMap_.begin(); iter != ActionsMap_.end(); iter++ ) {
         r_obj = iter->second;
+        obj_id = iter->first;
         //ret_length = r_obj.ConvertToBuffer(TxnBuffer, MAX_TXN_BUFFER_SZ);
-        ret_length = r_obj.ConvertToBuffer(obj_pld_ptr, MAX_TXN_BUFFER_SZ);
+        ret_length = r_obj.ConvertToBuffer(obj_id,obj_pld_ptr, MAX_TXN_BUFFER_SZ);
 
         obj_pld_ptr     += ret_length;
+
         p_pld->txn_sz   += ret_length;
 
     }

@@ -13,8 +13,6 @@ using namespace std;
 
 typedef int cookie;
 
-
-
 typedef struct  TxnPayload_ {
     int txn_ret_status;
     int txn_sz;
