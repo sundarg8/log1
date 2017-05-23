@@ -17,16 +17,26 @@ class NxClientApi : public NxProcObj
     public:
         NxClientApi() ;
         virtual ~NxClientApi();
-
-        cookie  PerformActionOnObj(TestObject *,enum  action_t , cookie);
-        void    FlushObjActions();
         int     SetupSockConnection(NanoMsg *ptr);
         int     StartRecvTxnAndWaitOnRecv();
         bool    IsClientMode();
         bool    IsServerMode();
-        void    StartTxn();
-        void    EndTxnAndSend();
 
+        //ut1
+        cookie  PerformActionOnObj(TestObject *,enum  action_t , cookie);
+        void    FlushObjActions();
+
+        //ut2
+        int     StartTxn();
+        void    FlushTxn();
+
+        //ut3
+        int     StartTxn(int *curr_txn_no);
+        cookie  AddActionToTxn(int curr_txn_no, TestObject *obj,enum  action_t , cookie);
+        void    FlushTxn(int curr_txn_no);
+
+        //ut4
+        int     StartTxnWithId(int curr_txn_no);
 
 
         //abort add
@@ -42,6 +52,7 @@ class NxClientApi : public NxProcObj
         map<int, NxTxnMgr*>      txnMap_;
         int                      txnNum_;
         NanoMsg                  * p_nnSock;
+        int                      IncrementToNextTxn();
 
 
 };

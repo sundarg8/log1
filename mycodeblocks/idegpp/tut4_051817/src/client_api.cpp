@@ -26,7 +26,6 @@ bool NxClientApi::IsServerMode() {
     return (p_nnSock->IsClient() == false);
 }
 
-
 int NxClientApi::StartRecvTxnAndWaitOnRecv() {
     NxTxnMgr*       p_NxTxnMgr = new NxTxnMgr;
     int recv_bytes = 0;
@@ -38,7 +37,25 @@ int NxClientApi::StartRecvTxnAndWaitOnRecv() {
 
 }
 
- cookie NxClientApi::PerformActionOnObj(TestObject *intf,
+int NxClientApi::IncrementToNextTxn() {
+    txnNum_ +=1 ;
+}
+
+void NxClientApi::PrintPrintMe() {
+    map<int, NxTxnMgr*>::iterator    iter;
+    NxTxnMgr*                        p_NxTxnMgr = nullptr;
+
+    for (iter = txnMap_.begin(); iter != txnMap_.end(); iter++ ) {
+        cout    << __FUNCTION__ << setw(9)
+                << iter->first << " : " << iter->second  << endl;
+
+        p_NxTxnMgr = iter->second;
+        p_NxTxnMgr->PrintPrintMe();
+        cout << endl;
+    }
+}
+
+cookie NxClientApi::PerformActionOnObj(TestObject *intf,
             enum  action_t  action_type, cookie req_cookie) {
 
     map<int, NxTxnMgr*>::iterator    iter;
@@ -61,8 +78,6 @@ int NxClientApi::StartRecvTxnAndWaitOnRecv() {
     return alloted_id;
 }
 
-
-
 void NxClientApi::FlushObjActions() {
 
     map<int, NxTxnMgr*>::iterator       iter;
@@ -78,47 +93,31 @@ void NxClientApi::FlushObjActions() {
             p_NxTxnMgr->SendTxnBuffer_(p_nnSock, pld_bytes);
         }
     }
+    IncrementToNextTxn();
+
     //cout <<  " \n #### End of Flush TXN  --> "  << txnNum_ <<  "\n\n ..Sleeping for 2 secs\n";
     sleep(1);
-    ++txnNum_;
 }
 
-
-void NxClientApi::PrintPrintMe() {
-    map<int, NxTxnMgr*>::iterator    iter;
-    NxTxnMgr*                        p_NxTxnMgr = nullptr;
-
-    for (iter = txnMap_.begin(); iter != txnMap_.end(); iter++ ) {
-        cout    << __FUNCTION__ << setw(9)
-                << iter->first << " : " << iter->second  << endl;
-
-        p_NxTxnMgr = iter->second;
-        p_NxTxnMgr->PrintPrintMe();
-        cout << endl;
-    }
-}
-
-
-
-void NxClientApi::StartTxn() {
+int NxClientApi::StartTxn() {
     map<int, NxTxnMgr*>::iterator       iter;
     NxTxnMgr                            *p_NxTxnMgr = nullptr;
 
-    ++txnNum_;
 
     iter = txnMap_.find(txnNum_);
     if (iter != txnMap_.end()) {
         cout << "Abort Needed Here.. New Txn already exists for TxnNum " << txnNum_;
-        return;
+        return -1;
     }
 
-    p_NxTxnMgr       =    new NxTxnMgr();
+    p_NxTxnMgr          =    new NxTxnMgr();
     p_NxTxnMgr->SetNxTxnMgrNum(txnNum_);
     txnMap_[txnNum_]    =   p_NxTxnMgr;
 
+
 }
 
-void NxClientApi::EndTxnAndSend() {
+void NxClientApi::FlushTxn() {
 
     map<int, NxTxnMgr*>::iterator       iter;
     NxTxnMgr                            *p_NxTxnMgr = nullptr;
@@ -138,4 +137,88 @@ void NxClientApi::EndTxnAndSend() {
         p_NxTxnMgr->SendTxnBuffer_(p_nnSock, pld_bytes);
     }
     sleep(1);
+    IncrementToNextTxn();
+
 }
+
+int NxClientApi::StartTxn(int *curr_txn_no) {
+    map<int, NxTxnMgr*>::iterator       iter;
+    NxTxnMgr                            *p_NxTxnMgr = nullptr;
+
+    IncrementToNextTxn();
+
+    iter = txnMap_.find(txnNum_);
+    if (iter != txnMap_.end()) {
+        cout << "Abort Needed Here.. New Txn already exists for TxnNum " << txnNum_;
+        return -1;
+    }
+
+    p_NxTxnMgr          =    new NxTxnMgr();
+    p_NxTxnMgr->SetNxTxnMgrNum(txnNum_);
+    txnMap_[txnNum_]    =   p_NxTxnMgr;
+    *curr_txn_no        = txnNum_;
+    //IncrementToNextTxn();
+
+}
+
+void NxClientApi::FlushTxn(int curr_txn_no) {
+
+    map<int, NxTxnMgr*>::iterator       iter;
+    NxTxnMgr                            *p_NxTxnMgr = nullptr;
+    int                                 pld_bytes   = 0;
+
+    iter = txnMap_.find(curr_txn_no);
+
+    if (iter == txnMap_.end()) {
+        cout << __FUNCTION__ << " Abort Needed Here.. Txn does not exist for TxnNum " << curr_txn_no;
+        return;
+    }
+    p_NxTxnMgr = iter->second;
+    p_NxTxnMgr->PrintPrintMe();
+    pld_bytes = p_NxTxnMgr->ConvertToBuffer();
+
+    if (p_nnSock !=nullptr) {
+        p_NxTxnMgr->SendTxnBuffer_(p_nnSock, pld_bytes);
+    }
+    sleep(1);
+    //IncrementToNextTxn();
+
+}
+
+cookie NxClientApi::AddActionToTxn(int curr_txn_no, TestObject *intf,
+            enum  action_t  action_type, cookie req_cookie) {
+
+    map<int, NxTxnMgr*>::iterator    iter;
+    NxTxnMgr*                        p_NxTxnMgr = nullptr;
+    cookie                           alloted_id;
+
+    iter = txnMap_.find(curr_txn_no);
+
+    if (iter == txnMap_.end()) {
+        cout << " " << __FUNCTION__ << "Abort Needed Here.. Txn does not exist for TxnNum " << curr_txn_no;
+        return -1;
+    } else {
+        p_NxTxnMgr = iter->second;
+    }
+
+    alloted_id  = p_NxTxnMgr->TxnAddObj(intf, action_type, req_cookie);
+    return alloted_id;
+}
+
+int NxClientApi::StartTxnWithId(int curr_txn_no) {
+    map<int, NxTxnMgr*>::iterator       iter;
+    NxTxnMgr                            *p_NxTxnMgr = nullptr;
+
+    iter = txnMap_.find(curr_txn_no);
+    if (iter != txnMap_.end()) {
+        cout << __FUNCTION__ <<  "Abort Needed Here.. New Txn already exists for TxnNum " << txnNum_;
+        return -1;
+    }
+
+    p_NxTxnMgr              =   new NxTxnMgr();
+    p_NxTxnMgr->SetNxTxnMgrNum(curr_txn_no);
+    txnMap_[curr_txn_no]    =   p_NxTxnMgr;
+    return 0;
+
+}
+
