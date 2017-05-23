@@ -1,4 +1,5 @@
 #include <iostream>
+#include <unistd.h>
 #include "sample_object.h"
 #include "client_api.h"
 using namespace std;
@@ -49,8 +50,8 @@ int main(int argc, char**argv) {
 
 void ut4_client(NxClientApi *p_apiObj) {
 
-    cookie  cookies[10];
-    TestObject intf1, intf2;
+    cookie      cookies[10];
+    TestObject  intf1, intf2;
     int curr_txn_no = 0 ,sec_txn_no = 0;
 
     cout << "  Running Test " << __FUNCTION__ << endl;
@@ -59,6 +60,7 @@ void ut4_client(NxClientApi *p_apiObj) {
         for  (int i =0 ; i < 2; i++) {
                 p_apiObj->StartNewTxnAndWaitOnRecv();
                 //start a new txn and call recv again
+                //sleep(5);
         }
         return;
     }
@@ -71,20 +73,28 @@ void ut4_client(NxClientApi *p_apiObj) {
     if (-1 == p_apiObj->StartTxnWithId(sec_txn_no))        return;
     if (-1 == p_apiObj->StartTxnWithId(curr_txn_no))       return;
 
-    intf1.SetParams("A54012348765",  25, 2);
+    intf1.SetParams("A54012348765",  26, 12);
     cookies[0] = p_apiObj->AddActionToTxn(curr_txn_no, &intf1, CREATE, 0);
-    intf1.SetParams("B56", 35, 5);
+    intf1.SetParams("B56", 36, 15);
     cookies[1] = p_apiObj->AddActionToTxn(curr_txn_no, &intf1, MODIFY, 0);
     p_apiObj->FlushTxn(curr_txn_no);
 
+    for  (int i =0 ; i < 1; i++) {
+                p_apiObj->StartNewTxnAndWaitOnRecv();
+    }
+
     curr_txn_no = 241;
     //if (-1 == p_apiObj->StartTxnWithId(curr_txn_no))        return;
-    intf2.SetParams("eth2", 211, 3);
+    intf2.SetParams("eth2", 51, 23);
     cookies[2] = p_apiObj->AddActionToTxn(sec_txn_no, &intf2, CREATE, 0);
-    intf2.SetParams("eth2", 311, 6);
+    intf2.SetParams("eth2", 52, 21);
     cookies[3] = p_apiObj->AddActionToTxn(sec_txn_no, &intf2, MODIFY, 0);
     p_apiObj->FlushTxn(sec_txn_no);
 
+    for  (int i =0 ; i < 1; i++) {
+            p_apiObj->StartNewTxnAndWaitOnRecv();
+                //start a new txn and call recv again
+    }
     cout << " ------ MAIN OUTPUT ---- " << " Copies --> " << TestObject::NumCopyCtors_ << endl;
 }
 

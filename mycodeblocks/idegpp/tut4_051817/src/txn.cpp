@@ -11,7 +11,7 @@ NxTxnMgr::NxTxnMgr() {
 
 NxTxnMgr::~NxTxnMgr() {}
 
-void NxTxnMgr::SetNxTxnMgrNum(int val_NxTxnMgr) {
+int NxTxnMgr::SetNxTxnMgrNum(int val_NxTxnMgr) {
     TxnNo_ = val_NxTxnMgr;
 }
 
@@ -71,7 +71,7 @@ int NxTxnMgr::ConvertToBuffer() {
 
 }
 
-void NxTxnMgr::SendTxnBuffToNano(NanoMsg *p_txnSock, int pld_bytes) {
+int NxTxnMgr::SendTxnBuffToNano(NanoMsg *p_txnSock, int pld_bytes) {
     int sent_bytes = 0;
     int payload_size = pld_bytes;
     p_txnSock->Send(TxnBuffer_, payload_size, 0, &sent_bytes);
@@ -79,7 +79,7 @@ void NxTxnMgr::SendTxnBuffToNano(NanoMsg *p_txnSock, int pld_bytes) {
 
 }
 
-void NxTxnMgr::RecvTxnBufferFromNano(NanoMsg *p_txnSock, int *recv_bytes) {
+int NxTxnMgr::RecvTxnBufferFromNano(NanoMsg *p_txnSock, int *recv_bytes) {
     static int Recv_txn_count = 0;
     p_txnSock->Recv(TxnBuffer_, 512, 0, recv_bytes);
     //cout <<  " \n Recv Buf- " << Recv_txn_count++ << "  : " << "Recv Bytes from  Client : " << *recv_bytes << endl;
@@ -89,7 +89,7 @@ void NxTxnMgr::RecvTxnBufferFromNano(NanoMsg *p_txnSock, int *recv_bytes) {
 
 }
 
-int NxTxnMgr::ConvBufferToTxn(int recv_bytes) {
+int NxTxnMgr::ConvBufferToTxn(int recv_bytes, int *rcvd_txn_no) {
     TxnPayload_t    *txn_pld = (TxnPayload_t *)TxnBuffer_;
     ObjPldHeader_t *obj_pld_start;
     int curr_sz = 0;
@@ -121,11 +121,11 @@ int NxTxnMgr::ConvBufferToTxn(int recv_bytes) {
         obj_pld_start = (ObjPldHeader_t *) ((char *)obj_pld_start + obj_pld_start->unit_sz);
         curr_sz       += obj_pld_start->unit_sz;
         obj_count++;
-
     }
 
     PrintPrintMe();
 
+    *rcvd_txn_no = TxnNo_;
     return 0;
 }
 

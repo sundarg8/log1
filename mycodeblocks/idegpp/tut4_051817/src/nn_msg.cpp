@@ -60,7 +60,7 @@ int NanoMsg::Recv(char *buf , int buf_len, int flags, int *total_recv_bytes) {
 }
 
 
-void NanoMsg::PrintBytes(const char *pBytes , const int nBytes) {
+int NanoMsg::PrintBytes(const char *pBytes , const int nBytes) {
 
     for (int i = 0; i != nBytes; i++)
     {

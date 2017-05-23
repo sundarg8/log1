@@ -52,12 +52,17 @@ bool NxClientApi::IsServerMode() {
 
 int NxClientApi::StartNewTxnAndWaitOnRecv() {
     NxTxnMgr*       p_NxTxnMgr = new NxTxnMgr;
+    int rcvd_txn_num =0 ;
     int recv_bytes = 0;
     if (p_nnSock !=nullptr) {
         p_NxTxnMgr->RecvTxnBufferFromNano(p_nnSock, &recv_bytes);
-        p_NxTxnMgr->ConvBufferToTxn(recv_bytes);
+        p_NxTxnMgr->ConvBufferToTxn(recv_bytes, &rcvd_txn_num);
+
     }
-    txnMap_[txnNum_]    =   p_NxTxnMgr;  //TBD ?? TxnNum from payload.
+    txnMap_[rcvd_txn_num]    =   p_NxTxnMgr;  //TBD ?? TxnNum from payload.
+
+    //UT code...TBD.
+    if (IsServerMode() )     FlushTxn(rcvd_txn_num);
 
 }
 
@@ -102,7 +107,7 @@ cookie NxClientApi::PerformActionOnObj(TestObject *intf,
     return alloted_id;
 }
 
-void NxClientApi::FlushObjActions() {
+int NxClientApi::FlushObjActions() {
 
     map<int, NxTxnMgr*>::iterator       iter;
     NxTxnMgr                            *p_NxTxnMgr = nullptr;
@@ -141,7 +146,7 @@ int NxClientApi::StartTxn() {
 
 }
 
-void NxClientApi::FlushTxn() {
+int NxClientApi::FlushTxn() {
 
     map<int, NxTxnMgr*>::iterator       iter;
     NxTxnMgr                            *p_NxTxnMgr = nullptr;
@@ -151,7 +156,7 @@ void NxClientApi::FlushTxn() {
 
     if (iter == txnMap_.end()) {
         cout << "Abort Needed Here.. Txn does not exist for TxnNum " << txnNum_;
-        return;
+        return -1;
     }
     p_NxTxnMgr = iter->second;
     p_NxTxnMgr->PrintPrintMe();
@@ -203,7 +208,7 @@ int NxClientApi::StartTxnWithId(int curr_txn_no) {
 
 }
 
-void NxClientApi::FlushTxn(int curr_txn_no) {
+int NxClientApi::FlushTxn(int curr_txn_no) {
 
     map<int, NxTxnMgr*>::iterator       iter;
     NxTxnMgr                            *p_NxTxnMgr = nullptr;
@@ -213,7 +218,7 @@ void NxClientApi::FlushTxn(int curr_txn_no) {
 
     if (iter == txnMap_.end()) {
         cout << __FUNCTION__ << " Abort Needed Here.. Txn does not exist for TxnNum " << curr_txn_no;
-        return;
+        return -1;
     }
     p_NxTxnMgr = iter->second;
     p_NxTxnMgr->PrintPrintMe();

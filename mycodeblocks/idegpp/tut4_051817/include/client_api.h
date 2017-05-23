@@ -30,14 +30,14 @@ class NxClientApi : public NxProcObj
 
         //ut1
         cookie  PerformActionOnObj(TestObject *,enum  action_t , cookie);
-        void    FlushObjActions();
+        int     FlushObjActions();
         //ut2
         int     StartTxn();
-        void    FlushTxn();
+        int     FlushTxn();
         //ut3
         int     StartTxn(int *curr_txn_no);
         cookie  AddActionToTxn(int curr_txn_no, TestObject *obj,enum  action_t , cookie);
-        void    FlushTxn(int curr_txn_no);
+        int     FlushTxn(int curr_txn_no);
         //ut4
         int     StartTxnWithId(int curr_txn_no);
 

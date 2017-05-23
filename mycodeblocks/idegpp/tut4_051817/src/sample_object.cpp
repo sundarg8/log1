@@ -8,13 +8,26 @@ TestObject::TestObject()
     IntfName_[7] = '\0';
 }
 
+TestObject::TestObject(const TestObject &obj) {
+    strncpy(IntfName_, obj.IntfName_, nameSz);
+    Speed_     = obj.Speed_;
+    Stats_     = obj.Stats_;
+    ++NumCopyCtors_;
+}
+
 
 TestObject::~TestObject()
 {
 
 }
 
-void TestObject::PrintBytes(const char *pBytes , const int nBytes) {
+int TestObject::SetParams(char  *val_name, int val_Speed_, int val_Stats_) {
+    strncpy(IntfName_, val_name, nameSz);
+    Speed_ = val_Speed_;
+    Stats_ = val_Stats_;
+}
+
+int TestObject::PrintBytes(const char *pBytes , const int nBytes) {
 
     for (int i = 0; i != nBytes; i++)
     {
@@ -23,6 +36,12 @@ void TestObject::PrintBytes(const char *pBytes , const int nBytes) {
     }
     cout << std::dec << std::endl;
 
+}
+
+void TestObject::PrintPrintMe() {
+    cout << setw(10) << "Attr_name: " << IntfName_
+            << "  Attr_Speed_: " << Speed_
+            << "   Attr_Stats_: " << Stats_ <<  endl;
 }
 
 int TestObject::ConvertToObjInst(char *buf, TestObject **ptr_to_new_obj) {
@@ -40,14 +59,8 @@ int TestObject::ConvertToObjInst(char *buf, TestObject *ptr_alloc_obj) {
 
 int TestObject::ConvertToObjInst(char *buf) {
     Speed_ = (int)*buf;  buf += sizeof(Speed_);
-    Stats_ = (int)*buf;  buf += sizeof(Stats_);
+    Stats_ = (int)*buf +100 ;  buf += sizeof(Stats_);
     strncpy(IntfName_ , buf, sizeof(IntfName_));
-    /*
-    (ptr_alloc_obj)->Speed_ = (int)*buf;  buf += sizeof(Speed_);
-    (ptr_alloc_obj)->Stats_ = (int)*buf;  buf += sizeof(Stats_);
-
-    strncpy((ptr_alloc_obj)->IntfName_ , buf, sizeof(IntfName_));
-    */
 }
 
 int TestObject::ConvertToBuffer(int objectId, char *buf,  int max_length) {

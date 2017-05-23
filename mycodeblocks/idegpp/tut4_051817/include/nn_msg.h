@@ -30,7 +30,7 @@ class NanoMsg
         bool IsClient();
 
         int RunUT();
-        void PrintBytes(const char *pBytes , const int nBytes);
+        int PrintBytes(const char *pBytes , const int nBytes);
 
 
     protected:

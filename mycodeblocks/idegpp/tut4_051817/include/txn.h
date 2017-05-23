@@ -27,21 +27,21 @@ typedef struct  TxnPayload_ {
 class NxTxnMgr : public NxProcObj
 {
     public:
-        NxTxnMgr();
+                NxTxnMgr();
         virtual ~NxTxnMgr();
 
-        void SetNxTxnMgrNum(int val_NxTxnMgr);
-        int TxnAddObj(TestObject *, enum action_t  , cookie);
+        int     SetNxTxnMgrNum(int val_NxTxnMgr);
+        int     TxnAddObj(TestObject *, enum action_t  , cookie);
 
-        int ConvertToBuffer();
-        int ConvBufferToTxn(int recv_bytes);
+        int     ConvertToBuffer();
+        int     ConvBufferToTxn(int recv_bytes, int *rcvd_txn_no);
 
-        void SendTxnBuffToNano(NanoMsg *p_txnSock, int pld_bytes);
-        void RecvTxnBufferFromNano(NanoMsg *p_txnSock, int *recv_bytes);
+        int     SendTxnBuffToNano(NanoMsg *p_txnSock, int pld_bytes);
+        int     RecvTxnBufferFromNano(NanoMsg *p_txnSock, int *recv_bytes);
 
-        virtual void PrintPrintMe();
-        virtual void PrintReflection() {}
-        virtual void LogMe(){}
+        virtual void    PrintPrintMe();
+        virtual void    PrintReflection() {}
+        virtual void    LogMe(){}
 
 
     protected:
