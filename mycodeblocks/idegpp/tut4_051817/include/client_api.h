@@ -6,7 +6,6 @@
 #include "txn.h"
 #include "nn_msg.h"
 #include <map>
-//#include <iomanip>
 
 using namespace std;
 
@@ -25,6 +24,10 @@ class NxClientApi : public NxProcObj
         int     StartRecvTxnAndWaitOnRecv();
         bool    IsClientMode();
         bool    IsServerMode();
+        void    StartTxn();
+        void    EndTxnAndSend();
+
+
 
         //abort add
 

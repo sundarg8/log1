@@ -7,8 +7,10 @@ using namespace std;
 #define SOCKET_ADDR "ipc:///data/pair_xx_cb5.ipc"
 
 void ut1_client(NxClientApi *);
+void ut5_client(NxClientApi *);
+
 void ut2_nnmsg(int argc, char **argv);
-#define tempstr "May21-v1 "
+#define tempstr "May22-v2 "
 
 
 int initInfra(int argc, NxClientApi **p_apiObj)  {
@@ -32,13 +34,55 @@ int main(int argc, char**argv) {
 
     if (argc < 4) {
         initInfra(argc, &p_apiObj);
-        ut1_client(p_apiObj);
+        //ut1_client(p_apiObj);
+        ut5_client(p_apiObj);
     }
 
     cout << tempstr << "exec of ut1_client "  << endl;
     return 0;
 }
 
+
+
+void ut5_client(NxClientApi *p_apiObj) {
+
+    cookie  cookies[10];
+    TestObject intf1, intf2;
+
+    if (p_apiObj->IsServerMode() ){
+        cout <<  tempstr << " -- Start in Server Listen Mode ---- " << endl;
+
+        //Server Mode // while TRUE loop ?
+        for  (int i =0 ; i < 2; i++) {
+                p_apiObj->StartRecvTxnAndWaitOnRecv();
+                //start a new txn and call recv again
+        }
+        return; //return from server.
+    }
+
+
+    //Client Mode.
+
+    p_apiObj->StartTxn();
+    cout <<  tempstr << " -- Start in Client Send Mode ---- " << endl;
+    intf1.SetParams("A54012348765",  25, 2);
+    cookies[0] = p_apiObj->PerformActionOnObj(&intf1, CREATE, 0);
+    intf1.SetParams("B56", 35, 5);
+    cookies[1] = p_apiObj->PerformActionOnObj(&intf1, MODIFY, 0);
+    p_apiObj->EndTxnAndSend();
+
+
+
+
+    p_apiObj->StartTxn();
+    intf2.SetParams("eth2", 211, 3);
+    cookies[2] = p_apiObj->PerformActionOnObj(&intf2, CREATE, 0);
+    intf2.SetParams("eth2", 311, 6);
+    cookies[3] = p_apiObj->PerformActionOnObj(&intf2, MODIFY, 0);
+    p_apiObj->EndTxnAndSend();
+
+    cout << " ------ MAIN OUTPUT ---- " << " Copies --> " << TestObject::NumCopyCtors_ << endl;
+}
 
 void ut1_client(NxClientApi *p_apiObj) {
 
@@ -77,7 +121,6 @@ void ut1_client(NxClientApi *p_apiObj) {
     p_apiObj->FlushObjActions();
     cout << " ------ MAIN OUTPUT ---- " << " Copies --> " << TestObject::NumCopyCtors_ << endl;
 }
-
 
 void ut2_nnmsg(int argc, char **argv) {
     //if (argc == 4)      ut2_nnmsg(argc,argv);

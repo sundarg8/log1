@@ -1,8 +1,6 @@
 #include "client_api.h"
 #include <iostream>
 #include <unistd.h>
-
-
 //123456789012345678901234567890123456789012345678901234567890123456789012345678
 
 
@@ -45,7 +43,7 @@ int NxClientApi::StartRecvTxnAndWaitOnRecv() {
 
     map<int, NxTxnMgr*>::iterator    iter;
     NxTxnMgr*                        p_NxTxnMgr = nullptr;
-    cookie                              alloted_id;
+    cookie                           alloted_id;
 
     iter = txnMap_.find(txnNum_);
 
@@ -66,12 +64,12 @@ int NxClientApi::StartRecvTxnAndWaitOnRecv() {
 
 
 void NxClientApi::FlushObjActions() {
-    ///call transport send() for the current active NxTxnMgr..
+
     map<int, NxTxnMgr*>::iterator       iter;
     NxTxnMgr                            *p_NxTxnMgr = nullptr;
 
     iter = txnMap_.find(txnNum_);
-    cout << " ---- Start of Flush TXN  --> "  <<  txnNum_ << "\n\n";
+    //cout << " ---- Start of Flush TXN  --> "  <<  txnNum_ << "\n\n";
     if (iter != txnMap_.end()) {
         p_NxTxnMgr = iter->second;
         p_NxTxnMgr->PrintPrintMe();
@@ -80,11 +78,10 @@ void NxClientApi::FlushObjActions() {
             p_NxTxnMgr->SendTxnBuffer_(p_nnSock, pld_bytes);
         }
     }
-    cout <<  " \n #### End of Flush TXN  --> "  << txnNum_ <<  "\n\n ..Sleeping for 2 secs\n";
-    sleep(2);
+    //cout <<  " \n #### End of Flush TXN  --> "  << txnNum_ <<  "\n\n ..Sleeping for 2 secs\n";
+    sleep(1);
     ++txnNum_;
 }
-
 
 
 void NxClientApi::PrintPrintMe() {
@@ -99,8 +96,46 @@ void NxClientApi::PrintPrintMe() {
         p_NxTxnMgr->PrintPrintMe();
         cout << endl;
     }
-
-
 }
 
 
+
+void NxClientApi::StartTxn() {
+    map<int, NxTxnMgr*>::iterator       iter;
+    NxTxnMgr                            *p_NxTxnMgr = nullptr;
+
+    ++txnNum_;
+
+    iter = txnMap_.find(txnNum_);
+    if (iter != txnMap_.end()) {
+        cout << "Abort Needed Here.. New Txn already exists for TxnNum " << txnNum_;
+        return;
+    }
+
+    p_NxTxnMgr       =    new NxTxnMgr();
+    p_NxTxnMgr->SetNxTxnMgrNum(txnNum_);
+    txnMap_[txnNum_]    =   p_NxTxnMgr;
+
+}
+
+void NxClientApi::EndTxnAndSend() {
+
+    map<int, NxTxnMgr*>::iterator       iter;
+    NxTxnMgr                            *p_NxTxnMgr = nullptr;
+    int                                 pld_bytes   = 0;
+
+    iter = txnMap_.find(txnNum_);
+
+    if (iter == txnMap_.end()) {
+        cout << "Abort Needed Here.. Txn does not exist for TxnNum " << txnNum_;
+        return;
+    }
+    p_NxTxnMgr = iter->second;
+    p_NxTxnMgr->PrintPrintMe();
+    pld_bytes = p_NxTxnMgr->ConvertToBuffer();
+
+    if (p_nnSock !=nullptr) {
+        p_NxTxnMgr->SendTxnBuffer_(p_nnSock, pld_bytes);
+    }
+    sleep(1);
+}

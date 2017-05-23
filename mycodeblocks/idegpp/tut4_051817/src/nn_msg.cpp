@@ -40,7 +40,7 @@ int NanoMsg::Send(const char *buf) {
 
 int NanoMsg::Recv(const char *buf) {
     nnxx::message msg = NanoMsgSock_.recv();
-    std::cout << __FUNCTION__ <<  msg << std::endl;
+    //std::cout << __FUNCTION__ <<  msg << std::endl;
     return 0;
 }
 
@@ -48,7 +48,7 @@ int NanoMsg::Recv(const char *buf) {
 int NanoMsg::Send(const char *buf, int len, int flags, int *total_sent_bytes) {
     *total_sent_bytes = 0;
     *total_sent_bytes = NanoMsgSock_.send(buf, len, flags);
-    cout <<  " Sent Bytes -- "  << *total_sent_bytes << endl;
+    //cout <<  " Sent Bytes -- "  << *total_sent_bytes << endl;
     return 0;
 }
 
@@ -78,7 +78,7 @@ int NanoMsg::RunUT() {
     return 0;
 }
 
-
+/*
 int NanoMsg::SendByteStream(char *buf , int len, int flags, int *sent_bytes) {
     char byteArr[64] = {0x18,0x03,0x00,0x00,0x02,0x00,0x00,0x00,
                         0x41,0x35,0x34,0x00,0x00,0x00,0x00,0x00 };
@@ -102,7 +102,7 @@ int NanoMsg::RecvByteStream(char *buf , int len, int flags, int *recv_bytes)  {
     }
     sleep(2);
 }
-
+*/
 
 void NanoMsg::PrintBytes(const char *pBytes , const int nBytes) {
 

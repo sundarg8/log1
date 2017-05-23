@@ -28,16 +28,13 @@ void TestObject::PrintBytes(const char *pBytes , const int nBytes) {
 int TestObject::ConvertToObjInst(char *buf, TestObject **ptr_to_new_obj) {
     *ptr_to_new_obj = new TestObject();
     (*ptr_to_new_obj)->Speed_ = (int)*buf;  buf += sizeof(Speed_);
-
     (*ptr_to_new_obj)->Stats_ = (int)*buf;  buf += sizeof(Stats_);
-
     strncpy((*ptr_to_new_obj)->IntfName_ , buf, sizeof(IntfName_));
 }
 
 int TestObject::ConvertToObjInst(char *buf, TestObject *ptr_alloc_obj) {
     (ptr_alloc_obj)->Speed_ = (int)*buf;  buf += sizeof(Speed_);
     (ptr_alloc_obj)->Stats_ = (int)*buf;  buf += sizeof(Stats_);
-
     strncpy((ptr_alloc_obj)->IntfName_ , buf, sizeof(IntfName_));
 }
 
@@ -67,7 +64,7 @@ int TestObject::ConvertToBuffer(int objectId, char *buf,  int max_length) {
     obj_pld.unit_action = MODIFY ; //TBC
     obj_pld.unit_cookie = 0x11223344 ; //TBC
 
-    cout << "start -- buffer  -- " << count  << endl;
+    //cout << "start -- buffer  -- " << count  << endl;
 
     tmp_sz = sizeof(ObjPldHeader_t);
     std::memcpy(buf, &obj_pld, tmp_sz); buf += tmp_sz; count += tmp_sz;
@@ -83,8 +80,8 @@ int TestObject::ConvertToBuffer(int objectId, char *buf,  int max_length) {
 
     buf = tmpbuf; // Is it needed ??
 
-    PrintBytes(buf, count);
+    //PrintBytes(buf, count);
 
-    cout << "end   ---- buffer  "  << count <<  endl;
+    //cout << "end   ---- buffer  "  << count <<  endl;
     return count;
 }
