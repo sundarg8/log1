@@ -11,7 +11,7 @@ using namespace std;
 
 //#define MAX_TXN_BUFFER_SZ 512
 
-typedef int cookie;
+typedef int cookie_t;
 
 typedef struct  TxnPayload_ {
     int txn_sz;
@@ -31,7 +31,7 @@ class NxTxnMgr : public NxProcObj
         virtual ~NxTxnMgr();
 
         int     SetNxTxnMgrNum(int val_NxTxnMgr);
-        int     TxnAddObj(TestObject *, enum action_t  , cookie);
+        int     TxnAddObj(TestObject *, enum action_t  , cookie_t *);
 
         int     ConvertToBuffer();
         int     ConvBufferToTxn(int recv_bytes, int *rcvd_txn_no);

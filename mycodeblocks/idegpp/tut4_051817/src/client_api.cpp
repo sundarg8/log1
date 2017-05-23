@@ -21,6 +21,9 @@ int NxClientApi::SetupClientEndPoint(const char *sock_addr, EndPointType end_typ
     }
 
     endPtType_ = end_type;
+
+
+    return NxProcSUCCESS;
 }
 
 int NxClientApi::SetupServerEndPoint(const char * sock_addr, EndPointType end_type) {
@@ -34,12 +37,18 @@ int NxClientApi::SetupServerEndPoint(const char * sock_addr, EndPointType end_ty
 
     endPtType_ = end_type;
 
+
+    return NxProcSUCCESS;
 }
 
 int NxClientApi::SetupSockConnection(NanoMsg *ptr) {
     p_nnSock = ptr;
     p_nnSock->ConnectToEndPoint();
     p_nnSock->SetClientApiRef(this);
+
+
+    return NxProcSUCCESS;
+
 }
 
 bool NxClientApi::IsClientMode() {
@@ -61,13 +70,17 @@ int NxClientApi::StartNewTxnAndWaitOnRecv() {
     }
     txnMap_[rcvd_txn_num]    =   p_NxTxnMgr;  //TBD ?? TxnNum from payload.
 
-    //UT code...TBD.
+    //UT_code...TBD.
     if (IsServerMode() )     FlushTxn(rcvd_txn_num);
 
+    return NxProcSUCCESS;
 }
 
 int NxClientApi::IncrementToNextTxn() {
     txnNum_ +=1 ;
+
+    return NxProcSUCCESS;
+
 }
 
 void NxClientApi::PrintPrintMe() {
@@ -84,12 +97,12 @@ void NxClientApi::PrintPrintMe() {
     }
 }
 
-cookie NxClientApi::PerformActionOnObj(TestObject *intf,
-            enum  action_t  action_type, cookie req_cookie) {
+int NxClientApi::PerformActionOnObj(TestObject *intf,
+            enum  action_t  action_type, cookie_t *cookie) {
 
     map<int, NxTxnMgr*>::iterator    iter;
     NxTxnMgr*                        p_NxTxnMgr = nullptr;
-    cookie                           alloted_id;
+    //cookie_t                         alloted_id;
 
     iter = txnMap_.find(txnNum_);
 
@@ -103,8 +116,11 @@ cookie NxClientApi::PerformActionOnObj(TestObject *intf,
         p_NxTxnMgr = iter->second;
     }
 
-    alloted_id  = p_NxTxnMgr->TxnAddObj(intf, action_type, req_cookie);
-    return alloted_id;
+    //alloted_id  = p_NxTxnMgr->TxnAddObj(intf, action_type, *cookie);
+
+    p_NxTxnMgr->TxnAddObj(intf, action_type, cookie);
+    //*cookie     = alloted_id;
+    return NxProcSUCCESS;
 }
 
 int NxClientApi::FlushObjActions() {
@@ -125,7 +141,9 @@ int NxClientApi::FlushObjActions() {
     IncrementToNextTxn();
 
     //cout <<  " \n #### End of Flush TXN  --> "  << txnNum_ <<  "\n\n ..Sleeping for 2 secs\n";
-    sleep(1);
+    //My23 sleep(1);
+
+    return NxProcSUCCESS;
 }
 
 int NxClientApi::StartTxn() {
@@ -136,14 +154,14 @@ int NxClientApi::StartTxn() {
     iter = txnMap_.find(txnNum_);
     if (iter != txnMap_.end()) {
         cout << "Abort Needed Here.. New Txn already exists for TxnNum " << txnNum_;
-        return -1;
+        return NxProcFAILURE;
     }
 
     p_NxTxnMgr          =    new NxTxnMgr();
     p_NxTxnMgr->SetNxTxnMgrNum(txnNum_);
     txnMap_[txnNum_]    =   p_NxTxnMgr;
 
-
+    return NxProcSUCCESS;
 }
 
 int NxClientApi::FlushTxn() {
@@ -156,7 +174,7 @@ int NxClientApi::FlushTxn() {
 
     if (iter == txnMap_.end()) {
         cout << "Abort Needed Here.. Txn does not exist for TxnNum " << txnNum_;
-        return -1;
+        return NxProcFAILURE;
     }
     p_NxTxnMgr = iter->second;
     p_NxTxnMgr->PrintPrintMe();
@@ -165,9 +183,10 @@ int NxClientApi::FlushTxn() {
     if (p_nnSock !=nullptr) {
         p_NxTxnMgr->SendTxnBuffToNano(p_nnSock, pld_bytes);
     }
-    sleep(1);
+    //My23  sleep(1);
     IncrementToNextTxn();
 
+    return NxProcSUCCESS;
 }
 
 int NxClientApi::StartTxn(int *curr_txn_no) {
@@ -179,7 +198,7 @@ int NxClientApi::StartTxn(int *curr_txn_no) {
     iter = txnMap_.find(txnNum_);
     if (iter != txnMap_.end()) {
         cout << "Abort Needed Here.. New Txn already exists for TxnNum " << txnNum_;
-        return -1;
+        return NxProcFAILURE;
     }
 
     p_NxTxnMgr          =    new NxTxnMgr();
@@ -188,6 +207,7 @@ int NxClientApi::StartTxn(int *curr_txn_no) {
     *curr_txn_no        = txnNum_;
     //IncrementToNextTxn();
 
+    return NxProcSUCCESS;
 }
 
 
@@ -198,14 +218,15 @@ int NxClientApi::StartTxnWithId(int curr_txn_no) {
     iter = txnMap_.find(curr_txn_no);
     if (iter != txnMap_.end()) {
         cout << __FUNCTION__ <<  "Abort Needed Here.. New Txn already exists for TxnNum " << txnNum_;
-        return -1;
+        return NxProcFAILURE;
     }
 
     p_NxTxnMgr              =   new NxTxnMgr();
     p_NxTxnMgr->SetNxTxnMgrNum(curr_txn_no);
     txnMap_[curr_txn_no]    =   p_NxTxnMgr;
-    return 0;
 
+
+    return NxProcSUCCESS;
 }
 
 int NxClientApi::FlushTxn(int curr_txn_no) {
@@ -218,7 +239,7 @@ int NxClientApi::FlushTxn(int curr_txn_no) {
 
     if (iter == txnMap_.end()) {
         cout << __FUNCTION__ << " Abort Needed Here.. Txn does not exist for TxnNum " << curr_txn_no;
-        return -1;
+        return NxProcFAILURE;
     }
     p_NxTxnMgr = iter->second;
     p_NxTxnMgr->PrintPrintMe();
@@ -227,28 +248,32 @@ int NxClientApi::FlushTxn(int curr_txn_no) {
     if (p_nnSock !=nullptr) {
         p_NxTxnMgr->SendTxnBuffToNano(p_nnSock, pld_bytes);
     }
-    sleep(1);
+    //My23 sleep(1);
     //IncrementToNextTxn();
 
+    return NxProcSUCCESS;
 }
 
-cookie NxClientApi::AddActionToTxn(int curr_txn_no, TestObject *intf,
-            enum  action_t  action_type, cookie req_cookie) {
+int NxClientApi::AddActionToTxn(int curr_txn_no, TestObject *intf,
+            enum  action_t  action_type, cookie_t *req_cookie) {
 
     map<int, NxTxnMgr*>::iterator    iter;
     NxTxnMgr*                        p_NxTxnMgr = nullptr;
-    cookie                           alloted_id;
+    //cookie_t                           alloted_id;
 
     iter = txnMap_.find(curr_txn_no);
 
     if (iter == txnMap_.end()) {
         cout << " " << __FUNCTION__ << "Abort Needed Here.. Txn does not exist for TxnNum " << curr_txn_no;
-        return -1;
+        return NxProcFAILURE;
     } else {
         p_NxTxnMgr = iter->second;
     }
 
-    alloted_id  = p_NxTxnMgr->TxnAddObj(intf, action_type, req_cookie);
-    return alloted_id;
+    //alloted_id  = p_NxTxnMgr->TxnAddObj(intf, action_type, *req_cookie);
+
+    p_NxTxnMgr->TxnAddObj(intf, action_type, req_cookie);
+    //*req_cookie = alloted_id;
+    return NxProcSUCCESS;
 }
 

@@ -9,7 +9,7 @@
 
 using namespace std;
 
-typedef int cookie;
+typedef int cookie_t;
 
 
 class NxClientApi : public NxProcObj
@@ -29,14 +29,14 @@ class NxClientApi : public NxProcObj
         int     SetupSockConnection(NanoMsg *ptr);
 
         //ut1
-        cookie  PerformActionOnObj(TestObject *,enum  action_t , cookie);
+        int     PerformActionOnObj(TestObject *,enum  action_t , cookie_t *);
         int     FlushObjActions();
         //ut2
         int     StartTxn();
         int     FlushTxn();
         //ut3
         int     StartTxn(int *curr_txn_no);
-        cookie  AddActionToTxn(int curr_txn_no, TestObject *obj,enum  action_t , cookie);
+        int     AddActionToTxn(int curr_txn_no, TestObject *obj,enum  action_t , cookie_t *);
         int     FlushTxn(int curr_txn_no);
         //ut4
         int     StartTxnWithId(int curr_txn_no);

@@ -13,17 +13,23 @@ NxTxnMgr::~NxTxnMgr() {}
 
 int NxTxnMgr::SetNxTxnMgrNum(int val_NxTxnMgr) {
     TxnNo_ = val_NxTxnMgr;
+
+    return NxProcSUCCESS;
+
 }
 
-int NxTxnMgr::GetNxTxnMgrNum() {
+int NxTxnMgr::GetNxTxnMgrNum() {   //TB_Edited
     return TxnNo_;
 }
 
-int NxTxnMgr::TxnAddObj(TestObject *obj_data, enum action_t action_type , cookie req_cookie) {
+//TB_Edited
+int NxTxnMgr::TxnAddObj(TestObject *obj_data, enum action_t action_type , cookie_t *req_cookie) {
     ++ObjectId_;
     //object_id TO action type map.
     ActionsMap_.insert(pair<int, TestObject&> (ObjectId_, *obj_data));
-    return ObjectId_;
+
+    return NxProcSUCCESS;
+    //return ObjectId_;
 }
 
 
@@ -39,6 +45,7 @@ void NxTxnMgr::PrintPrintMe() {
     cout <<endl;
 }
 
+//TB_Edited
 int NxTxnMgr::ConvertToBuffer() {
     map<int, TestObject >::iterator  iter;
     TestObject r_obj; // = nullptr;
@@ -51,7 +58,6 @@ int NxTxnMgr::ConvertToBuffer() {
     p_pld->txn_flags      = 0;
     p_pld->txn_ret_status = 0x01020403;
     p_pld->txn_sz         = sizeof(TxnPayload_t) - sizeof(p_pld->obj_pyld_start);
-    //cout << "Sundar ::: " << p_pld->txn_sz << endl;
 
     //add the header
     obj_pld_ptr = p_pld->obj_pyld_start;
@@ -77,6 +83,8 @@ int NxTxnMgr::SendTxnBuffToNano(NanoMsg *p_txnSock, int pld_bytes) {
     p_txnSock->Send(TxnBuffer_, payload_size, 0, &sent_bytes);
     //cout << __FUNCTION__ << " Sent Bytes to Svr : " << sent_bytes << endl;
 
+
+    return NxProcSUCCESS;
 }
 
 int NxTxnMgr::RecvTxnBufferFromNano(NanoMsg *p_txnSock, int *recv_bytes) {
@@ -85,8 +93,10 @@ int NxTxnMgr::RecvTxnBufferFromNano(NanoMsg *p_txnSock, int *recv_bytes) {
     //cout <<  " \n Recv Buf- " << Recv_txn_count++ << "  : " << "Recv Bytes from  Client : " << *recv_bytes << endl;
     //p_txnSock->PrintBytes(TxnBuffer_, *recv_bytes);
 
-    sleep(1);
+    //my23 sleep(1);
 
+
+    return NxProcSUCCESS;
 }
 
 int NxTxnMgr::ConvBufferToTxn(int recv_bytes, int *rcvd_txn_no) {
@@ -126,7 +136,8 @@ int NxTxnMgr::ConvBufferToTxn(int recv_bytes, int *rcvd_txn_no) {
     PrintPrintMe();
 
     *rcvd_txn_no = TxnNo_;
-    return 0;
+
+    return NxProcSUCCESS;
 }
 
 /* ////////////////////////BACKUP CODE /////////////////////////////////////////////////////////

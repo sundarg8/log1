@@ -7,10 +7,13 @@
 #include <NxProcObj.h>
 using namespace std;
 
+#define NxProcSUCCESS 0
+#define NxProcFAILURE -1
 
 
 enum  action_t  { GET, CREATE , MODIFY , DELETE };
 #define nameSz 12
+typedef  int Syserr_t;
 
 
 typedef struct tag_ObjPldHeader {

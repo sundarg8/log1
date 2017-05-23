@@ -1,15 +1,18 @@
-#include "nn_msg.h"
 #include <cstring>
 #include <unistd.h>
 #include <system_error>
 #include <iomanip>
+
+#include "sample_object.h"
+#include "nn_msg.h"
+
 
 
 
 NanoMsg::NanoMsg(const char *sock_addr, ConnType type)
 {
     strncpy(SockAddr_, sock_addr, SOCKET_ADDR_SZ);
-    SockAddr_[SOCKET_ADDR_SZ-1] = '\0';
+    SockAddr_[SOCKET_ADDR_SZ - 1] = '\0';
     ConnType_ = type;
 }
 
@@ -23,6 +26,9 @@ int NanoMsg::ConnectToEndPoint() {
         NanoMsgSock_.bind(SockAddr_);
     else
         NanoMsgSock_.connect(SockAddr_);
+
+    return NxProcSUCCESS;
+
 }
 
 bool NanoMsg::IsClient() {
@@ -32,16 +38,21 @@ bool NanoMsg::IsClient() {
 
 int NanoMsg::SetClientApiRef(NxClientApi *parent_client) {
     p_ParentClientApi = parent_client;
+
+    return NxProcSUCCESS;
 }
 
 int NanoMsg::Send(const char *buf) {
     NanoMsgSock_.send(buf);
+
+    return NxProcSUCCESS;
 }
 
 int NanoMsg::Recv(const char *buf) {
     nnxx::message msg = NanoMsgSock_.recv();
     //std::cout << __FUNCTION__ <<  msg << std::endl;
-    return 0;
+
+    return NxProcSUCCESS;
 }
 
 
@@ -49,14 +60,16 @@ int NanoMsg::Send(const char *buf, int len, int flags, int *total_sent_bytes) {
     *total_sent_bytes = 0;
     *total_sent_bytes = NanoMsgSock_.send(buf, len, flags);
     //cout <<  " Sent Bytes -- "  << *total_sent_bytes << endl;
-    return 0;
+
+    return NxProcSUCCESS;
 }
 
 int NanoMsg::Recv(char *buf , int buf_len, int flags, int *total_recv_bytes) {
     *total_recv_bytes = 0;
     *total_recv_bytes = NanoMsgSock_.recv(buf, buf_len, flags);
     //cout <<  " Actual Rcvd  Bytes -- "  << *total_recv_bytes << endl;
-    return 0;
+
+    return NxProcSUCCESS;
 }
 
 
@@ -69,6 +82,7 @@ int NanoMsg::PrintBytes(const char *pBytes , const int nBytes) {
     }
     cout << std::dec << std::endl;
 
+    return NxProcSUCCESS;
 }
 
 /// ///////////////////////////////////////////////////////////////////////
@@ -100,9 +114,9 @@ int NanoMsg::SendByteStream(char *buf , int len, int flags, int *sent_bytes) {
         byteArr[15] =i*2;
         Send(byteArr, len, 0, sent_bytes);
         PrintBytes(byteArr, *sent_bytes); cout << endl;
-        sleep(1);
+        //My23 sleep(1);
     }
-    sleep(5);
+    //My23 sleep(5);
 
     //Send(buf, len, flags, sent_bytes);
 }
@@ -111,9 +125,9 @@ int NanoMsg::RecvByteStream(char *buf , int len, int flags, int *recv_bytes)  {
     for  (int i =0 ; i < 5; i++) {
         ///Recv(SockBuffer_, SOCKET_BUFFER_LEN, 0, recv_bytes);
         ///PrintBytes(SockBuffer_, *recv_bytes);
-        sleep(2);
+        //My23sleep(2);
     }
-    sleep(2);
+    //My23sleep(2);
 }
 */
 
