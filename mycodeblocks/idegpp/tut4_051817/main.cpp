@@ -16,7 +16,7 @@ void ut4_client(NxClientApi *);
 
 
 void ut50_nnmsg(int argc, char **argv);
-#define tempstr "May23-v5 "
+#define tempstr "May23-v6 "
 
 
 int v2InitInfra(int argc, NxClientApi **p_apiObj) {
