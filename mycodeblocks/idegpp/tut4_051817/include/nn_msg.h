@@ -24,8 +24,8 @@ class NanoMsg
         int ConnectToEndPoint();
         int Send(const char *);
         int Recv(const char *);
-        int Send(const char *buf,  int buf_len, int flags, int *total_sent_bytes);
-        int Recv(char       *buf , int buf_len, int flags, int *total_recv_bytes);
+        int Send(const char *buf,  int buf_len, int flags, int *total_sent_bytes); //for app use
+        int Recv(char       *buf , int buf_len, int flags, int *total_recv_bytes); //for app use
         int SetClientApiRef(NxClientApi *);
         bool IsClient();
 
@@ -40,15 +40,12 @@ class NanoMsg
         char            SockAddr_[SOCKET_ADDR_SZ];
         ConnType        ConnType_;
         nnxx::socket    NanoMsgSock_ { nnxx::SP, nnxx::PAIR};
-        //char            SockBuffer_[SOCKET_BUFFER_LEN];
         NxClientApi     *p_ParentClientApi;
 
         int RunAsServerUT();
         int RunAsClientUT();
         int SendByteStream(char *buf , int len, int flags, int *total_sent_bytes);
         int RecvByteStream(char *buf , int len, int flags, int *total_sent_bytes);
-
-
 
 };
 

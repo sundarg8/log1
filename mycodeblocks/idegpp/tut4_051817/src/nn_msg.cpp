@@ -60,6 +60,19 @@ int NanoMsg::Recv(char *buf , int buf_len, int flags, int *total_recv_bytes) {
 }
 
 
+void NanoMsg::PrintBytes(const char *pBytes , const int nBytes) {
+
+    for (int i = 0; i != nBytes; i++)
+    {
+        std::cout << std::hex << std::setw(2) << std::setfill('0')
+            << static_cast<unsigned int>(pBytes[i]) << " ";
+    }
+    cout << std::dec << std::endl;
+
+}
+
+/// ///////////////////////////////////////////////////////////////////////
+
 int NanoMsg::RunUT() {
     char *buf = nullptr;
     int bytes=16;
@@ -103,17 +116,6 @@ int NanoMsg::RecvByteStream(char *buf , int len, int flags, int *recv_bytes)  {
     sleep(2);
 }
 */
-
-void NanoMsg::PrintBytes(const char *pBytes , const int nBytes) {
-
-    for (int i = 0; i != nBytes; i++)
-    {
-        std::cout << std::hex << std::setw(2) << std::setfill('0')
-            << static_cast<unsigned int>(pBytes[i]) << " ";
-    }
-    cout << std::dec << std::endl;
-
-}
 
 int NanoMsg::RunAsServerUT() {
     const char *buf;

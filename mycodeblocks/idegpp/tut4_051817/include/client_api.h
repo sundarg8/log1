@@ -15,26 +15,29 @@ typedef int cookie;
 class NxClientApi : public NxProcObj
 {
     public:
-        NxClientApi() ;
+        enum EndPointType { Undefined, NanoMsgSock , UnixPipe };
+
+                NxClientApi() ;
         virtual ~NxClientApi();
-        int     SetupSockConnection(NanoMsg *ptr);
-        int     StartRecvTxnAndWaitOnRecv();
+        int     SetupClientEndPoint(const char *,EndPointType );
+        int     SetupServerEndPoint(const char *,EndPointType );
+        int     StartNewTxnAndWaitOnRecv();
         bool    IsClientMode();
         bool    IsServerMode();
+
+        //Deprecated for App use.
+        int     SetupSockConnection(NanoMsg *ptr);
 
         //ut1
         cookie  PerformActionOnObj(TestObject *,enum  action_t , cookie);
         void    FlushObjActions();
-
         //ut2
         int     StartTxn();
         void    FlushTxn();
-
         //ut3
         int     StartTxn(int *curr_txn_no);
         cookie  AddActionToTxn(int curr_txn_no, TestObject *obj,enum  action_t , cookie);
         void    FlushTxn(int curr_txn_no);
-
         //ut4
         int     StartTxnWithId(int curr_txn_no);
 
@@ -51,9 +54,9 @@ class NxClientApi : public NxProcObj
     private:
         map<int, NxTxnMgr*>      txnMap_;
         int                      txnNum_;
+        EndPointType             endPtType_;
         NanoMsg                  * p_nnSock;
         int                      IncrementToNextTxn();
-
 
 };
 

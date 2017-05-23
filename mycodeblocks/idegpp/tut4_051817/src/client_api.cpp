@@ -11,12 +11,36 @@ NxClientApi::NxClientApi() {
 
 NxClientApi::~NxClientApi() {}
 
+int NxClientApi::SetupClientEndPoint(const char *sock_addr, EndPointType end_type) {
+    if (end_type == NanoMsgSock) {
+        NanoMsg     *p_nanoMsg  = nullptr;
+        p_nanoMsg   = new  NanoMsg(sock_addr, NanoMsg::ConnClient);
+        SetupSockConnection(p_nanoMsg);
+    } else {
+        cout << " TBD ... "  << endl;
+    }
+
+    endPtType_ = end_type;
+}
+
+int NxClientApi::SetupServerEndPoint(const char * sock_addr, EndPointType end_type) {
+    if (end_type == NanoMsgSock) {
+        NanoMsg     *p_nanoMsg  = nullptr;
+        p_nanoMsg   = new  NanoMsg(sock_addr, NanoMsg::ConnServer);
+        SetupSockConnection(p_nanoMsg);
+    } else {
+        cout << " TBD ... "  << endl;
+    }
+
+    endPtType_ = end_type;
+
+}
+
 int NxClientApi::SetupSockConnection(NanoMsg *ptr) {
     p_nnSock = ptr;
     p_nnSock->ConnectToEndPoint();
     p_nnSock->SetClientApiRef(this);
 }
-
 
 bool NxClientApi::IsClientMode() {
     return (p_nnSock->IsClient());
@@ -26,11 +50,11 @@ bool NxClientApi::IsServerMode() {
     return (p_nnSock->IsClient() == false);
 }
 
-int NxClientApi::StartRecvTxnAndWaitOnRecv() {
+int NxClientApi::StartNewTxnAndWaitOnRecv() {
     NxTxnMgr*       p_NxTxnMgr = new NxTxnMgr;
     int recv_bytes = 0;
     if (p_nnSock !=nullptr) {
-        p_NxTxnMgr->RecvTxnBuffer_(p_nnSock, &recv_bytes);
+        p_NxTxnMgr->RecvTxnBufferFromNano(p_nnSock, &recv_bytes);
         p_NxTxnMgr->ConvBufferToTxn(recv_bytes);
     }
     txnMap_[txnNum_]    =   p_NxTxnMgr;  //TBD ?? TxnNum from payload.
@@ -90,7 +114,7 @@ void NxClientApi::FlushObjActions() {
         p_NxTxnMgr->PrintPrintMe();
         int pld_bytes = p_NxTxnMgr->ConvertToBuffer();
         if (p_nnSock !=nullptr) {
-            p_NxTxnMgr->SendTxnBuffer_(p_nnSock, pld_bytes);
+            p_NxTxnMgr->SendTxnBuffToNano(p_nnSock, pld_bytes);
         }
     }
     IncrementToNextTxn();
@@ -134,7 +158,7 @@ void NxClientApi::FlushTxn() {
     pld_bytes = p_NxTxnMgr->ConvertToBuffer();
 
     if (p_nnSock !=nullptr) {
-        p_NxTxnMgr->SendTxnBuffer_(p_nnSock, pld_bytes);
+        p_NxTxnMgr->SendTxnBuffToNano(p_nnSock, pld_bytes);
     }
     sleep(1);
     IncrementToNextTxn();
@@ -161,6 +185,24 @@ int NxClientApi::StartTxn(int *curr_txn_no) {
 
 }
 
+
+int NxClientApi::StartTxnWithId(int curr_txn_no) {
+    map<int, NxTxnMgr*>::iterator       iter;
+    NxTxnMgr                            *p_NxTxnMgr = nullptr;
+
+    iter = txnMap_.find(curr_txn_no);
+    if (iter != txnMap_.end()) {
+        cout << __FUNCTION__ <<  "Abort Needed Here.. New Txn already exists for TxnNum " << txnNum_;
+        return -1;
+    }
+
+    p_NxTxnMgr              =   new NxTxnMgr();
+    p_NxTxnMgr->SetNxTxnMgrNum(curr_txn_no);
+    txnMap_[curr_txn_no]    =   p_NxTxnMgr;
+    return 0;
+
+}
+
 void NxClientApi::FlushTxn(int curr_txn_no) {
 
     map<int, NxTxnMgr*>::iterator       iter;
@@ -178,7 +220,7 @@ void NxClientApi::FlushTxn(int curr_txn_no) {
     pld_bytes = p_NxTxnMgr->ConvertToBuffer();
 
     if (p_nnSock !=nullptr) {
-        p_NxTxnMgr->SendTxnBuffer_(p_nnSock, pld_bytes);
+        p_NxTxnMgr->SendTxnBuffToNano(p_nnSock, pld_bytes);
     }
     sleep(1);
     //IncrementToNextTxn();
@@ -203,22 +245,5 @@ cookie NxClientApi::AddActionToTxn(int curr_txn_no, TestObject *intf,
 
     alloted_id  = p_NxTxnMgr->TxnAddObj(intf, action_type, req_cookie);
     return alloted_id;
-}
-
-int NxClientApi::StartTxnWithId(int curr_txn_no) {
-    map<int, NxTxnMgr*>::iterator       iter;
-    NxTxnMgr                            *p_NxTxnMgr = nullptr;
-
-    iter = txnMap_.find(curr_txn_no);
-    if (iter != txnMap_.end()) {
-        cout << __FUNCTION__ <<  "Abort Needed Here.. New Txn already exists for TxnNum " << txnNum_;
-        return -1;
-    }
-
-    p_NxTxnMgr              =   new NxTxnMgr();
-    p_NxTxnMgr->SetNxTxnMgrNum(curr_txn_no);
-    txnMap_[curr_txn_no]    =   p_NxTxnMgr;
-    return 0;
-
 }
 

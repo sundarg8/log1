@@ -32,10 +32,12 @@ class NxTxnMgr : public NxProcObj
 
         void SetNxTxnMgrNum(int val_NxTxnMgr);
         int TxnAddObj(TestObject *, enum action_t  , cookie);
+
         int ConvertToBuffer();
-        void SendTxnBuffer_(NanoMsg *p_txnSock, int pld_bytes);
-        void RecvTxnBuffer_(NanoMsg *p_txnSock, int *recv_bytes);
         int ConvBufferToTxn(int recv_bytes);
+
+        void SendTxnBuffToNano(NanoMsg *p_txnSock, int pld_bytes);
+        void RecvTxnBufferFromNano(NanoMsg *p_txnSock, int *recv_bytes);
 
         virtual void PrintPrintMe();
         virtual void PrintReflection() {}
@@ -44,16 +46,15 @@ class NxTxnMgr : public NxProcObj
 
     protected:
     private:
+        static const int        MAX_TXN_BUFFER_SZ;
+
         map<int, TestObject>    ActionsMap_;
         int                     TxnNo_;
         int                     ObjectId_;
         char                    TxnBuffer_[512];
         int                     TxnPyldSz_;
 
-        static const int        MAX_TXN_BUFFER_SZ;
-        int GetNxTxnMgrNum();
-
-
+        int                     GetNxTxnMgrNum();
 
 };
 

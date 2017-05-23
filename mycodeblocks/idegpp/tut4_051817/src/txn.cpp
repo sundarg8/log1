@@ -71,7 +71,7 @@ int NxTxnMgr::ConvertToBuffer() {
 
 }
 
-void NxTxnMgr::SendTxnBuffer_(NanoMsg *p_txnSock, int pld_bytes) {
+void NxTxnMgr::SendTxnBuffToNano(NanoMsg *p_txnSock, int pld_bytes) {
     int sent_bytes = 0;
     int payload_size = pld_bytes;
     p_txnSock->Send(TxnBuffer_, payload_size, 0, &sent_bytes);
@@ -79,7 +79,7 @@ void NxTxnMgr::SendTxnBuffer_(NanoMsg *p_txnSock, int pld_bytes) {
 
 }
 
-void NxTxnMgr::RecvTxnBuffer_(NanoMsg *p_txnSock, int *recv_bytes) {
+void NxTxnMgr::RecvTxnBufferFromNano(NanoMsg *p_txnSock, int *recv_bytes) {
     static int Recv_txn_count = 0;
     p_txnSock->Recv(TxnBuffer_, 512, 0, recv_bytes);
     //cout <<  " \n Recv Buf- " << Recv_txn_count++ << "  : " << "Recv Bytes from  Client : " << *recv_bytes << endl;
