@@ -68,9 +68,9 @@ int NxClientApi::StartNewTxnAndWaitOnRecv() {
         p_NxTxnMgr->ConvBufferToTxn(recv_bytes, &rcvd_txn_num);
 
     }
-    txnMap_[rcvd_txn_num]    =   p_NxTxnMgr;  //TBD ?? TxnNum from payload.
+    txnMap_[rcvd_txn_num]    =   p_NxTxnMgr;
 
-    //UT_code...TBD.
+    //UT_code.. To loop the msg back to Client.TBD.
     if (IsServerMode() )     FlushTxn(rcvd_txn_num);
 
     return NxProcSUCCESS;
@@ -102,7 +102,6 @@ int NxClientApi::PerformActionOnObj(TestObject *intf,
 
     map<int, NxTxnMgr*>::iterator    iter;
     NxTxnMgr*                        p_NxTxnMgr = nullptr;
-    //cookie_t                         alloted_id;
 
     iter = txnMap_.find(txnNum_);
 
@@ -116,10 +115,7 @@ int NxClientApi::PerformActionOnObj(TestObject *intf,
         p_NxTxnMgr = iter->second;
     }
 
-    //alloted_id  = p_NxTxnMgr->TxnAddObj(intf, action_type, *cookie);
-
     p_NxTxnMgr->TxnAddObj(intf, action_type, cookie);
-    //*cookie     = alloted_id;
     return NxProcSUCCESS;
 }
 
@@ -129,7 +125,6 @@ int NxClientApi::FlushObjActions() {
     NxTxnMgr                            *p_NxTxnMgr = nullptr;
 
     iter = txnMap_.find(txnNum_);
-    //cout << " ---- Start of Flush TXN  --> "  <<  txnNum_ << "\n\n";
     if (iter != txnMap_.end()) {
         p_NxTxnMgr = iter->second;
         p_NxTxnMgr->PrintPrintMe();
@@ -139,9 +134,6 @@ int NxClientApi::FlushObjActions() {
         }
     }
     IncrementToNextTxn();
-
-    //cout <<  " \n #### End of Flush TXN  --> "  << txnNum_ <<  "\n\n ..Sleeping for 2 secs\n";
-    //My23 sleep(1);
 
     return NxProcSUCCESS;
 }
@@ -183,7 +175,6 @@ int NxClientApi::FlushTxn() {
     if (p_nnSock !=nullptr) {
         p_NxTxnMgr->SendTxnBuffToNano(p_nnSock, pld_bytes);
     }
-    //My23  sleep(1);
     IncrementToNextTxn();
 
     return NxProcSUCCESS;
@@ -205,7 +196,6 @@ int NxClientApi::StartTxn(int *curr_txn_no) {
     p_NxTxnMgr->SetNxTxnMgrNum(txnNum_);
     txnMap_[txnNum_]    =   p_NxTxnMgr;
     *curr_txn_no        = txnNum_;
-    //IncrementToNextTxn();
 
     return NxProcSUCCESS;
 }
@@ -248,8 +238,6 @@ int NxClientApi::FlushTxn(int curr_txn_no) {
     if (p_nnSock !=nullptr) {
         p_NxTxnMgr->SendTxnBuffToNano(p_nnSock, pld_bytes);
     }
-    //My23 sleep(1);
-    //IncrementToNextTxn();
 
     return NxProcSUCCESS;
 }
@@ -259,7 +247,6 @@ int NxClientApi::AddActionToTxn(int curr_txn_no, TestObject *intf,
 
     map<int, NxTxnMgr*>::iterator    iter;
     NxTxnMgr*                        p_NxTxnMgr = nullptr;
-    //cookie_t                           alloted_id;
 
     iter = txnMap_.find(curr_txn_no);
 
@@ -270,10 +257,8 @@ int NxClientApi::AddActionToTxn(int curr_txn_no, TestObject *intf,
         p_NxTxnMgr = iter->second;
     }
 
-    //alloted_id  = p_NxTxnMgr->TxnAddObj(intf, action_type, *req_cookie);
 
     p_NxTxnMgr->TxnAddObj(intf, action_type, req_cookie);
-    //*req_cookie = alloted_id;
     return NxProcSUCCESS;
 }
 
