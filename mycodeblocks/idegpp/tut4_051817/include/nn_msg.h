@@ -18,19 +18,21 @@ class NanoMsg
     public:
         enum ConnType { ConnClient , ConnServer };
 
-        NanoMsg(const char *, ConnType);
+        NanoMsg(IN const char *, IN ConnType);
         virtual ~NanoMsg();
 
         int ConnectToEndPoint();
-        int Send(const char *);
-        int Recv(const char *);
-        int Send(const char *buf,  int buf_len, int flags, int *total_sent_bytes); //for app use
-        int Recv(char       *buf , int buf_len, int flags, int *total_recv_bytes); //for app use
-        int SetClientApiRef(NxClientApi *);
+        int Send(IN const char *);
+        int Recv(OUT const char *);
+        int Send(IN const char *buf, IN int buf_len,
+                 IN int flags, OUT int *total_sent_bytes); //for app use
+        int Recv(OUT char *buf , IN int buf_len,
+                 IN int flags, OUT int *total_recv_bytes); //for app use
+        int SetClientApiRef(IN NxClientApi *);
         bool IsClient();
 
         int RunUT();
-        int PrintBytes(const char *pBytes , const int nBytes);
+        int PrintBytes(IN const char *pBytes , IN const int nBytes);
 
 
     protected:

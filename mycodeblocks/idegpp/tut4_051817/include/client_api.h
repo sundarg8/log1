@@ -19,15 +19,26 @@ class NxClientApi : public NxProcObj
 
                 NxClientApi() ;
         virtual ~NxClientApi();
-        int     SetupClientEndPoint(const char *,EndPointType );
-        int     SetupServerEndPoint(const char *,EndPointType );
+        int     SetupClientEndPoint(IN const char *,IN EndPointType );
+        int     SetupServerEndPoint(IN const char *,IN EndPointType );
         int     StartNewTxnAndWaitOnRecv();
         bool    IsClientMode();
         bool    IsServerMode();
 
-        //Deprecated for App use.
-        int     SetupSockConnection(NanoMsg *ptr);
+        //ut4
+        int     StartTxnWithId(IN int curr_txn_no);
+        int     AddActionToTxn(IN int curr_txn_no, IN TestObject *obj,IN enum  action_t , OUT cookie_t *);
+        int     FlushTxn(IN int curr_txn_no);
+        //abort add
 
+
+
+        virtual void PrintPrintMe();
+        virtual void PrintReflection() {}
+        virtual void LogMe(){}
+
+        //Below Public Apis -- Deprecated for App use.
+        int     SetupSockConnection(NanoMsg *ptr);
         //ut1
         int     PerformActionOnObj(TestObject *,enum  action_t , cookie_t *);
         int     FlushObjActions();
@@ -36,17 +47,7 @@ class NxClientApi : public NxProcObj
         int     FlushTxn();
         //ut3
         int     StartTxn(int *curr_txn_no);
-        int     AddActionToTxn(int curr_txn_no, TestObject *obj,enum  action_t , cookie_t *);
-        int     FlushTxn(int curr_txn_no);
-        //ut4
-        int     StartTxnWithId(int curr_txn_no);
 
-
-        //abort add
-
-        virtual void PrintPrintMe();
-        virtual void PrintReflection() {}
-        virtual void LogMe(){}
 
 
     protected:

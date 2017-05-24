@@ -30,14 +30,14 @@ class NxTxnMgr : public NxProcObj
                 NxTxnMgr();
         virtual ~NxTxnMgr();
 
-        int     SetNxTxnMgrNum(int val_NxTxnMgr);
-        int     TxnAddObj(TestObject *, enum action_t  , cookie_t *);
+        int     SetNxTxnMgrNum(IN int val_NxTxnMgr);
+        int     TxnAddObj(IN TestObject *, IN enum action_t  , OUT cookie_t *);
 
         int     ConvertToBuffer();
-        int     ConvBufferToTxn(int recv_bytes, int *rcvd_txn_no);
+        int     ConvBufferToTxn(IN int recv_bytes, OUT int *rcvd_txn_no);
 
-        int     SendTxnBuffToNano(NanoMsg *p_txnSock, int pld_bytes);
-        int     RecvTxnBufferFromNano(NanoMsg *p_txnSock, int *recv_bytes);
+        int     SendTxnBuffToNano(IN NanoMsg *p_txnSock, IN int pld_bytes);
+        int     RecvTxnBufferFromNano(IN NanoMsg *p_txnSock, OUT int *recv_bytes);
 
         virtual void    PrintPrintMe();
         virtual void    PrintReflection() {}

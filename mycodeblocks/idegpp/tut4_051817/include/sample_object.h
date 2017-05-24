@@ -14,6 +14,9 @@ using namespace std;
 enum  action_t  { GET, CREATE , MODIFY , DELETE };
 #define nameSz 12
 typedef  int Syserr_t;
+#define IN
+#define OUT
+#define IN_OUT
 
 
 typedef struct tag_ObjPldHeader {
