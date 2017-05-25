@@ -32,7 +32,7 @@ int NxClientApi::SetupConnection() {
 
 
 
-int NxClientApi::StartNewTxn(int *p_txn_no) {
+int NxClientApi::StartNewTxn(int *p_txn_no, NxClientApiTxnParams *p_params) {
     if (nullptr == p_txn_no) {
         StartTxn();
         return NxProcSUCCESS;

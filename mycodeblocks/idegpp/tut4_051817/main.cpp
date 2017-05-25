@@ -2,7 +2,7 @@
 #include "client_api.h"
 
 #define SOCKET_ADDR "ipc:///data/pair_xx_cb5.ipc"
-#define tempstr "May24-v1 "
+#define tempstr "May25-v1 "
 
 using namespace std;
 void ut6_client(NxClientApi *, int usage_mode);

@@ -36,12 +36,13 @@ typedef struct NxClientApiConnectionParams_ {
 
 
 typedef struct NxClientApiTxnParams_ {
-    int     priority = 10;
+    int     priority = -1;
+    int     queue_id = -1;
 } NxClientApiTxnParams;
 
 typedef struct ClientApiObjCookie_ {
-    void *data_ptr;
-    uint16_t magic_no;
+    void *data_ptr    = nullptr ;
+    uint16_t magic_no = 0 ;
 } ClientApiObjCookie;
 
 
@@ -60,7 +61,7 @@ class NxClientApi : public NxProcObj
          *          - if NULL
 
          */
-        virtual int  StartNewTxn(IN_OUT int *p_txn_no = nullptr);
+        virtual int  StartNewTxn(IN_OUT int *p_txn_no = nullptr, IN NxClientApiTxnParams *p_params = nullptr);
         virtual int  CloseTxn   (IN int *p_txn_no = nullptr);
         virtual int  AddObjectActionToTxn(IN TestObject *obj, IN enum  action_t , OUT cookie_t *);
         virtual int  AddObjectActionToTxn(IN int txn_no, IN TestObject *obj, IN enum  action_t , OUT cookie_t *);
@@ -69,13 +70,13 @@ class NxClientApi : public NxProcObj
         virtual int  FlushAllObjectActions();
 
         int     StartNewTxnAndWaitOnRecv();
-
-
         bool    IsClientMode();
         bool    IsServerMode();
 
+
         //abort add
 
+        //Inherited APIs
         virtual void PrintPrintMe();
         virtual void PrintReflection() {}
         virtual void LogMe(){}
