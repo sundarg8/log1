@@ -3,7 +3,7 @@
 
 
 #define SOCKET_ADDR "ipc:///data/pair_xx_cb5.ipc"
-#define tempstr "May25-v3 "
+#define tempstr "May25-v4 "
 using namespace std;
 void ut6_client(NxClientApi *, int test_case);
 void ut6_server(NxClientApi *, int test_case);
@@ -73,15 +73,6 @@ int main(int argc, char**argv) {
     4) Call StartNewTxn(ptr) with explicitly set value of txn_no.
 */
 
-void ut6_server(NxClientApi *p_apiObj, int test_case) {
-    cout << "  Running Test " << __FUNCTION__ << " user_mode : " << test_case << endl;
-    for  (int i =0 ; i < 2; i++) {
-        p_apiObj->StartNewTxnAndWaitOnRecv();
-    }
-
-    sleep(1);
-    return;
-}
 
 
 void ut6_client(NxClientApi *p_apiObj, int test_case) {
@@ -180,6 +171,16 @@ void ut6_client(NxClientApi *p_apiObj, int test_case) {
 
 }
 
+
+void ut6_server(NxClientApi *p_apiObj, int test_case) {
+    cout << "  Running Test " << __FUNCTION__ << " user_mode : " << test_case << endl;
+    for  (int i =0 ; i < 2; i++) {
+        p_apiObj->StartNewTxnAndWaitOnRecv();
+    }
+
+    sleep(1);
+    return;
+}
 
 #if 0
 
