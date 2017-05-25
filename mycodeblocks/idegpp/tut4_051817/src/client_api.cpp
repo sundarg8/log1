@@ -5,11 +5,78 @@
 
 
 NxClientApi::NxClientApi() {
-    txnNum_         = 22;
+    txnNum_         = 22;   //Default Txn Start Number.
     p_nnSock        = nullptr;
 }
 
+NxClientApi::NxClientApi(IN NxClientApiConnectionParams *params) {
+    txnNum_     = 22;       //Default Txn Start Number.
+    p_nnSock    = nullptr;
+    std::memcpy(&connParams_, params, sizeof(NxClientApiConnectionParams));
+}
+
 NxClientApi::~NxClientApi() {}
+
+int NxClientApi::SetupConnection() {
+    if (NxClientApiNanoMsgSock == connParams_.connection_type) {
+        NanoMsg     *p_nanoMsg  = nullptr;
+        if (NxClientApiServerMode == connParams_.connection_mode) {
+            p_nanoMsg = new  NanoMsg(connParams_.connection_addr, NanoMsg::ConnServer);
+        } else {
+            p_nanoMsg = new  NanoMsg(connParams_.connection_addr, NanoMsg::ConnClient);
+        }
+        SetupSockConnection(p_nanoMsg);
+    }
+    return NxProcSUCCESS;
+}
+
+
+
+int NxClientApi::StartNewTxn(int *p_txn_no) {
+    if (nullptr == p_txn_no) {
+        StartTxn();
+        return NxProcSUCCESS;
+    }
+    if (0 == *p_txn_no) {
+        StartTxn(p_txn_no); //IN_OUT case
+    } else {
+        StartTxnWithId(*p_txn_no);  //IN case
+    }
+
+    return NxProcSUCCESS;
+}
+
+int NxClientApi::CloseTxn(int *p_txn_no) {
+    if (nullptr == p_txn_no) {
+        FlushObjActions();
+        return NxProcSUCCESS;
+    } else if (0 != *p_txn_no) {
+        FlushTxn(*p_txn_no);
+    } else {
+        FlushTxn();
+    }
+    return NxProcSUCCESS;
+}
+
+int NxClientApi::AddObjectAction(TestObject *intf,
+            enum  action_t  action_type, cookie_t *cookie) {
+
+    return PerformActionOnObj(intf,action_type, cookie);
+
+}
+
+int NxClientApi::FlushAllObjectActions() {
+    return FlushObjActions();
+}
+
+int NxClientApi::AddObjectActionToTxn(IN int txn_no, IN TestObject *obj,IN enum  action_t action_type, OUT cookie_t *req_cookie) {
+    return AddActionToTxn(txn_no,  obj, action_type, req_cookie);
+}
+
+
+int NxClientApi::AddObjectActionToTxn(IN TestObject *obj,IN enum  action_t action_type , OUT cookie_t *req_cookie) {
+    return AddActionToTxn(0,  obj, action_type, req_cookie);
+}
 
 int NxClientApi::SetupClientEndPoint(const char *sock_addr, EndPointType end_type) {
     if (end_type == NanoMsgSock) {
@@ -71,7 +138,7 @@ int NxClientApi::StartNewTxnAndWaitOnRecv() {
     txnMap_[rcvd_txn_num]    =   p_NxTxnMgr;
 
     //UT_code.. To loop the msg back to Client.TBD.
-    if (IsServerMode() )     FlushTxn(rcvd_txn_num);
+    if (IsServerMode() )    { FlushTxn(rcvd_txn_num); }
 
     return NxProcSUCCESS;
 }
@@ -153,6 +220,8 @@ int NxClientApi::StartTxn() {
     p_NxTxnMgr->SetNxTxnMgrNum(txnNum_);
     txnMap_[txnNum_]    =   p_NxTxnMgr;
 
+    //new1 IncrementToNextTxn();
+
     return NxProcSUCCESS;
 }
 
@@ -175,7 +244,7 @@ int NxClientApi::FlushTxn() {
     if (p_nnSock !=nullptr) {
         p_NxTxnMgr->SendTxnBuffToNano(p_nnSock, pld_bytes);
     }
-    IncrementToNextTxn();
+    //new1 IncrementToNextTxn();
 
     return NxProcSUCCESS;
 }
@@ -248,6 +317,9 @@ int NxClientApi::AddActionToTxn(int curr_txn_no, TestObject *intf,
     map<int, NxTxnMgr*>::iterator    iter;
     NxTxnMgr*                        p_NxTxnMgr = nullptr;
 
+    //new1
+    if (0 == curr_txn_no)  curr_txn_no = txnNum_;
+
     iter = txnMap_.find(curr_txn_no);
 
     if (iter == txnMap_.end()) {
@@ -262,3 +334,33 @@ int NxClientApi::AddActionToTxn(int curr_txn_no, TestObject *intf,
     return NxProcSUCCESS;
 }
 
+
+
+/*
+int NxClientApi::StartNewTxn(NxClientApiTxnParams *p_txn_params) {
+    if (nullptr == p_txn_params) {
+        StartTxn();
+    }
+    if (0 == p_txn_params->txn_no) {
+        StartTxn(&(p_txn_params->txn_no)); //IN_OUT case
+    } else {
+        StartTxnWithId(p_txn_params->txn_no);  //IN case
+    }
+
+    return NxProcSUCCESS;
+}
+
+int NxClientApi::CloseTxn(NxClientApiTxnParams *p_txn_params) {
+    if (nullptr == p_txn_params) {
+        FlushObjActions();
+    } else if (0 != p_txn_params->txn_no) {
+        FlushTxn(p_txn_params->txn_no);
+    } else {
+        FlushTxn();
+    }
+    return NxProcSUCCESS;
+}
+
+
+
+*/
