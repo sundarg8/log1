@@ -4,6 +4,7 @@
 #include <iostream>
 #include <unistd.h>
 #include <map>
+#include <vector>
 #include "NxProcObj.h"
 #include "sample_object.h"
 #include "txn.h"
@@ -13,7 +14,7 @@ using namespace std;
 
 typedef int cookie_t;
 
-int NxClientApiHalInit(int argc, NxClientApi **p_apiObj);
+int NxProcClientApiInit(int argc, NxClientApi **p_apiObj);
 
 enum NxClientApiConnectType {
         NxClientApiInvalidConnectType,
@@ -21,11 +22,11 @@ enum NxClientApiConnectType {
         NxClientApiNamedPipe,
 };
 
-enum NxClientApiConnectMode {
+typedef enum NxClientApiConnectMode_ {
         NxClientApiInvalidConnectMode,
         NxClientApiClientMode,
         NxClientApiServerMode
-};
+} NxClientApiConnectMode;
 
 typedef struct NxClientApiConnectionParams_ {
     NxClientApiConnectType  connection_type;
@@ -69,9 +70,9 @@ class NxClientApi : public NxProcObj
         virtual int  AddObjectAction(TestObject *,enum  action_t , cookie_t *);
         virtual int  FlushAllObjectActions();
 
-        int     StartNewTxnAndWaitOnRecv();
-        bool    IsClientMode();
-        bool    IsServerMode();
+        virtual int  StartNewTxnAndWaitOnRecv();
+        virtual bool IsServerMode();
+
 
 
         //abort add
@@ -86,7 +87,7 @@ class NxClientApi : public NxProcObj
     protected:
         NxClientApi() ;
         virtual int   SetTxnParams(IN NxClientApiTxnParams *p_txn_params){ return 0; }
-
+        virtual bool IsClientMode();
 
         //To Be Deleted..
         enum EndPointType { Undefined, NanoMsgSock , UnixPipe };// TSD
@@ -104,13 +105,13 @@ class NxClientApi : public NxProcObj
         int     StartTxnWithId(IN int curr_txn_no);
         int     AddActionToTxn(IN int curr_txn_no, IN TestObject *obj,IN enum  action_t , OUT cookie_t *);
         int     FlushTxn(IN int curr_txn_no);
+        NanoMsg                  * p_nnSock;
+        map<int, NxTxnMgr*>      txnMap_;
 
 
     private:
-        map<int, NxTxnMgr*>      txnMap_;
         int                      txnNum_;
         EndPointType             endPtType_;
-        NanoMsg                  * p_nnSock;
         NxClientApiConnectionParams connParams_;
         int                      IncrementToNextTxn();
 

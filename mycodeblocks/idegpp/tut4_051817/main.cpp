@@ -1,44 +1,64 @@
 
-#include "client_api.h"
+#include "NxServerApi.h"
+
 
 #define SOCKET_ADDR "ipc:///data/pair_xx_cb5.ipc"
-#define tempstr "May25-v1 "
-
+#define tempstr "May25-v3 "
 using namespace std;
-void ut6_client(NxClientApi *, int usage_mode);
+void ut6_client(NxClientApi *, int test_case);
+void ut6_server(NxClientApi *, int test_case);
 
 
-int NxClientApiHalInit(int argc, NxClientApi **p_apiObj) {
+int NxClientInitializeConnectionParams(NxClientApiConnectionParams *p_conn_params,
+                NxClientApiConnectMode app_mode = NxClientApiClientMode) {
 
-    Syserr_t                ret_val = NxProcSUCCESS;
+    p_conn_params->connection_type = NxClientApiNanoMsgSock;
+    p_conn_params->is_blocking_connection = true;
+    strncpy(p_conn_params->connection_addr, SOCKET_ADDR,
+            sizeof(p_conn_params->connection_addr));
+
+    p_conn_params->connection_mode = app_mode;
+
+    return NxProcSUCCESS;
+}
+
+int NxProcClientApiInit(NxClientApi **p_apiObj) {
 
     NxClientApiConnectionParams conn_params;
-    conn_params.connection_type = NxClientApiNanoMsgSock;
-    conn_params.is_blocking_connection = true;
-    conn_params.connection_mode =
-        (3 == argc) ? NxClientApiServerMode : NxClientApiClientMode;
-
-    strncpy(conn_params.connection_addr, SOCKET_ADDR,
-            sizeof(conn_params.connection_addr));
-
+    NxClientInitializeConnectionParams(&conn_params);
 
     (*p_apiObj) = new NxClientApi(&conn_params);
     (*p_apiObj)->SetupConnection();
 
-    return ret_val;
+    return NxProcSUCCESS;
+}
+
+int NxProcServerApiInit(NxClientApi **p_apiObj) {
+
+    NxClientApiConnectionParams conn_params;
+    NxClientInitializeConnectionParams(&conn_params, NxClientApiServerMode );
+
+    (*p_apiObj) = new NxServerApi(&conn_params);
+    (*p_apiObj)->SetupConnection();
+
+    return NxProcSUCCESS;
 }
 
 int main(int argc, char**argv) {
 
-    cout << " -- Start of Main() ---- " << endl;
+    std::vector<uint8_t> nums { 1, 2 , 3 , 4};
+
     NxClientApi *p_apiObj = nullptr;
 
-    NxClientApiHalInit(argc, &p_apiObj);
-    for (int mode=1; mode < 5; mode++) {
-        ut6_client(p_apiObj,mode);
-        sleep(2);
+    if (3 != argc) {
+        NxProcClientApiInit(&p_apiObj);
+        for (auto n : nums)   ut6_client(p_apiObj, n);
+
+    } else {
+        NxProcServerApiInit(&p_apiObj);
+        for (auto n : nums)   ut6_server(p_apiObj, n);
     }
-    cout << tempstr << "exec of ut1_client "  << endl;
+
     return 0;
 }
 
@@ -46,38 +66,39 @@ int main(int argc, char**argv) {
 
 /*
 * Modes of App Usage of NxClientApi. -->
-    a) No Understanding / Usage of Txn ,, except for call to  FlushAllObjectActions().
-    b) Call StartNewTxn() and CloseTxn() with no specific reference to Txn_no and EMPTY params.
-    c) Call StartNewTxn(ptr) with pass-value of txn as zero, and expects overwritte value to be allocated Txn_no.
-    d) Call StartNewTxn(ptr) with explicitly set value of txn_no.
+    TestCase->
+    1) No Understanding / Usage of Txn ,, except for call to  FlushAllObjectActions().
+    2) Call StartNewTxn() and CloseTxn() with no specific reference to Txn_no and EMPTY params.
+    3) Call StartNewTxn(ptr) with pass-value of txn as zero, and expects overwritte value to be allocated Txn_no.
+    4) Call StartNewTxn(ptr) with explicitly set value of txn_no.
 */
 
+void ut6_server(NxClientApi *p_apiObj, int test_case) {
+    cout << "  Running Test " << __FUNCTION__ << " user_mode : " << test_case << endl;
+    for  (int i =0 ; i < 2; i++) {
+        p_apiObj->StartNewTxnAndWaitOnRecv();
+    }
+
+    sleep(1);
+    return;
+}
 
 
-void ut6_client(NxClientApi *p_apiObj, int user_mode) {
+void ut6_client(NxClientApi *p_apiObj, int test_case) {
 
     cookie_t      cookies[10];
     TestObject  intf1, intf2, intf3, intf4;
     int first_txn_no = -1, second_txn_no = -1;
-    cout << "  Running Test " << __FUNCTION__ << " user_mode : " << user_mode << endl;
 
-    if (p_apiObj->IsServerMode() ) {
-        cout <<  tempstr << " -- Start in Server Listen Mode ---- " << endl;
-        for  (int i =0 ; i < 2; i++) {
-                p_apiObj->StartNewTxnAndWaitOnRecv();
-        }
-        return;
-    }
+    cout << "  Running Test " << __FUNCTION__ << " user_mode : " << test_case << endl;
 
-    //Client Mode.
-    cout <<  tempstr << " -- Start in Client Send Mode ---- " << endl;
     intf1.SetParams((char *)"A54010",  7, 12);
     intf2.SetParams((char *)"B6689", 13, 15);
     intf3.SetParams((char *)"eth3", 19, 13);
     intf4.SetParams((char *)"eth4", 23, 10);
 
 
-    switch (user_mode) {
+    switch (test_case) {
 
         case 1: {
             p_apiObj->AddObjectAction(&intf1, CREATE, &cookies[0]);
@@ -153,7 +174,9 @@ void ut6_client(NxClientApi *p_apiObj, int user_mode) {
         }
     }
 
-    cout << " ------ MAIN OUTPUT ---- " << " Copies --> " << TestObject::NumCopyCtors_ << endl;
+    sleep(1);
+
+    cout << " ------ MAIN OUTPUT ---- " << tempstr << " Copies --> " << TestObject::NumCopyCtors_ << endl;
 
 }
 

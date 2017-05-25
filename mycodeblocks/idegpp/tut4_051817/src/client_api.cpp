@@ -119,11 +119,13 @@ int NxClientApi::SetupSockConnection(NanoMsg *ptr) {
 }
 
 bool NxClientApi::IsClientMode() {
-    return (p_nnSock->IsClient());
+    return (!IsServerMode());
+
 }
 
 bool NxClientApi::IsServerMode() {
-    return (p_nnSock->IsClient() == false);
+    return ((NxClientApiServerMode == connParams_.connection_mode) ? true : false);
+
 }
 
 int NxClientApi::StartNewTxnAndWaitOnRecv() {
@@ -131,14 +133,12 @@ int NxClientApi::StartNewTxnAndWaitOnRecv() {
     int rcvd_txn_num =0 ;
     int recv_bytes = 0;
     if (p_nnSock !=nullptr) {
+        cout << __FUNCTION__ <<  "  -- Client Waiting to Recv Data... "  << endl;
         p_NxTxnMgr->RecvTxnBufferFromNano(p_nnSock, &recv_bytes);
         p_NxTxnMgr->ConvBufferToTxn(recv_bytes, &rcvd_txn_num);
 
     }
     txnMap_[rcvd_txn_num]    =   p_NxTxnMgr;
-
-    //UT_code.. To loop the msg back to Client.TBD.
-    if (IsServerMode() )    { FlushTxn(rcvd_txn_num); }
 
     return NxProcSUCCESS;
 }
@@ -155,7 +155,7 @@ void NxClientApi::PrintPrintMe() {
     NxTxnMgr*                        p_NxTxnMgr = nullptr;
 
     for (iter = txnMap_.begin(); iter != txnMap_.end(); iter++ ) {
-        cout    << __FUNCTION__ << setw(9)
+        cout    << __FUNCTION__  << setw(9)
                 << iter->first << " : " << iter->second  << endl;
 
         p_NxTxnMgr = iter->second;
