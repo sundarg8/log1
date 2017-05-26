@@ -77,7 +77,8 @@ class NxClientApi : public NxProcObj
         int     AddActionToTxn(IN int curr_txn_no, IN TestObject *obj,IN ClientApiObjAction , OUT ClientApiObjCookie *);
         int     FlushTxn(IN int curr_txn_no);
         NanoMsg                  * p_nnSock;
-        map<int, NxTxnMgr*>      txnMap_;
+        map<int, NxTxnMgr*>      ApiTxnMap_;
+        map<int, NxTxnMgr*>      ApiRespTxnMap_;
 
 
     private:

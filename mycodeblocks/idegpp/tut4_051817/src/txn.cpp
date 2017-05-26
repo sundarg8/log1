@@ -49,6 +49,8 @@ int NxTxnMgr::TxnAddObj(TestObject *obj_data, ClientApiObjAction action_type , C
 }
 
 int NxTxnMgr::SetClientApiRef(NxClientApi *parent_client) {
+
+
     //p_ParentClientApi = parent_client;
     return NxProcSUCCESS;
 }
@@ -59,6 +61,7 @@ int NxTxnMgr::ConvertToBuffer() {
     int ret_length;
     int obj_id;
     char *obj_pld_ptr ;
+    ClientApiObjAction obj_action = ClientApiObjActionUndefined;
 
     TxnPayload_t *p_pld = (TxnPayload_t *)TxnBuffer_;
     p_pld->txn_curr_index = TxnNo_;
@@ -73,7 +76,10 @@ int NxTxnMgr::ConvertToBuffer() {
         r_obj = iter->second;
         obj_id = iter->first;
 
-        ret_length = r_obj.ConvertToBuffer(obj_id,obj_pld_ptr, MAX_TXN_BUFFER_SZ);
+        if (ObjEncapMap_[iter->first]) {
+             obj_action = (ObjEncapMap_[iter->first])->objAction;
+        }
+        ret_length = r_obj.ConvertToBuffer(obj_id,obj_pld_ptr, MAX_TXN_BUFFER_SZ, obj_action);
         obj_pld_ptr     += ret_length;
         p_pld->txn_sz   += ret_length;
 
@@ -108,8 +114,24 @@ int NxTxnMgr::ConvBufferToTxn(int recv_bytes, int *rcvd_txn_no) {
     while ((curr_sz + obj_pld_start->unit_sz) <= recv_bytes && (obj_pld_start->unit_sz != 0)) {
 
         TestObject  curr_obj;
+
         curr_obj.ConvertToObjInst((char *)obj_pld_start->unit_pyld_start );
-        ActionsMap_.insert(pair<int, TestObject&> (obj_pld_start->unit_id, curr_obj));
+        if (NxClientApiClientMode != TxnParentApiMode_)
+            ActionsMap_.insert(pair<int, TestObject&> (obj_pld_start->unit_id, curr_obj));
+        else
+            RespActionsMap_.insert(pair<int, TestObject&> ((obj_pld_start->unit_id+0), curr_obj)); //HI_UT_DEL
+
+        if (1 || (0 != obj_pld_start->unit_action)) {  //HI_TBD ...do you want to not insert encap-map on client recv ??
+            ClientApiObjEncap *obj_encap = new ClientApiObjEncap();
+            obj_encap->objAction    = obj_pld_start->unit_action;
+            //obj_encap->objCookie    = obj_pld_start->unit_cookie;
+            obj_encap->objPtr       = &curr_obj;
+            if (NxClientApiClientMode != TxnParentApiMode_)
+                ObjEncapMap_.insert(pair<int,ClientApiObjEncap *> (obj_pld_start->unit_id, obj_encap));
+            else
+                RespObjEncapMap_.insert(pair<int,ClientApiObjEncap *> (obj_pld_start->unit_id, obj_encap));
+        }
+
         obj_pld_start = (ObjPldHeader_t *) ((char *)obj_pld_start + obj_pld_start->unit_sz);
         curr_sz       += obj_pld_start->unit_sz;
         obj_count++;
@@ -117,11 +139,49 @@ int NxTxnMgr::ConvBufferToTxn(int recv_bytes, int *rcvd_txn_no) {
 
     PrintPrintMe();
 
+    ///////FindRespCookieAndCallApp();
+
     *rcvd_txn_no = TxnNo_;
 
     return NxProcSUCCESS;
 }
 
+int NxTxnMgr::FindRespCookieAndCallApp(NxTxnMgr *p_req_txn) {
+
+    map<int, TestObject >::iterator  iter;
+    TestObject r_obj;
+
+    cout << endl;
+    if (NxClientApiServerMode == TxnParentApiMode_) cout <<  " Server ";
+    else                                            cout << " Client ";
+
+    if (NxClientApiMsgSend == TxnMsgDirn_)  cout << " Send " ;
+    else                                    cout << " Recv " ;
+
+    cout << "Txn Number  CB_mode -->  " << TxnNo_ << endl;
+
+    for (iter = RespActionsMap_.begin(); iter != RespActionsMap_.end(); iter++ ) {
+        int resp_obj_id = iter->first;
+        if (1 ) { /// ActionsMap_[resp_obj_id]) {
+            if (RespObjEncapMap_[iter->first]) {
+
+                if (p_req_txn->ObjEncapMap_[iter->first]) {
+
+                    cout << " planning  to call CB for Object_id " << resp_obj_id
+                            << "  CB_obj_ptr " << *(int *)((p_req_txn->ObjEncapMap_[iter->first])->objCookie.data_ptr)
+                            << "  CB_Magic " << (p_req_txn->ObjEncapMap_[iter->first])->objCookie.magic_no
+                            << endl;
+
+
+                }
+            }
+        }
+    }
+
+    PrintPrintMe();
+
+
+}
 
 int NxTxnMgr::SendTxnBuffToNano(NanoMsg *p_txnSock, int pld_bytes) {
     int sent_bytes = 0;
@@ -158,8 +218,21 @@ void NxTxnMgr::PrintPrintMe() {
         cout <<  setw(9) << " ObjectId_ : " << iter->first << "  " ;
         if (ObjEncapMap_[iter->first]) {
             cout <<  " Action " << (ObjEncapMap_[iter->first])->objAction << "  ";
-            cout <<  " Cookie " << *(int *)(ObjEncapMap_[iter->first])->objCookie.data_ptr << " " ;
+            if (NxClientApiServerMode != TxnParentApiMode_)
+                cout <<  " Cookie " << *(int *)(ObjEncapMap_[iter->first])->objCookie.data_ptr << " " ;
             cout <<  " Magic " << (ObjEncapMap_[iter->first])->objCookie.magic_no << " " << endl << "         " ;
+
+        }
+        r_obj = iter->second;
+        r_obj.PrintPrintMe();
+
+    }
+    for (iter = RespActionsMap_.begin(); iter != RespActionsMap_.end(); iter++ ) {
+        cout <<  setw(9) << " R-ObjectId_ : " << iter->first << "  " ;
+        if (RespObjEncapMap_[iter->first]) {
+            cout <<  " R-Action " << (RespObjEncapMap_[iter->first])->objAction << "  ";
+            //cout <<  " Cookie " << *(int *)(ObjEncapMap_[iter->first])->objCookie.data_ptr << " " ;
+            cout <<  " R-Magic " << (RespObjEncapMap_[iter->first])->objCookie.magic_no << " " << endl << "         " ;
 
         }
         r_obj = iter->second;

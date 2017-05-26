@@ -132,13 +132,20 @@ int NxClientApi::StartNewTxnAndWaitOnRecv() {
     NxTxnMgr*       p_NxTxnMgr = new NxTxnMgr(connParams_.connection_mode, NxClientApiMsgRecv);
     int rcvd_txn_num =0 ;
     int recv_bytes = 0;
-    if (p_nnSock !=nullptr) {
-        cout << __FUNCTION__ <<  "  -- Client Waiting to Recv Data... "  << endl;
-        p_NxTxnMgr->RecvTxnBufferFromNano(p_nnSock, &recv_bytes);
-        p_NxTxnMgr->ConvBufferToTxn(recv_bytes, &rcvd_txn_num);
-
+    if (p_nnSock ==nullptr) {
+        return NxProcFAILURE;
     }
-    txnMap_[rcvd_txn_num]    =   p_NxTxnMgr;
+
+    cout << __FUNCTION__ <<  "  -- Client Waiting to Recv Data... "  << endl;
+    p_NxTxnMgr->RecvTxnBufferFromNano(p_nnSock, &recv_bytes);
+    p_NxTxnMgr->ConvBufferToTxn(recv_bytes, &rcvd_txn_num);
+
+
+    NxTxnMgr* p_req_txn = ApiTxnMap_[rcvd_txn_num];
+    p_NxTxnMgr->FindRespCookieAndCallApp(p_req_txn);
+
+
+    ApiRespTxnMap_[rcvd_txn_num]    =   p_NxTxnMgr;
 
     return NxProcSUCCESS;
 }
@@ -154,7 +161,7 @@ void NxClientApi::PrintPrintMe() {
     map<int, NxTxnMgr*>::iterator    iter;
     NxTxnMgr*                        p_NxTxnMgr = nullptr;
 
-    for (iter = txnMap_.begin(); iter != txnMap_.end(); iter++ ) {
+    for (iter = ApiTxnMap_.begin(); iter != ApiTxnMap_.end(); iter++ ) {
         cout    << __FUNCTION__  << setw(9)
                 << iter->first << " : " << iter->second  << endl;
 
@@ -170,13 +177,13 @@ int NxClientApi::PerformActionOnObj(TestObject *intf,
     map<int, NxTxnMgr*>::iterator    iter;
     NxTxnMgr*                        p_NxTxnMgr = nullptr;
 
-    iter = txnMap_.find(txnNum_);
+    iter = ApiTxnMap_.find(txnNum_);
 
-    if (iter == txnMap_.end()) {
+    if (iter == ApiTxnMap_.end()) {
 
         p_NxTxnMgr       =    new NxTxnMgr(connParams_.connection_mode, NxClientApiMsgSend);
         p_NxTxnMgr->SetNxTxnMgrNum(txnNum_);
-        txnMap_[txnNum_]    =   p_NxTxnMgr;
+        ApiTxnMap_[txnNum_]    =   p_NxTxnMgr;
 
     } else {
         p_NxTxnMgr = iter->second;
@@ -191,8 +198,8 @@ int NxClientApi::FlushObjActions() {
     map<int, NxTxnMgr*>::iterator       iter;
     NxTxnMgr                            *p_NxTxnMgr = nullptr;
 
-    iter = txnMap_.find(txnNum_);
-    if (iter != txnMap_.end()) {
+    iter = ApiTxnMap_.find(txnNum_);
+    if (iter != ApiTxnMap_.end()) {
         p_NxTxnMgr = iter->second;
         p_NxTxnMgr->PrintPrintMe();
         int pld_bytes = p_NxTxnMgr->ConvertToBuffer();
@@ -210,15 +217,15 @@ int NxClientApi::StartTxn() {
     NxTxnMgr                            *p_NxTxnMgr = nullptr;
 
 
-    iter = txnMap_.find(txnNum_);
-    if (iter != txnMap_.end()) {
+    iter = ApiTxnMap_.find(txnNum_);
+    if (iter != ApiTxnMap_.end()) {
         cout << "Abort Needed Here.. New Txn already exists for TxnNum " << txnNum_;
         return NxProcFAILURE;
     }
 
     p_NxTxnMgr          =    new NxTxnMgr(connParams_.connection_mode, NxClientApiMsgSend);
     p_NxTxnMgr->SetNxTxnMgrNum(txnNum_);
-    txnMap_[txnNum_]    =   p_NxTxnMgr;
+    ApiTxnMap_[txnNum_]    =   p_NxTxnMgr;
 
     //new1 IncrementToNextTxn();
 
@@ -231,9 +238,9 @@ int NxClientApi::FlushTxn() {
     NxTxnMgr                            *p_NxTxnMgr = nullptr;
     int                                 pld_bytes   = 0;
 
-    iter = txnMap_.find(txnNum_);
+    iter = ApiTxnMap_.find(txnNum_);
 
-    if (iter == txnMap_.end()) {
+    if (iter == ApiTxnMap_.end()) {
         cout << "Abort Needed Here.. Txn does not exist for TxnNum " << txnNum_;
         return NxProcFAILURE;
     }
@@ -255,15 +262,15 @@ int NxClientApi::StartTxn(int *curr_txn_no) {
 
     IncrementToNextTxn();
 
-    iter = txnMap_.find(txnNum_);
-    if (iter != txnMap_.end()) {
+    iter = ApiTxnMap_.find(txnNum_);
+    if (iter != ApiTxnMap_.end()) {
         cout << "Abort Needed Here.. New Txn already exists for TxnNum " << txnNum_;
         return NxProcFAILURE;
     }
 
     p_NxTxnMgr          =    new NxTxnMgr(connParams_.connection_mode, NxClientApiMsgSend);
     p_NxTxnMgr->SetNxTxnMgrNum(txnNum_);
-    txnMap_[txnNum_]    =   p_NxTxnMgr;
+    ApiTxnMap_[txnNum_]    =   p_NxTxnMgr;
     *curr_txn_no        = txnNum_;
 
     return NxProcSUCCESS;
@@ -274,15 +281,15 @@ int NxClientApi::StartTxnWithId(int curr_txn_no) {
     map<int, NxTxnMgr*>::iterator       iter;
     NxTxnMgr                            *p_NxTxnMgr = nullptr;
 
-    iter = txnMap_.find(curr_txn_no);
-    if (iter != txnMap_.end()) {
+    iter = ApiTxnMap_.find(curr_txn_no);
+    if (iter != ApiTxnMap_.end()) {
         cout << __FUNCTION__ <<  "Abort Needed Here.. New Txn already exists for TxnNum " << txnNum_;
         return NxProcFAILURE;
     }
 
     p_NxTxnMgr              =   new NxTxnMgr(connParams_.connection_mode, NxClientApiMsgSend);
     p_NxTxnMgr->SetNxTxnMgrNum(curr_txn_no);
-    txnMap_[curr_txn_no]    =   p_NxTxnMgr;
+    ApiTxnMap_[curr_txn_no]    =   p_NxTxnMgr;
 
 
     return NxProcSUCCESS;
@@ -294,9 +301,9 @@ int NxClientApi::FlushTxn(int curr_txn_no) {
     NxTxnMgr                            *p_NxTxnMgr = nullptr;
     int                                 pld_bytes   = 0;
 
-    iter = txnMap_.find(curr_txn_no);
+    iter = ApiTxnMap_.find(curr_txn_no);
 
-    if (iter == txnMap_.end()) {
+    if (iter == ApiTxnMap_.end()) {
         cout << __FUNCTION__ << " Abort Needed Here.. Txn does not exist for TxnNum " << curr_txn_no;
         return NxProcFAILURE;
     }
@@ -320,9 +327,9 @@ int NxClientApi::AddActionToTxn(int curr_txn_no, TestObject *intf,
     //new1
     if (0 == curr_txn_no)  curr_txn_no = txnNum_;
 
-    iter = txnMap_.find(curr_txn_no);
+    iter = ApiTxnMap_.find(curr_txn_no);
 
-    if (iter == txnMap_.end()) {
+    if (iter == ApiTxnMap_.end()) {
         cout << " " << __FUNCTION__ << "Abort Needed Here.. Txn does not exist for TxnNum " << curr_txn_no;
         return NxProcFAILURE;
     } else {

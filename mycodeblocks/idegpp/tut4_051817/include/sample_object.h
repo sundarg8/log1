@@ -50,7 +50,13 @@ typedef struct ClientApiObjCookie_ {
 } ClientApiObjCookie;
 
 
-enum  ClientApiObjAction  { GET, CREATE , MODIFY , DELETE };
+enum  ClientApiObjAction  {
+    ClientApiObjActionUndefined,
+    ClientApiObjActionGet,
+    ClientApiObjActionCreate,
+    ClientApiObjActionModify,
+    ClientApiObjActionDelete,
+};
 #define nameSz 12
 typedef  int Syserr_t;
 #define IN
@@ -63,6 +69,7 @@ typedef struct tag_ObjPldHeader {
     int         unit_id;
     ClientApiObjAction    unit_action;
     int         unit_cookie;
+    int         unit_status;
     int         unit_pyld_start[0];
 } ObjPldHeader_t;
 
@@ -76,7 +83,7 @@ class TestObject : NxProcObj {
 
         static int NumCopyCtors_;
 
-        int ConvertToBuffer(int objectId, char *buf,  int max_length );
+        int ConvertToBuffer(int objectId, char *buf,  int max_length , ClientApiObjAction action = ClientApiObjActionUndefined);
         int ConvertToObjInst(char *buf, TestObject **ptr_to_new_obj);
         int ConvertToObjInst(char *buf, TestObject *ptr_alloc_obj);
         int ConvertToObjInst(char *buf);

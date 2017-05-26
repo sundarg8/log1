@@ -63,7 +63,7 @@ int TestObject::ConvertToObjInst(char *buf) {
     strncpy(IntfName_ , buf, sizeof(IntfName_));
 }
 
-int TestObject::ConvertToBuffer(int objectId, char *buf,  int max_length) {
+int TestObject::ConvertToBuffer(int objectId, char *buf,  int max_length, ClientApiObjAction obj_action) {
     std::size_t count = 0; //sizeof(*this);
     ObjPldHeader_t obj_pld;
     char *tmpbuf = buf;
@@ -74,7 +74,7 @@ int TestObject::ConvertToBuffer(int objectId, char *buf,  int max_length) {
 
     obj_pld.unit_sz = sizeof(ObjPldHeader_t) + obj_data_sz;
     obj_pld.unit_id = objectId;
-    obj_pld.unit_action = MODIFY ; //TBC
+    obj_pld.unit_action = obj_action ; //TBC
     obj_pld.unit_cookie = 0x11223344 ; //TBC
 
     //cout << "start -- buffer  -- " << count  << endl;

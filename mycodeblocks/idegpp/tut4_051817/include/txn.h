@@ -42,6 +42,8 @@ class NxTxnMgr : public NxProcObj
         int     SendTxnBuffToNano(IN NanoMsg *p_txnSock, IN int pld_bytes);
         int     RecvTxnBufferFromNano(IN NanoMsg *p_txnSock, OUT int *recv_bytes);
 
+        int     FindRespCookieAndCallApp(IN NxTxnMgr *req_txn);
+
         virtual void    PrintPrintMe();
         virtual void    PrintReflection() {}
         virtual void    LogMe(){}
@@ -64,6 +66,8 @@ class NxTxnMgr : public NxProcObj
 
         map<int, TestObject>    ActionsMap_;
         map<int, ClientApiObjEncap *> ObjEncapMap_;
+        map<int, TestObject>    RespActionsMap_;
+        map<int, ClientApiObjEncap *> RespObjEncapMap_;
         int                     TxnNo_;
         int                     ObjectId_;
         char                    TxnBuffer_[512];

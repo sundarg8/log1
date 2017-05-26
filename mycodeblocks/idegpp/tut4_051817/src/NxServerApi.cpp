@@ -26,7 +26,7 @@ int NxServerApi::StartNewTxnAndWaitOnRecv() {
         p_NxTxnMgr->ConvBufferToTxn(recv_bytes, &rcvd_txn_num);
 
     }
-    txnMap_[rcvd_txn_num]    =   p_NxTxnMgr;
+    ApiTxnMap_[rcvd_txn_num]    =   p_NxTxnMgr;
 
     CloseTxn(&rcvd_txn_num);
 
