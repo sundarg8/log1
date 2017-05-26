@@ -5,6 +5,7 @@
 #include <unistd.h>
 #include <map>
 #include <vector>
+
 #include "NxProcObj.h"
 #include "sample_object.h"
 #include "txn.h"
@@ -15,37 +16,6 @@ using namespace std;
 typedef int cookie_t;
 
 int NxProcClientApiInit(int argc, NxClientApi **p_apiObj);
-
-enum NxClientApiConnectType {
-        NxClientApiInvalidConnectType,
-        NxClientApiNanoMsgSock,
-        NxClientApiNamedPipe,
-};
-
-typedef enum NxClientApiConnectMode_ {
-        NxClientApiInvalidConnectMode,
-        NxClientApiClientMode,
-        NxClientApiServerMode
-} NxClientApiConnectMode;
-
-typedef struct NxClientApiConnectionParams_ {
-    NxClientApiConnectType  connection_type;
-    NxClientApiConnectMode  connection_mode;
-    char    connection_addr[48];
-    bool    is_blocking_connection;
-} NxClientApiConnectionParams;
-
-
-typedef struct NxClientApiTxnParams_ {
-    int     priority = -1;
-    int     queue_id = -1;
-} NxClientApiTxnParams;
-
-typedef struct ClientApiObjCookie_ {
-    void *data_ptr    = nullptr ;
-    uint16_t magic_no = 0 ;
-} ClientApiObjCookie;
-
 
 class NxClientApi : public NxProcObj
 {
@@ -71,7 +41,7 @@ class NxClientApi : public NxProcObj
         virtual int  FlushAllObjectActions();
 
         virtual int  StartNewTxnAndWaitOnRecv();
-        virtual bool IsServerMode();
+        bool IsServerMode();
 
 
 
@@ -86,8 +56,11 @@ class NxClientApi : public NxProcObj
 
     protected:
         NxClientApi() ;
+        NxClientApiConnectionParams connParams_; //TBD
+
         virtual int   SetTxnParams(IN NxClientApiTxnParams *p_txn_params){ return 0; }
         virtual bool IsClientMode();
+
 
         //To Be Deleted..
         enum EndPointType { Undefined, NanoMsgSock , UnixPipe };// TSD
@@ -112,7 +85,6 @@ class NxClientApi : public NxProcObj
     private:
         int                      txnNum_;
         EndPointType             endPtType_;
-        NxClientApiConnectionParams connParams_;
         int                      IncrementToNextTxn();
 
 

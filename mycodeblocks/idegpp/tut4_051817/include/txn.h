@@ -10,6 +10,7 @@ using namespace std;
 
 
 //#define MAX_TXN_BUFFER_SZ 512
+class NxClientApi;
 
 typedef int cookie_t;
 
@@ -27,7 +28,7 @@ typedef struct  TxnPayload_ {
 class NxTxnMgr : public NxProcObj
 {
     public:
-                NxTxnMgr();
+        NxTxnMgr(NxClientApiConnectMode mode, NxClientApiDirection direction);
         virtual ~NxTxnMgr();
 
         int     SetNxTxnMgrNum(IN int val_NxTxnMgr);
@@ -43,9 +44,13 @@ class NxTxnMgr : public NxProcObj
         virtual void    PrintReflection() {}
         virtual void    LogMe(){}
 
+        int SetClientApiRef(NxClientApi *parent_client);
+
+
 
     protected:
     private:
+        NxTxnMgr();
         static const int        MAX_TXN_BUFFER_SZ;
 
         map<int, TestObject>    ActionsMap_;
@@ -53,7 +58,10 @@ class NxTxnMgr : public NxProcObj
         int                     ObjectId_;
         char                    TxnBuffer_[512];
         int                     TxnPyldSz_;
+        NxClientApiConnectMode  TxnParentApiMode_;
+        NxClientApiDirection    TxnMsgDirn_;
 
+        //NxClientApi             *p_ParentClientApi;
         int                     GetNxTxnMgrNum();
 
 };

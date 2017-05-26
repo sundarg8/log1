@@ -4,11 +4,51 @@
 #include <iostream>
 #include <cstring>
 #include <iomanip>
-#include <NxProcObj.h>
+
+
+#include "NxProcObj.h"
 using namespace std;
 
 #define NxProcSUCCESS 0
 #define NxProcFAILURE -1
+
+
+enum NxClientApiConnectType {
+        NxClientApiInvalidConnectType,
+        NxClientApiNanoMsgSock,
+        NxClientApiNamedPipe,
+};
+
+typedef enum NxClientApiConnectMode_ {
+        NxClientApiInvalidConnectMode,
+        NxClientApiClientMode,
+        NxClientApiServerMode,
+} NxClientApiConnectMode;
+
+typedef enum NxClientApiDirection_ {
+    NxClientApiInvalidDirection,
+    NxClientApiMsgSend,
+    NxClientApiMsgRecv,
+} NxClientApiDirection;
+
+typedef struct NxClientApiConnectionParams_ {
+    NxClientApiConnectType  connection_type;
+    NxClientApiConnectMode  connection_mode;
+    char    connection_addr[48];
+    bool    is_blocking_connection;
+} NxClientApiConnectionParams;
+
+
+typedef struct NxClientApiTxnParams_ {
+    int     priority = -1;
+    int     queue_id = -1;
+} NxClientApiTxnParams;
+
+typedef struct ClientApiObjCookie_ {
+    void *data_ptr    = nullptr ;
+    uint16_t magic_no = 0 ;
+} ClientApiObjCookie;
+
 
 
 enum  action_t  { GET, CREATE , MODIFY , DELETE };

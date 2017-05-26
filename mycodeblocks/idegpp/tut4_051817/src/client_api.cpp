@@ -129,7 +129,7 @@ bool NxClientApi::IsServerMode() {
 }
 
 int NxClientApi::StartNewTxnAndWaitOnRecv() {
-    NxTxnMgr*       p_NxTxnMgr = new NxTxnMgr;
+    NxTxnMgr*       p_NxTxnMgr = new NxTxnMgr(connParams_.connection_mode, NxClientApiMsgRecv);
     int rcvd_txn_num =0 ;
     int recv_bytes = 0;
     if (p_nnSock !=nullptr) {
@@ -174,7 +174,7 @@ int NxClientApi::PerformActionOnObj(TestObject *intf,
 
     if (iter == txnMap_.end()) {
 
-        p_NxTxnMgr       =    new NxTxnMgr();
+        p_NxTxnMgr       =    new NxTxnMgr(connParams_.connection_mode, NxClientApiMsgSend);
         p_NxTxnMgr->SetNxTxnMgrNum(txnNum_);
         txnMap_[txnNum_]    =   p_NxTxnMgr;
 
@@ -216,7 +216,7 @@ int NxClientApi::StartTxn() {
         return NxProcFAILURE;
     }
 
-    p_NxTxnMgr          =    new NxTxnMgr();
+    p_NxTxnMgr          =    new NxTxnMgr(connParams_.connection_mode, NxClientApiMsgSend);
     p_NxTxnMgr->SetNxTxnMgrNum(txnNum_);
     txnMap_[txnNum_]    =   p_NxTxnMgr;
 
@@ -261,7 +261,7 @@ int NxClientApi::StartTxn(int *curr_txn_no) {
         return NxProcFAILURE;
     }
 
-    p_NxTxnMgr          =    new NxTxnMgr();
+    p_NxTxnMgr          =    new NxTxnMgr(connParams_.connection_mode, NxClientApiMsgSend);
     p_NxTxnMgr->SetNxTxnMgrNum(txnNum_);
     txnMap_[txnNum_]    =   p_NxTxnMgr;
     *curr_txn_no        = txnNum_;
@@ -280,7 +280,7 @@ int NxClientApi::StartTxnWithId(int curr_txn_no) {
         return NxProcFAILURE;
     }
 
-    p_NxTxnMgr              =   new NxTxnMgr();
+    p_NxTxnMgr              =   new NxTxnMgr(connParams_.connection_mode, NxClientApiMsgSend);
     p_NxTxnMgr->SetNxTxnMgrNum(curr_txn_no);
     txnMap_[curr_txn_no]    =   p_NxTxnMgr;
 

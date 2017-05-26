@@ -43,6 +43,8 @@ int NanoMsg::SetClientApiRef(NxClientApi *parent_client) {
 }
 
 int NanoMsg::Send(const char *buf) {
+    //if (p_ParentClientApi->IsServerMode())
+    //    cout << "test ";
     NanoMsgSock_.send(buf);
 
     return NxProcSUCCESS;

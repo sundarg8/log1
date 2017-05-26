@@ -9,6 +9,14 @@ NxTxnMgr::NxTxnMgr() {
     memset(TxnBuffer_, 0, sizeof(TxnBuffer_));
 }
 
+
+NxTxnMgr::NxTxnMgr(NxClientApiConnectMode conn_mode, NxClientApiDirection direction) {
+    TxnParentApiMode_  = conn_mode;
+    TxnMsgDirn_        = direction;
+    NxTxnMgr();
+}
+
+
 NxTxnMgr::~NxTxnMgr() {}
 
 int NxTxnMgr::SetNxTxnMgrNum(int val_NxTxnMgr) {
@@ -36,7 +44,16 @@ int NxTxnMgr::TxnAddObj(TestObject *obj_data, enum action_t action_type , cookie
 void NxTxnMgr::PrintPrintMe() {
     map<int, TestObject >::iterator  iter;
     TestObject r_obj;
-    cout << endl << " Txn Number -->  " << TxnNo_ << endl;
+    //if (p_ParentClientApi->IsServerMode())
+    cout << endl;
+    if (NxClientApiServerMode == TxnParentApiMode_) cout <<  " Server ";
+    else                                            cout << " Client ";
+
+    if (NxClientApiMsgSend == TxnMsgDirn_)  cout << " Send " ;
+    else                                    cout << " Recv " ;
+
+    cout << "Txn Number -->  " << TxnNo_ << endl;
+
     for (iter = ActionsMap_.begin(); iter != ActionsMap_.end(); iter++ ) {
         cout <<  setw(9) << " ObjectId_ : " << iter->first << "  " ;
         r_obj = iter->second;
@@ -45,6 +62,11 @@ void NxTxnMgr::PrintPrintMe() {
     cout <<endl;
 }
 
+
+int NxTxnMgr::SetClientApiRef(NxClientApi *parent_client) {
+    //p_ParentClientApi = parent_client;
+    return NxProcSUCCESS;
+}
 //TB_Edited
 int NxTxnMgr::ConvertToBuffer() {
     map<int, TestObject >::iterator  iter;
@@ -86,7 +108,6 @@ int NxTxnMgr::SendTxnBuffToNano(NanoMsg *p_txnSock, int pld_bytes) {
 }
 
 int NxTxnMgr::RecvTxnBufferFromNano(NanoMsg *p_txnSock, int *recv_bytes) {
-    static int Recv_txn_count = 0;
     p_txnSock->Recv(TxnBuffer_, 512, 0, recv_bytes);
     //p_txnSock->PrintBytes(TxnBuffer_, *recv_bytes);
 
@@ -97,7 +118,7 @@ int NxTxnMgr::ConvBufferToTxn(int recv_bytes, int *rcvd_txn_no) {
     TxnPayload_t    *txn_pld = (TxnPayload_t *)TxnBuffer_;
     ObjPldHeader_t *obj_pld_start;
     int curr_sz = 0;
-    char *buff_ptr;
+    //char *buff_ptr;
     int obj_count=0;
 
 

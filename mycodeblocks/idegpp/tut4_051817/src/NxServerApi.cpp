@@ -16,7 +16,7 @@ NxServerApi::NxServerApi(IN NxClientApiConnectionParams *params)
 }
 
 int NxServerApi::StartNewTxnAndWaitOnRecv() {
-    NxTxnMgr*       p_NxTxnMgr = new NxTxnMgr;
+    NxTxnMgr*       p_NxTxnMgr = new NxTxnMgr(connParams_.connection_mode, NxClientApiMsgRecv);
     int rcvd_txn_num =0 ;
     int recv_bytes = 0;
     if (p_nnSock !=nullptr) {
@@ -28,7 +28,7 @@ int NxServerApi::StartNewTxnAndWaitOnRecv() {
     }
     txnMap_[rcvd_txn_num]    =   p_NxTxnMgr;
 
-    FlushTxn(rcvd_txn_num);
+    CloseTxn(&rcvd_txn_num);
 
     return NxProcSUCCESS;
 }

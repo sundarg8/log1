@@ -43,7 +43,10 @@ class NanoMsg
         ConnType        ConnType_;
         nnxx::socket    NanoMsgSock_ { nnxx::SP, nnxx::PAIR};
         NxClientApi     *p_ParentClientApi;
+        //NxServerApi     *p_ParentClientApi;
 
+
+        NanoMsg();
         int RunAsServerUT();
         int RunAsClientUT();
         int SendByteStream(char *buf , int len, int flags, int *total_sent_bytes);
