@@ -3,7 +3,7 @@
 
 
 #define SOCKET_ADDR "ipc:///data/pair_xx_cb5.ipc"
-#define tempstr "May25-v5 "
+#define tempstr "May25-v6 "
 using namespace std;
 void ut6_client(NxClientApi *, int test_case);
 void ut6_server(NxClientApi *, int test_case);
@@ -43,16 +43,31 @@ int NxProcServerApiInit(NxClientApi **p_apiObj) {
     return NxProcSUCCESS;
 }
 
+
 int main(int argc, char**argv) {
 
-    std::vector<uint8_t> nums { 1, 2 , 3 , 4};
+    //std::vector<uint8_t> nums { 1, 2 , 3 , 4};
+    std::vector<uint8_t> nums {4};
 
     NxClientApi *p_apiObj = nullptr;
 
-    if (3 != argc) {
-        NxProcClientApiInit(&p_apiObj);
-        for (auto n : nums)   ut6_client(p_apiObj, n);
+    ///dual process mode.
+    if (1) {
+        if (3 != argc) {
+            NxProcClientApiInit(&p_apiObj);
+            for (auto n : nums)   ut6_client(p_apiObj, n);
+        } else {
+            NxProcServerApiInit(&p_apiObj);
+            for (auto n : nums)   ut6_server(p_apiObj, n);
+        }
+        return 0;
+    }
 
+    ///Single process mode
+    pid_t pid = fork();
+    if (pid == 0) { //child.
+         NxProcClientApiInit(&p_apiObj);
+        for (auto n : nums)   ut6_client(p_apiObj, n);
     } else {
         NxProcServerApiInit(&p_apiObj);
         for (auto n : nums)   ut6_server(p_apiObj, n);
@@ -73,10 +88,18 @@ int main(int argc, char**argv) {
 */
 
 
-
+int rrtoken[10];
 void ut6_client(NxClientApi *p_apiObj, int test_case) {
 
-    cookie_t      cookies[10];
+    ClientApiObjCookie cookies[10];
+
+    for (int j=0; j<10; j++) {
+        rrtoken[j] = (j+1) * 7;
+        cookies[j].data_ptr = &rrtoken[j];
+        //cookies[j].magic_no = 0xABCD4321;
+        cookies[j].magic_no = 135+j;
+    }
+
     TestObject  intf1, intf2, intf3, intf4;
     int first_txn_no = -1, second_txn_no = -1;
 
@@ -146,13 +169,13 @@ void ut6_client(NxClientApi *p_apiObj, int test_case) {
             if (NxProcFAILURE == p_apiObj->StartNewTxn(&second_txn_no))  return;
             if (NxProcFAILURE == p_apiObj->StartNewTxn(&first_txn_no))  return;
 
-            p_apiObj->AddObjectActionToTxn(first_txn_no, &intf1, CREATE, &cookies[0]);
-            p_apiObj->AddObjectActionToTxn(first_txn_no, &intf2, MODIFY, &cookies[1]);
+            p_apiObj->AddObjectActionToTxn(first_txn_no, &intf1, DELETE, &cookies[0]);
+            p_apiObj->AddObjectActionToTxn(first_txn_no, &intf2, CREATE, &cookies[1]);
             p_apiObj->CloseTxn(&first_txn_no);
             p_apiObj->StartNewTxnAndWaitOnRecv();
 
-            p_apiObj->AddObjectActionToTxn(second_txn_no,&intf3, CREATE, &cookies[2]);
-            p_apiObj->AddObjectActionToTxn(second_txn_no,&intf4, MODIFY, &cookies[3]);
+            p_apiObj->AddObjectActionToTxn(second_txn_no,&intf3, MODIFY, &cookies[2]);
+            p_apiObj->AddObjectActionToTxn(second_txn_no,&intf4, DELETE, &cookies[3]);
             p_apiObj->CloseTxn(&second_txn_no);
             p_apiObj->StartNewTxnAndWaitOnRecv();
 

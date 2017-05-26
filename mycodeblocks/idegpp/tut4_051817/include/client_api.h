@@ -34,10 +34,10 @@ class NxClientApi : public NxProcObj
          */
         virtual int  StartNewTxn(IN_OUT int *p_txn_no = nullptr, IN NxClientApiTxnParams *p_params = nullptr);
         virtual int  CloseTxn   (IN int *p_txn_no = nullptr);
-        virtual int  AddObjectActionToTxn(IN TestObject *obj, IN enum  action_t , OUT cookie_t *);
-        virtual int  AddObjectActionToTxn(IN int txn_no, IN TestObject *obj, IN enum  action_t , OUT cookie_t *);
+        virtual int  AddObjectActionToTxn(IN TestObject *obj, IN ClientApiObjAction , OUT ClientApiObjCookie *);
+        virtual int  AddObjectActionToTxn(IN int txn_no, IN TestObject *obj, IN ClientApiObjAction , OUT ClientApiObjCookie *);
 
-        virtual int  AddObjectAction(TestObject *,enum  action_t , cookie_t *);
+        virtual int  AddObjectAction(TestObject *,ClientApiObjAction , ClientApiObjCookie *);
         virtual int  FlushAllObjectActions();
 
         virtual int  StartNewTxnAndWaitOnRecv();
@@ -61,22 +61,20 @@ class NxClientApi : public NxProcObj
         virtual int   SetTxnParams(IN NxClientApiTxnParams *p_txn_params){ return 0; }
         virtual bool IsClientMode();
 
-
         //To Be Deleted..
         enum EndPointType { Undefined, NanoMsgSock , UnixPipe };// TSD
         int     SetupClientEndPoint(IN const char *,IN EndPointType );
         int     SetupServerEndPoint(IN const char *,IN EndPointType );
 
-
         //Below Public Apis -- Deprecated for App use.
         int     SetupSockConnection(NanoMsg *ptr);
-        int     PerformActionOnObj(TestObject *,enum  action_t , cookie_t *);
+        int     PerformActionOnObj(TestObject *,ClientApiObjAction , ClientApiObjCookie *);
         int     FlushObjActions();
         int     StartTxn();
         int     FlushTxn();
         int     StartTxn(int *curr_txn_no);
         int     StartTxnWithId(IN int curr_txn_no);
-        int     AddActionToTxn(IN int curr_txn_no, IN TestObject *obj,IN enum  action_t , OUT cookie_t *);
+        int     AddActionToTxn(IN int curr_txn_no, IN TestObject *obj,IN ClientApiObjAction , OUT ClientApiObjCookie *);
         int     FlushTxn(IN int curr_txn_no);
         NanoMsg                  * p_nnSock;
         map<int, NxTxnMgr*>      txnMap_;

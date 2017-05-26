@@ -14,6 +14,8 @@ class NxClientApi;
 
 typedef int cookie_t;
 
+
+
 typedef struct  TxnPayload_ {
     int txn_sz;
     int txn_ret_status;
@@ -32,7 +34,7 @@ class NxTxnMgr : public NxProcObj
         virtual ~NxTxnMgr();
 
         int     SetNxTxnMgrNum(IN int val_NxTxnMgr);
-        int     TxnAddObj(IN TestObject *, IN enum action_t  , OUT cookie_t *);
+        int     TxnAddObj(IN TestObject *, IN ClientApiObjAction  , OUT ClientApiObjCookie *);
 
         int     ConvertToBuffer();
         int     ConvBufferToTxn(IN int recv_bytes, OUT int *rcvd_txn_no);
@@ -49,11 +51,19 @@ class NxTxnMgr : public NxProcObj
 
 
     protected:
+
+        typedef struct ClientApiObjEncap_ {
+            TestObject *objPtr;
+            ClientApiObjCookie objCookie;
+            ClientApiObjAction objAction;
+        } ClientApiObjEncap;
+
     private:
         NxTxnMgr();
         static const int        MAX_TXN_BUFFER_SZ;
 
         map<int, TestObject>    ActionsMap_;
+        map<int, ClientApiObjEncap *> ObjEncapMap_;
         int                     TxnNo_;
         int                     ObjectId_;
         char                    TxnBuffer_[512];
@@ -61,7 +71,7 @@ class NxTxnMgr : public NxProcObj
         NxClientApiConnectMode  TxnParentApiMode_;
         NxClientApiDirection    TxnMsgDirn_;
 
-        //NxClientApi             *p_ParentClientApi;
+        //NxClientApi           *p_ParentClientApi;
         int                     GetNxTxnMgrNum();
 
 };

@@ -46,12 +46,11 @@ typedef struct NxClientApiTxnParams_ {
 
 typedef struct ClientApiObjCookie_ {
     void *data_ptr    = nullptr ;
-    uint16_t magic_no = 0 ;
+    uint32_t magic_no = 0 ;
 } ClientApiObjCookie;
 
 
-
-enum  action_t  { GET, CREATE , MODIFY , DELETE };
+enum  ClientApiObjAction  { GET, CREATE , MODIFY , DELETE };
 #define nameSz 12
 typedef  int Syserr_t;
 #define IN
@@ -62,7 +61,7 @@ typedef  int Syserr_t;
 typedef struct tag_ObjPldHeader {
     int         unit_sz;
     int         unit_id;
-    action_t    unit_action;
+    ClientApiObjAction    unit_action;
     int         unit_cookie;
     int         unit_pyld_start[0];
 } ObjPldHeader_t;

@@ -59,7 +59,7 @@ int NxClientApi::CloseTxn(int *p_txn_no) {
 }
 
 int NxClientApi::AddObjectAction(TestObject *intf,
-            enum  action_t  action_type, cookie_t *cookie) {
+            ClientApiObjAction  action_type, ClientApiObjCookie *cookie) {
 
     return PerformActionOnObj(intf,action_type, cookie);
 
@@ -69,12 +69,12 @@ int NxClientApi::FlushAllObjectActions() {
     return FlushObjActions();
 }
 
-int NxClientApi::AddObjectActionToTxn(IN int txn_no, IN TestObject *obj,IN enum  action_t action_type, OUT cookie_t *req_cookie) {
+int NxClientApi::AddObjectActionToTxn(IN int txn_no, IN TestObject *obj,IN ClientApiObjAction action_type, OUT ClientApiObjCookie *req_cookie) {
     return AddActionToTxn(txn_no,  obj, action_type, req_cookie);
 }
 
 
-int NxClientApi::AddObjectActionToTxn(IN TestObject *obj,IN enum  action_t action_type , OUT cookie_t *req_cookie) {
+int NxClientApi::AddObjectActionToTxn(IN TestObject *obj,IN ClientApiObjAction action_type , OUT ClientApiObjCookie *req_cookie) {
     return AddActionToTxn(0,  obj, action_type, req_cookie);
 }
 
@@ -165,7 +165,7 @@ void NxClientApi::PrintPrintMe() {
 }
 
 int NxClientApi::PerformActionOnObj(TestObject *intf,
-            enum  action_t  action_type, cookie_t *cookie) {
+            ClientApiObjAction  action_type, ClientApiObjCookie *cookie) {
 
     map<int, NxTxnMgr*>::iterator    iter;
     NxTxnMgr*                        p_NxTxnMgr = nullptr;
@@ -312,7 +312,7 @@ int NxClientApi::FlushTxn(int curr_txn_no) {
 }
 
 int NxClientApi::AddActionToTxn(int curr_txn_no, TestObject *intf,
-            enum  action_t  action_type, cookie_t *req_cookie) {
+            ClientApiObjAction  action_type, ClientApiObjCookie *req_cookie) {
 
     map<int, NxTxnMgr*>::iterator    iter;
     NxTxnMgr*                        p_NxTxnMgr = nullptr;

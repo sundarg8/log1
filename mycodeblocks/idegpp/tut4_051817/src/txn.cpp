@@ -31,37 +31,22 @@ int NxTxnMgr::GetNxTxnMgrNum() {   //TB_Edited
 }
 
 //TB_Edited
-int NxTxnMgr::TxnAddObj(TestObject *obj_data, enum action_t action_type , cookie_t *req_cookie) {
+int NxTxnMgr::TxnAddObj(TestObject *obj_data, ClientApiObjAction action_type , ClientApiObjCookie *req_cookie) {
+    std::pair<std::map<int,TestObject>::iterator,bool> ret_iter;
+    ClientApiObjEncap *obj_encap = new ClientApiObjEncap();
     ++ObjectId_;
+
     //object_id TO action type map.
-    ActionsMap_.insert(pair<int, TestObject&> (ObjectId_, *obj_data));
+    ret_iter = ActionsMap_.insert(pair<int, TestObject&> (ObjectId_, *obj_data));
+    obj_encap->objAction    = action_type;
+    obj_encap->objCookie    = *req_cookie;
+    obj_encap->objPtr       = &(ret_iter.first->second);
+
+    ObjEncapMap_.insert(pair<int,ClientApiObjEncap *> (ObjectId_, obj_encap));
 
     return NxProcSUCCESS;
     //return ObjectId_;
 }
-
-
-void NxTxnMgr::PrintPrintMe() {
-    map<int, TestObject >::iterator  iter;
-    TestObject r_obj;
-    //if (p_ParentClientApi->IsServerMode())
-    cout << endl;
-    if (NxClientApiServerMode == TxnParentApiMode_) cout <<  " Server ";
-    else                                            cout << " Client ";
-
-    if (NxClientApiMsgSend == TxnMsgDirn_)  cout << " Send " ;
-    else                                    cout << " Recv " ;
-
-    cout << "Txn Number -->  " << TxnNo_ << endl;
-
-    for (iter = ActionsMap_.begin(); iter != ActionsMap_.end(); iter++ ) {
-        cout <<  setw(9) << " ObjectId_ : " << iter->first << "  " ;
-        r_obj = iter->second;
-        r_obj.PrintPrintMe();
-    }
-    cout <<endl;
-}
-
 
 int NxTxnMgr::SetClientApiRef(NxClientApi *parent_client) {
     //p_ParentClientApi = parent_client;
@@ -97,21 +82,6 @@ int NxTxnMgr::ConvertToBuffer() {
 
     return p_pld->txn_sz;
 
-}
-
-int NxTxnMgr::SendTxnBuffToNano(NanoMsg *p_txnSock, int pld_bytes) {
-    int sent_bytes = 0;
-    int payload_size = pld_bytes;
-    p_txnSock->Send(TxnBuffer_, payload_size, 0, &sent_bytes);
-
-    return NxProcSUCCESS;
-}
-
-int NxTxnMgr::RecvTxnBufferFromNano(NanoMsg *p_txnSock, int *recv_bytes) {
-    p_txnSock->Recv(TxnBuffer_, 512, 0, recv_bytes);
-    //p_txnSock->PrintBytes(TxnBuffer_, *recv_bytes);
-
-    return NxProcSUCCESS;
 }
 
 int NxTxnMgr::ConvBufferToTxn(int recv_bytes, int *rcvd_txn_no) {
@@ -151,4 +121,53 @@ int NxTxnMgr::ConvBufferToTxn(int recv_bytes, int *rcvd_txn_no) {
 
     return NxProcSUCCESS;
 }
+
+
+int NxTxnMgr::SendTxnBuffToNano(NanoMsg *p_txnSock, int pld_bytes) {
+    int sent_bytes = 0;
+    int payload_size = pld_bytes;
+    p_txnSock->Send(TxnBuffer_, payload_size, 0, &sent_bytes);
+
+    return NxProcSUCCESS;
+}
+
+int NxTxnMgr::RecvTxnBufferFromNano(NanoMsg *p_txnSock, int *recv_bytes) {
+    p_txnSock->Recv(TxnBuffer_, 512, 0, recv_bytes);
+    //p_txnSock->PrintBytes(TxnBuffer_, *recv_bytes);
+
+    return NxProcSUCCESS;
+}
+
+
+
+void NxTxnMgr::PrintPrintMe() {
+    map<int, TestObject >::iterator  iter;
+    //map<int, ClientApiObjEncap *>::iterator encap_iter;
+    TestObject r_obj;
+    //if (p_ParentClientApi->IsServerMode())
+    cout << endl;
+    if (NxClientApiServerMode == TxnParentApiMode_) cout <<  " Server ";
+    else                                            cout << " Client ";
+
+    if (NxClientApiMsgSend == TxnMsgDirn_)  cout << " Send " ;
+    else                                    cout << " Recv " ;
+
+    cout << "Txn Number -->  " << TxnNo_ << endl;
+
+    for (iter = ActionsMap_.begin(); iter != ActionsMap_.end(); iter++ ) {
+        cout <<  setw(9) << " ObjectId_ : " << iter->first << "  " ;
+        if (ObjEncapMap_[iter->first]) {
+            cout <<  " Action " << (ObjEncapMap_[iter->first])->objAction << "  ";
+            cout <<  " Cookie " << *(int *)(ObjEncapMap_[iter->first])->objCookie.data_ptr << " " ;
+            cout <<  " Magic " << (ObjEncapMap_[iter->first])->objCookie.magic_no << " " << endl << "         " ;
+
+        }
+        r_obj = iter->second;
+        r_obj.PrintPrintMe();
+
+    }
+    cout <<endl;
+}
+
+
 
