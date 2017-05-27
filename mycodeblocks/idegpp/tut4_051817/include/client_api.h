@@ -42,6 +42,7 @@ class NxClientApi : public NxProcObj
 
         virtual int  StartNewTxnAndWaitOnRecv();
         bool IsServerMode();
+        virtual int  SetAppCallbackFn(IN ClientCbFn app_cb);
 
 
 
@@ -76,9 +77,11 @@ class NxClientApi : public NxProcObj
         int     StartTxnWithId(IN int curr_txn_no);
         int     AddActionToTxn(IN int curr_txn_no, IN TestObject *obj,IN ClientApiObjAction , OUT ClientApiObjCookie *);
         int     FlushTxn(IN int curr_txn_no);
+
         NanoMsg                  * p_nnSock;
         map<int, NxTxnMgr*>      ApiTxnMap_;
         map<int, NxTxnMgr*>      ApiRespTxnMap_;
+        ClientCbFn               ApiCbFn_;
 
 
     private:

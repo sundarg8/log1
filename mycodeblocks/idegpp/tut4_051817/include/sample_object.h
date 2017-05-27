@@ -12,7 +12,6 @@ using namespace std;
 #define NxProcSUCCESS 0
 #define NxProcFAILURE -1
 
-
 enum NxClientApiConnectType {
         NxClientApiInvalidConnectType,
         NxClientApiNanoMsgSock,
@@ -104,5 +103,9 @@ class TestObject : NxProcObj {
         char IntfName_[nameSz];
 
 };
+
+
+typedef int (*ClientCbFn) (int rrtoken, int return_status,
+        TestObject *p_obj, ClientApiObjAction obj_action);
 
 #endif // TestObject_H

@@ -30,7 +30,9 @@ int NxClientApi::SetupConnection() {
     return NxProcSUCCESS;
 }
 
-
+int NxClientApi::SetAppCallbackFn(ClientCbFn app_cb_fn) {
+    ApiCbFn_ = app_cb_fn;
+}
 
 int NxClientApi::StartNewTxn(int *p_txn_no, NxClientApiTxnParams *p_params) {
     if (nullptr == p_txn_no) {
@@ -142,7 +144,7 @@ int NxClientApi::StartNewTxnAndWaitOnRecv() {
 
 
     NxTxnMgr* p_req_txn = ApiTxnMap_[rcvd_txn_num];
-    p_NxTxnMgr->FindRespCookieAndCallApp(p_req_txn);
+    p_NxTxnMgr->FindRespCookieAndCallApp(p_req_txn, ApiCbFn_);
 
 
     ApiRespTxnMap_[rcvd_txn_num]    =   p_NxTxnMgr;

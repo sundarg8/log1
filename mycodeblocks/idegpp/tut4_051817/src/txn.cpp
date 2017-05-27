@@ -146,7 +146,7 @@ int NxTxnMgr::ConvBufferToTxn(int recv_bytes, int *rcvd_txn_no) {
     return NxProcSUCCESS;
 }
 
-int NxTxnMgr::FindRespCookieAndCallApp(NxTxnMgr *p_req_txn) {
+int NxTxnMgr::FindRespCookieAndCallApp(NxTxnMgr *p_req_txn, ClientCbFn txn_cb_fn) {
 
     map<int, TestObject >::iterator  iter;
     TestObject r_obj;
@@ -171,8 +171,8 @@ int NxTxnMgr::FindRespCookieAndCallApp(NxTxnMgr *p_req_txn) {
                             << "  CB_obj_ptr " << *(int *)((p_req_txn->ObjEncapMap_[iter->first])->objCookie.data_ptr)
                             << "  CB_Magic " << (p_req_txn->ObjEncapMap_[iter->first])->objCookie.magic_no
                             << endl;
-
-
+                    int rrtoken = *(int *)((p_req_txn->ObjEncapMap_[iter->first])->objCookie.data_ptr);
+                    txn_cb_fn(rrtoken, NxProcSUCCESS, &(iter->second),  ClientApiObjActionUndefined);
                 }
             }
         }

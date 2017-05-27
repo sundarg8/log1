@@ -42,7 +42,7 @@ class NxTxnMgr : public NxProcObj
         int     SendTxnBuffToNano(IN NanoMsg *p_txnSock, IN int pld_bytes);
         int     RecvTxnBufferFromNano(IN NanoMsg *p_txnSock, OUT int *recv_bytes);
 
-        int     FindRespCookieAndCallApp(IN NxTxnMgr *req_txn);
+        int     FindRespCookieAndCallApp(IN NxTxnMgr *req_txn, ClientCbFn txn_cb_fn);
 
         virtual void    PrintPrintMe();
         virtual void    PrintReflection() {}

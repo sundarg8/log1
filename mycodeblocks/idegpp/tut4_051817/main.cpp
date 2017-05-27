@@ -3,10 +3,21 @@
 
 
 #define SOCKET_ADDR "ipc:///data/pair_xx_cb6.ipc"
-#define tempstr "May26-v1 "
+#define tempstr "May26-v2 "
 using namespace std;
 void ut6_client(NxClientApi *, int test_case);
 void ut6_server(NxClientApi *, int test_case);
+
+int app_cb_handler(int rrtoken, int return_status,
+        TestObject *p_obj, ClientApiObjAction obj_action) {
+    cout << " *** app_cb  called for : " << rrtoken ;
+    cout << " with ret_status    : " << return_status;
+    cout << " for action         : " << obj_action  << endl;
+
+    p_obj->PrintPrintMe();
+
+    return NxProcSUCCESS;
+}
 
 int NxClientInitializeConnectionParams(NxClientApiConnectionParams *p_conn_params,
                 NxClientApiConnectMode app_mode = NxClientApiClientMode) {
@@ -20,6 +31,62 @@ int NxClientInitializeConnectionParams(NxClientApiConnectionParams *p_conn_param
 
     return NxProcSUCCESS;
 }
+
+int app_in_client_mode (std::vector<uint8_t> const &tests) {
+    NxClientApi *p_apiObj = nullptr;
+    NxClientApiConnectionParams conn_params;
+
+
+    ClientCbFn  my_cb= &app_cb_handler;
+    NxClientInitializeConnectionParams(&conn_params);
+    p_apiObj = new NxClientApi(&conn_params);
+    p_apiObj->SetupConnection();
+
+    p_apiObj->SetAppCallbackFn(my_cb);
+
+    for (auto n : tests)   ut6_client(p_apiObj, n);
+
+    return NxProcSUCCESS;
+}
+
+int app_in_server_mode (std::vector<uint8_t> const &tests) {
+    NxClientApi *p_apiObj = nullptr;
+    NxClientApiConnectionParams conn_params;
+
+    NxClientInitializeConnectionParams(&conn_params, NxClientApiServerMode );
+    p_apiObj = new NxServerApi(&conn_params);
+    p_apiObj->SetupConnection();
+
+    for (auto n : tests)   ut6_server(p_apiObj, n);
+
+    return NxProcSUCCESS;
+}
+
+int main(int argc, char**argv) {
+
+    //std::vector<uint8_t> tests { 1, 2 , 3 , 4};
+    std::vector<uint8_t> tests {3};
+
+
+    if (0) {            ///dual process mode.
+        if (3 != argc) {
+            app_in_client_mode(tests);
+        } else {
+            app_in_server_mode(tests);
+        }
+    } else {            ///Single process, multi-thread mode
+        pid_t pid = fork();
+        if (pid == 0) {
+            app_in_client_mode(tests);
+        } else {
+            app_in_server_mode(tests);
+        }
+    }
+
+    return 0;
+}
+
+
 
 int NxProcClientApiInit(NxClientApi **p_apiObj) {
 
@@ -44,39 +111,6 @@ int NxProcServerApiInit(NxClientApi **p_apiObj) {
 }
 
 
-int main(int argc, char**argv) {
-
-    //std::vector<uint8_t> nums { 1, 2 , 3 , 4};
-    std::vector<uint8_t> nums {1};
-
-    NxClientApi *p_apiObj = nullptr;
-
-    ///dual process mode.
-    if (1) {
-        if (3 == argc) {
-            NxProcClientApiInit(&p_apiObj);
-            for (auto n : nums)   ut6_client(p_apiObj, n);
-        } else {
-            NxProcServerApiInit(&p_apiObj);
-            for (auto n : nums)   ut6_server(p_apiObj, n);
-        }
-
-    } else {
-
-        ///Single process mode
-        pid_t pid = fork();
-        if (pid == 0) { //child.
-            NxProcClientApiInit(&p_apiObj);
-            for (auto n : nums)   ut6_client(p_apiObj, n);
-        } else {
-            NxProcServerApiInit(&p_apiObj);
-            for (auto n : nums)   ut6_server(p_apiObj, n);
-        }
-    }
-    return 0;
-}
-
-
 
 /*
   Modes of App Usage of NxClientApi. -->
@@ -92,6 +126,8 @@ int rrtoken[10];
 void ut6_client(NxClientApi *p_apiObj, int test_case) {
 
     ClientApiObjCookie cookies[10];
+
+
 
     for (int j=0; j<10; j++) {
         rrtoken[j] = (j+1) * 7;
