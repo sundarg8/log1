@@ -39,7 +39,7 @@ int TestObject::PrintBytes(const char *pBytes , const int nBytes) {
 }
 
 void TestObject::PrintPrintMe() {
-    cout << setw(10) << "\tAttr_name: " << IntfName_
+    cout << setw(10) << "OBJ_PRINT \tAttr_name: " << IntfName_
             << "  Attr_Speed_: " << Speed_
             << "   Attr_Stats_: " << Stats_ <<  endl;
 }
@@ -75,7 +75,7 @@ int TestObject::ConvertToBuffer(int objectId, char *buf,  int max_length, Client
     obj_pld.unit_sz = sizeof(ObjPldHeader_t) + obj_data_sz;
     obj_pld.unit_id = objectId;
     obj_pld.unit_action = obj_action ; //TBC
-    obj_pld.unit_cookie = 0x11223344 ; //TBC
+    obj_pld.unit_cookie = 0x11223344 ; //Can be ignored or deleted from code.
     obj_pld.unit_status = obj_status;
 
     //cout << "start -- buffer  -- " << count  << endl;

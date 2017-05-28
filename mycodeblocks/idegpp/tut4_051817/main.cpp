@@ -3,19 +3,18 @@
 
 
 #define SOCKET_ADDR "ipc:///data/pair_xx_cb6.ipc"
-#define tempstr "May27-v1 "
+#define tempstr "May27-v2 "
 using namespace std;
 void ut6_client(NxClientApi *, int test_case);
 void ut6_server(NxClientApi *, int test_case);
-
 std::set<uint8_t> InsertFailureInObjActions;
 
 
 int app_cb_handler(int rrtoken, int return_status,
         TestObject *p_obj, ClientApiObjAction obj_action) {
-    cout << " *** app_cb  called for : " << rrtoken ;
-    cout << " with ret_status    : " << return_status;
-    cout << " for action         : " << obj_action  << endl;
+    cout << "CB fn call for cookie : " << rrtoken ;
+    cout << " with ret_status : " << return_status;
+    cout << " for ObjAction : " << obj_action  << endl;
 
     p_obj->PrintPrintMe();
 
@@ -73,7 +72,7 @@ int main(int argc, char**argv) {
     std::vector<uint8_t> tests {4};
 
 
-    if (1) {            ///dual process mode.
+    if (0) {            ///dual process mode.
         if (3 != argc) {
             app_in_client_mode(tests);
         } else {
@@ -233,7 +232,7 @@ void ut6_client(NxClientApi *p_apiObj, int test_case) {
 
     sleep(1);
 
-    cout << " ------ MAIN OUTPUT ---- " << tempstr << " Copies --> " << TestObject::NumCopyCtors_ << endl;
+    cout << endl << "------ MAIN OUTPUT ---- " << tempstr << " Copies --> " << TestObject::NumCopyCtors_ << endl;
 
 }
 

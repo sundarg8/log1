@@ -180,8 +180,8 @@ int NxTxnMgr::FindRespCookieAndCallApp(NxTxnMgr *p_req_txn, ClientCbFn txn_cb_fn
     if (NxClientApiMsgSend == TxnMsgDirn_)  cout << " Send " ;
     else                                    cout << " Recv " ;
 
-    cout << "Txn Number  CB_mode -->  " << TxnNo_ << endl;
-    cout << "-------------------------------------" << endl;
+    cout << "Txn Number  -->  " << TxnNo_ << endl;
+    cout << "-------------------------------------" ;
 
     for (iter = RespActionsMap_.begin(); iter != RespActionsMap_.end(); iter++ ) {
         int resp_obj_id = iter->first;
@@ -193,9 +193,9 @@ int NxTxnMgr::FindRespCookieAndCallApp(NxTxnMgr *p_req_txn, ClientCbFn txn_cb_fn
 
                  if (p_req_txn->ObjEncapMap_[resp_obj_id]) {
 
-                    cout << endl << "  CB fn getting called for Object_id " << resp_obj_id
-                            << "  CB_obj_ptr " << *(int *)((p_req_txn->ObjEncapMap_[resp_obj_id])->objCookie.data_ptr)
-                            << "  CB_Magic " << (p_req_txn->ObjEncapMap_[resp_obj_id])->objCookie.magic_no
+                    cout << endl << "Object_id " << resp_obj_id
+                            << "  CB_Action_Cookie " << *(int *)((p_req_txn->ObjEncapMap_[resp_obj_id])->objCookie.data_ptr)
+                            << "  CB_Magic_no. " << (p_req_txn->ObjEncapMap_[resp_obj_id])->objCookie.magic_no
                             << endl;
                     int rrtoken = *(int *)((p_req_txn->ObjEncapMap_[resp_obj_id])->objCookie.data_ptr);
                     txn_cb_fn(rrtoken, RespObjEncapMap_[resp_obj_id]->objRetStatus, &(iter->second),  RespObjEncapMap_[resp_obj_id]->objAction);
