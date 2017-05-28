@@ -39,7 +39,7 @@ int TestObject::PrintBytes(const char *pBytes , const int nBytes) {
 }
 
 void TestObject::PrintPrintMe() {
-    cout << setw(10) << "Attr_name: " << IntfName_
+    cout << setw(10) << "\tAttr_name: " << IntfName_
             << "  Attr_Speed_: " << Speed_
             << "   Attr_Stats_: " << Stats_ <<  endl;
 }
@@ -63,7 +63,7 @@ int TestObject::ConvertToObjInst(char *buf) {
     strncpy(IntfName_ , buf, sizeof(IntfName_));
 }
 
-int TestObject::ConvertToBuffer(int objectId, char *buf,  int max_length, ClientApiObjAction obj_action) {
+int TestObject::ConvertToBuffer(int objectId, char *buf,  int max_length, ClientApiObjAction obj_action, syserr_t obj_status) {
     std::size_t count = 0; //sizeof(*this);
     ObjPldHeader_t obj_pld;
     char *tmpbuf = buf;
@@ -76,6 +76,7 @@ int TestObject::ConvertToBuffer(int objectId, char *buf,  int max_length, Client
     obj_pld.unit_id = objectId;
     obj_pld.unit_action = obj_action ; //TBC
     obj_pld.unit_cookie = 0x11223344 ; //TBC
+    obj_pld.unit_status = obj_status;
 
     //cout << "start -- buffer  -- " << count  << endl;
 

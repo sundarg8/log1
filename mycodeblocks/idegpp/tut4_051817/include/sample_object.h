@@ -4,6 +4,7 @@
 #include <iostream>
 #include <cstring>
 #include <iomanip>
+#include <set>
 
 
 #include "NxProcObj.h"
@@ -11,6 +12,10 @@ using namespace std;
 
 #define NxProcSUCCESS 0
 #define NxProcFAILURE -1
+#define NxProcInsertFailureVal 4
+#define NxProcStatusDefault -3
+
+extern std::set<uint8_t> InsertFailureInObjActions;
 
 enum NxClientApiConnectType {
         NxClientApiInvalidConnectType,
@@ -57,7 +62,7 @@ enum  ClientApiObjAction  {
     ClientApiObjActionDelete,
 };
 #define nameSz 12
-typedef  int Syserr_t;
+typedef  int syserr_t;
 #define IN
 #define OUT
 #define IN_OUT
@@ -68,7 +73,7 @@ typedef struct tag_ObjPldHeader {
     int         unit_id;
     ClientApiObjAction    unit_action;
     int         unit_cookie;
-    int         unit_status;
+    syserr_t    unit_status;
     int         unit_pyld_start[0];
 } ObjPldHeader_t;
 
@@ -82,7 +87,9 @@ class TestObject : NxProcObj {
 
         static int NumCopyCtors_;
 
-        int ConvertToBuffer(int objectId, char *buf,  int max_length , ClientApiObjAction action = ClientApiObjActionUndefined);
+        int ConvertToBuffer(int objectId, char *buf,  int max_length ,
+                ClientApiObjAction action = ClientApiObjActionUndefined,
+                syserr_t obj_status = NxProcStatusDefault);
         int ConvertToObjInst(char *buf, TestObject **ptr_to_new_obj);
         int ConvertToObjInst(char *buf, TestObject *ptr_alloc_obj);
         int ConvertToObjInst(char *buf);

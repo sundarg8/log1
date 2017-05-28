@@ -138,7 +138,7 @@ int NxClientApi::StartNewTxnAndWaitOnRecv() {
         return NxProcFAILURE;
     }
 
-    cout << __FUNCTION__ <<  "  -- Client Waiting to Recv Data... "  << endl;
+    //Commented - May27    cout << __FUNCTION__ <<  "  -- Client Waiting to Recv Data... "  << endl;
     p_NxTxnMgr->RecvTxnBufferFromNano(p_nnSock, &recv_bytes);
     p_NxTxnMgr->ConvBufferToTxn(recv_bytes, &rcvd_txn_num);
 
@@ -168,7 +168,7 @@ void NxClientApi::PrintPrintMe() {
                 << iter->first << " : " << iter->second  << endl;
 
         p_NxTxnMgr = iter->second;
-        p_NxTxnMgr->PrintPrintMe();
+        //commented-may27 p_NxTxnMgr->PrintPrintMe();
         cout << endl;
     }
 }
@@ -203,7 +203,7 @@ int NxClientApi::FlushObjActions() {
     iter = ApiTxnMap_.find(txnNum_);
     if (iter != ApiTxnMap_.end()) {
         p_NxTxnMgr = iter->second;
-        p_NxTxnMgr->PrintPrintMe();
+        //commented-may27 p_NxTxnMgr->PrintPrintMe();
         int pld_bytes = p_NxTxnMgr->ConvertToBuffer();
         if (p_nnSock !=nullptr) {
             p_NxTxnMgr->SendTxnBuffToNano(p_nnSock, pld_bytes);
@@ -247,7 +247,7 @@ int NxClientApi::FlushTxn() {
         return NxProcFAILURE;
     }
     p_NxTxnMgr = iter->second;
-    p_NxTxnMgr->PrintPrintMe();
+    //commented-may27  p_NxTxnMgr->PrintPrintMe();
     pld_bytes = p_NxTxnMgr->ConvertToBuffer();
 
     if (p_nnSock !=nullptr) {
@@ -310,7 +310,7 @@ int NxClientApi::FlushTxn(int curr_txn_no) {
         return NxProcFAILURE;
     }
     p_NxTxnMgr = iter->second;
-    p_NxTxnMgr->PrintPrintMe();
+    //commented-may27  p_NxTxnMgr->PrintPrintMe();
     pld_bytes = p_NxTxnMgr->ConvertToBuffer();
 
     if (p_nnSock !=nullptr) {

@@ -4,9 +4,12 @@
 #include "NxProcObj.h"
 #include <iostream>
 #include <map>
+#include <set>
+
 #include "sample_object.h"
 #include "nn_msg.h"
 using namespace std;
+
 
 
 //#define MAX_TXN_BUFFER_SZ 512
@@ -55,28 +58,30 @@ class NxTxnMgr : public NxProcObj
     protected:
 
         typedef struct ClientApiObjEncap_ {
-            TestObject *objPtr;
-            ClientApiObjCookie objCookie;
-            ClientApiObjAction objAction;
+            syserr_t            objRetStatus;
+            ClientApiObjCookie  objCookie;
+            ClientApiObjAction  objAction;
+            TestObject          *objPtr;
+
         } ClientApiObjEncap;
 
     private:
         NxTxnMgr();
-        static const int        MAX_TXN_BUFFER_SZ;
+        static const int                MAX_TXN_BUFFER_SZ;
 
-        map<int, TestObject>    ActionsMap_;
-        map<int, ClientApiObjEncap *> ObjEncapMap_;
-        map<int, TestObject>    RespActionsMap_;
-        map<int, ClientApiObjEncap *> RespObjEncapMap_;
-        int                     TxnNo_;
-        int                     ObjectId_;
-        char                    TxnBuffer_[512];
-        int                     TxnPyldSz_;
-        NxClientApiConnectMode  TxnParentApiMode_;
-        NxClientApiDirection    TxnMsgDirn_;
+        map<int, TestObject>            ActionsMap_;
+        map<int, ClientApiObjEncap *>   ObjEncapMap_;
+        map<int, TestObject>            RespActionsMap_;
+        map<int, ClientApiObjEncap *>   RespObjEncapMap_;
+        int                             TxnNo_;
+        int                             ObjectId_;
+        char                            TxnBuffer_[512];
+        int                             TxnPyldSz_;
+        NxClientApiConnectMode          TxnParentApiMode_;
+        NxClientApiDirection            TxnMsgDirn_;
 
-        //NxClientApi           *p_ParentClientApi;
-        int                     GetNxTxnMgrNum();
+        //NxClientApi                   *p_ParentClientApi;
+        int                             GetNxTxnMgrNum();
 
 };
 

@@ -3,10 +3,13 @@
 
 
 #define SOCKET_ADDR "ipc:///data/pair_xx_cb6.ipc"
-#define tempstr "May26-v2 "
+#define tempstr "May27-v1 "
 using namespace std;
 void ut6_client(NxClientApi *, int test_case);
 void ut6_server(NxClientApi *, int test_case);
+
+std::set<uint8_t> InsertFailureInObjActions;
+
 
 int app_cb_handler(int rrtoken, int return_status,
         TestObject *p_obj, ClientApiObjAction obj_action) {
@@ -57,6 +60,8 @@ int app_in_server_mode (std::vector<uint8_t> const &tests) {
     p_apiObj = new NxServerApi(&conn_params);
     p_apiObj->SetupConnection();
 
+    InsertFailureInObjActions.insert(5);
+
     for (auto n : tests)   ut6_server(p_apiObj, n);
 
     return NxProcSUCCESS;
@@ -65,10 +70,10 @@ int app_in_server_mode (std::vector<uint8_t> const &tests) {
 int main(int argc, char**argv) {
 
     //std::vector<uint8_t> tests { 1, 2 , 3 , 4};
-    std::vector<uint8_t> tests {3};
+    std::vector<uint8_t> tests {4};
 
 
-    if (0) {            ///dual process mode.
+    if (1) {            ///dual process mode.
         if (3 != argc) {
             app_in_client_mode(tests);
         } else {
@@ -184,15 +189,19 @@ void ut6_client(NxClientApi *p_apiObj, int test_case) {
             if (NxProcFAILURE == p_apiObj->StartNewTxn(&first_txn_no))  return;
             p_apiObj->AddObjectActionToTxn(first_txn_no, &intf1, ClientApiObjActionCreate, &cookies[0]);
             p_apiObj->AddObjectActionToTxn(&intf2, ClientApiObjActionModify, &cookies[1]);  // <--
+            //p_apiObj->AddObjectActionToTxn(first_txn_no, &intf1, ClientApiObjActionUndefined, &cookies[0]);
+            //p_apiObj->AddObjectActionToTxn(&intf2, ClientApiObjActionModify, &cookies[1]);  // <--
             p_apiObj->CloseTxn(&first_txn_no);
             p_apiObj->StartNewTxnAndWaitOnRecv();
+
 
             second_txn_no = 0;
             if (NxProcFAILURE == p_apiObj->StartNewTxn(&second_txn_no))  return;
             p_apiObj->AddObjectActionToTxn(&intf3, ClientApiObjActionCreate, &cookies[2]);
-            p_apiObj->AddObjectActionToTxn(second_txn_no,&intf4, ClientApiObjActionModify, &cookies[3]);
+            p_apiObj->AddObjectActionToTxn(second_txn_no,&intf4, ClientApiObjActionDelete, &cookies[3]);
             p_apiObj->CloseTxn(&second_txn_no);
             p_apiObj->StartNewTxnAndWaitOnRecv();
+
 
             break;
         }

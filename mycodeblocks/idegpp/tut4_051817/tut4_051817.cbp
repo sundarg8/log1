@@ -12,9 +12,15 @@
 				<Option type="1" />
 				<Option compiler="gcc" />
 				<Compiler>
+					<Add option="-std=c++11" />
 					<Add option="-g" />
 					<Add directory="include" />
 				</Compiler>
+				<Linker>
+					<Add library="/usr/local/lib/libnnxx.so" />
+					<Add library="/usr/local/lib64/libnanomsg.so" />
+					<Add directory="/usr/local/lib" />
+				</Linker>
 			</Target>
 			<Target title="Release">
 				<Option output="bin/Release/tut4_051817" prefix_auto="1" extension_auto="1" />
@@ -35,12 +41,14 @@
 			<Add option="-fexceptions" />
 		</Compiler>
 		<Unit filename="include/NxProcObj.h" />
+		<Unit filename="include/NxServerApi.h" />
 		<Unit filename="include/client_api.h" />
 		<Unit filename="include/nn_msg.h" />
 		<Unit filename="include/sample_object.h" />
 		<Unit filename="include/txn.h" />
 		<Unit filename="main.cpp" />
 		<Unit filename="src/NxProcObj.cpp" />
+		<Unit filename="src/NxServerApi.cpp" />
 		<Unit filename="src/client_api.cpp" />
 		<Unit filename="src/nn_msg.cpp" />
 		<Unit filename="src/sample_object.cpp" />
