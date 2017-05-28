@@ -12,7 +12,6 @@ using namespace std;
 
 
 
-//#define MAX_TXN_BUFFER_SZ 512
 class NxClientApi;
 
 typedef int cookie_t;

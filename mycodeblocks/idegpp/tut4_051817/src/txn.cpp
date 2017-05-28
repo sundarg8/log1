@@ -193,12 +193,13 @@ int NxTxnMgr::FindRespCookieAndCallApp(NxTxnMgr *p_req_txn, ClientCbFn txn_cb_fn
 
                  if (p_req_txn->ObjEncapMap_[resp_obj_id]) {
 
-                    cout << endl << "Object_id " << resp_obj_id
-                            << "  CB_Action_Cookie " << *(int *)((p_req_txn->ObjEncapMap_[resp_obj_id])->objCookie.data_ptr)
-                            << "  CB_Magic_no. " << (p_req_txn->ObjEncapMap_[resp_obj_id])->objCookie.magic_no
-                            << endl;
+                    cout << endl << "ObjId " << resp_obj_id << " -- ";
+                            //<< "  CB_Action_Cookie " << *(int *)((p_req_txn->ObjEncapMap_[resp_obj_id])->objCookie.data_ptr)
+                            //<< "  CB_Magic_no. " << (p_req_txn->ObjEncapMap_[resp_obj_id])->objCookie.magic_no
+                            //<< endl;
                     int rrtoken = *(int *)((p_req_txn->ObjEncapMap_[resp_obj_id])->objCookie.data_ptr);
-                    txn_cb_fn(rrtoken, RespObjEncapMap_[resp_obj_id]->objRetStatus, &(iter->second),  RespObjEncapMap_[resp_obj_id]->objAction);
+                    int magic_no = (p_req_txn->ObjEncapMap_[resp_obj_id])->objCookie.magic_no;
+                    txn_cb_fn(rrtoken, magic_no, RespObjEncapMap_[resp_obj_id]->objRetStatus, &(iter->second),  RespObjEncapMap_[resp_obj_id]->objAction);
                 }
             }
         }

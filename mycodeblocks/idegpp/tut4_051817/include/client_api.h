@@ -15,7 +15,7 @@ using namespace std;
 
 typedef int cookie_t;
 
-int NxProcClientApiInit(int argc, NxClientApi **p_apiObj);
+//int NxProcClientApiInit(int argc, NxClientApi **p_apiObj);
 
 class NxClientApi : public NxProcObj
 {

@@ -3,18 +3,18 @@
 
 
 #define SOCKET_ADDR "ipc:///data/pair_xx_cb6.ipc"
-#define tempstr "May27-v2 "
+#define tempstr "May27-v4 "
 using namespace std;
 void ut6_client(NxClientApi *, int test_case);
 void ut6_server(NxClientApi *, int test_case);
 std::set<uint8_t> InsertFailureInObjActions;
 
 
-int app_cb_handler(int rrtoken, int return_status,
+int app_cb_handler(int rrtoken, int magic_no, int return_status,
         TestObject *p_obj, ClientApiObjAction obj_action) {
-    cout << "CB fn call for cookie : " << rrtoken ;
-    cout << " with ret_status : " << return_status;
-    cout << " for ObjAction : " << obj_action  << endl;
+    cout << "App CB for cookie: " << rrtoken <<  " magic_no: " << magic_no;
+    cout << " with ret_val: " << return_status;
+    cout << " for Action: " << obj_action  << endl;
 
     p_obj->PrintPrintMe();
 
@@ -78,7 +78,7 @@ int main(int argc, char**argv) {
         } else {
             app_in_server_mode(tests);
         }
-    } else {            ///Single process, multi-thread mode
+    } else {            ///Single process mode
         pid_t pid = fork();
         if (pid == 0) {
             app_in_client_mode(tests);
@@ -88,30 +88,6 @@ int main(int argc, char**argv) {
     }
 
     return 0;
-}
-
-
-
-int NxProcClientApiInit(NxClientApi **p_apiObj) {
-
-    NxClientApiConnectionParams conn_params;
-    NxClientInitializeConnectionParams(&conn_params);
-
-    (*p_apiObj) = new NxClientApi(&conn_params);
-    (*p_apiObj)->SetupConnection();
-
-    return NxProcSUCCESS;
-}
-
-int NxProcServerApiInit(NxClientApi **p_apiObj) {
-
-    NxClientApiConnectionParams conn_params;
-    NxClientInitializeConnectionParams(&conn_params, NxClientApiServerMode );
-
-    (*p_apiObj) = new NxServerApi(&conn_params);
-    (*p_apiObj)->SetupConnection();
-
-    return NxProcSUCCESS;
 }
 
 
@@ -126,12 +102,37 @@ int NxProcServerApiInit(NxClientApi **p_apiObj) {
 */
 
 
-int rrtoken[10];
+void ut6_server(NxClientApi *p_apiObj, int test_case) {
+    cout << "  Running Test " << __FUNCTION__ << " user_mode : " << test_case << endl;
+    for  (int i =0 ; i < 2; i++) {
+        p_apiObj->StartNewTxnAndWaitOnRecv();
+    }
+
+    sleep(1);
+    return;
+}
+
+
+int app_send_print(int rrtoken, int magic_no,
+        TestObject *p_obj, ClientApiObjAction obj_action) {
+    cout << "App Send call for cookie : " << rrtoken ;
+    cout << " with magic_no : " << magic_no;
+    cout << " for ObjAction : " << obj_action  << endl;
+
+    p_obj->PrintPrintMe();
+
+    return NxProcSUCCESS;
+}
+
 void ut6_client(NxClientApi *p_apiObj, int test_case) {
 
+
+    TestObject  intf1, intf2, intf3, intf4;
+    int first_txn_no = -1, second_txn_no = -1;
     ClientApiObjCookie cookies[10];
+    int rrtoken[10];
 
-
+    cout << "  Running Test " << __FUNCTION__ << " user_mode : " << test_case << endl;
 
     for (int j=0; j<10; j++) {
         rrtoken[j] = (j+1) * 7;
@@ -139,16 +140,10 @@ void ut6_client(NxClientApi *p_apiObj, int test_case) {
         cookies[j].magic_no = 135+j;
     }
 
-    TestObject  intf1, intf2, intf3, intf4;
-    int first_txn_no = -1, second_txn_no = -1;
-
-    cout << "  Running Test " << __FUNCTION__ << " user_mode : " << test_case << endl;
-
     intf1.SetParams((char *)"A54010",  7, 12);
     intf2.SetParams((char *)"B6689", 13, 15);
     intf3.SetParams((char *)"eth3", 19, 13);
     intf4.SetParams((char *)"eth4", 23, 10);
-
 
     switch (test_case) {
 
@@ -212,15 +207,31 @@ void ut6_client(NxClientApi *p_apiObj, int test_case) {
             if (NxProcFAILURE == p_apiObj->StartNewTxn(&second_txn_no))  return;
             if (NxProcFAILURE == p_apiObj->StartNewTxn(&first_txn_no))  return;
 
+            cout << endl << " Client Send Txn Number  -->  " << first_txn_no << endl;
+            cout << "-------------------------------------" << endl ;
             p_apiObj->AddObjectActionToTxn(first_txn_no, &intf1, ClientApiObjActionDelete, &cookies[0]);
+            app_send_print(*(int *)cookies[0].data_ptr, cookies[0].magic_no, &intf1,ClientApiObjActionDelete);
             p_apiObj->AddObjectActionToTxn(first_txn_no, &intf2, ClientApiObjActionCreate, &cookies[1]);
+            app_send_print(*(int *)cookies[1].data_ptr, cookies[1].magic_no, &intf2,ClientApiObjActionCreate);
+
             p_apiObj->CloseTxn(&first_txn_no);
             p_apiObj->StartNewTxnAndWaitOnRecv();
 
-            p_apiObj->AddObjectActionToTxn(second_txn_no,&intf3, ClientApiObjActionModify, &cookies[2]);
-            p_apiObj->AddObjectActionToTxn(second_txn_no,&intf4, ClientApiObjActionDelete, &cookies[3]);
-            p_apiObj->CloseTxn(&second_txn_no);
-            p_apiObj->StartNewTxnAndWaitOnRecv();
+
+            if (1) {
+
+              cout << endl << " Client Send Txn Number  -->  " << second_txn_no << endl;
+              cout << "-------------------------------------" << endl ;
+
+              p_apiObj->AddObjectActionToTxn(second_txn_no,&intf3, ClientApiObjActionModify, &cookies[2]);
+              app_send_print(*(int *)cookies[2].data_ptr, cookies[2].magic_no, &intf3,ClientApiObjActionModify);
+
+              p_apiObj->AddObjectActionToTxn(second_txn_no,&intf4, ClientApiObjActionDelete, &cookies[3]);
+              app_send_print(*(int *)cookies[3].data_ptr, cookies[3].magic_no, &intf4,ClientApiObjActionDelete);
+
+              p_apiObj->CloseTxn(&second_txn_no);
+              p_apiObj->StartNewTxnAndWaitOnRecv();
+            }
 
             break;
 
@@ -237,12 +248,28 @@ void ut6_client(NxClientApi *p_apiObj, int test_case) {
 }
 
 
-void ut6_server(NxClientApi *p_apiObj, int test_case) {
-    cout << "  Running Test " << __FUNCTION__ << " user_mode : " << test_case << endl;
-    for  (int i =0 ; i < 2; i++) {
-        p_apiObj->StartNewTxnAndWaitOnRecv();
-    }
 
-    sleep(1);
-    return;
+
+#if 0
+int NxProcClientApiInit(NxClientApi **p_apiObj) {
+
+    NxClientApiConnectionParams conn_params;
+    NxClientInitializeConnectionParams(&conn_params);
+
+    (*p_apiObj) = new NxClientApi(&conn_params);
+    (*p_apiObj)->SetupConnection();
+
+    return NxProcSUCCESS;
 }
+
+int NxProcServerApiInit(NxClientApi **p_apiObj) {
+
+    NxClientApiConnectionParams conn_params;
+    NxClientInitializeConnectionParams(&conn_params, NxClientApiServerMode );
+
+    (*p_apiObj) = new NxServerApi(&conn_params);
+    (*p_apiObj)->SetupConnection();
+
+    return NxProcSUCCESS;
+}
+#endif

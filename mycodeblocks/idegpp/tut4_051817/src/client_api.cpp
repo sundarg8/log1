@@ -32,6 +32,7 @@ int NxClientApi::SetupConnection() {
 
 int NxClientApi::SetAppCallbackFn(ClientCbFn app_cb_fn) {
     ApiCbFn_ = app_cb_fn;
+    return NxProcSUCCESS;
 }
 
 int NxClientApi::StartNewTxn(int *p_txn_no, NxClientApiTxnParams *p_params) {
@@ -161,7 +162,7 @@ int NxClientApi::IncrementToNextTxn() {
 
 void NxClientApi::PrintPrintMe() {
     map<int, NxTxnMgr*>::iterator    iter;
-    NxTxnMgr*                        p_NxTxnMgr = nullptr;
+    NxTxnMgr*                        p_NxTxnMgr __attribute__((unused)) = nullptr;
 
     for (iter = ApiTxnMap_.begin(); iter != ApiTxnMap_.end(); iter++ ) {
         cout    << __FUNCTION__  << setw(9)

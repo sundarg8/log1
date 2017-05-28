@@ -112,7 +112,7 @@ class TestObject : NxProcObj {
 };
 
 
-typedef int (*ClientCbFn) (int rrtoken, int return_status,
+typedef int (*ClientCbFn) (int rrtoken, int magic_no, int return_status,
         TestObject *p_obj, ClientApiObjAction obj_action);
 
 #endif // TestObject_H

@@ -25,6 +25,7 @@ int TestObject::SetParams(char  *val_name, int val_Speed_, int val_Stats_) {
     strncpy(IntfName_, val_name, nameSz);
     Speed_ = val_Speed_;
     Stats_ = val_Stats_;
+    return NxProcSUCCESS;
 }
 
 int TestObject::PrintBytes(const char *pBytes , const int nBytes) {
@@ -35,11 +36,12 @@ int TestObject::PrintBytes(const char *pBytes , const int nBytes) {
             << static_cast<unsigned int>(pBytes[i]) << " ";
     }
     cout << std::dec << std::endl;
+    return NxProcSUCCESS;
 
 }
 
 void TestObject::PrintPrintMe() {
-    cout << setw(10) << "OBJ_PRINT \tAttr_name: " << IntfName_
+    cout << setw(10) << "obj_print--> \tAttr_name: " << IntfName_
             << "  Attr_Speed_: " << Speed_
             << "   Attr_Stats_: " << Stats_ <<  endl;
 }
@@ -49,18 +51,22 @@ int TestObject::ConvertToObjInst(char *buf, TestObject **ptr_to_new_obj) {
     (*ptr_to_new_obj)->Speed_ = (int)*buf;  buf += sizeof(Speed_);
     (*ptr_to_new_obj)->Stats_ = (int)*buf;  buf += sizeof(Stats_);
     strncpy((*ptr_to_new_obj)->IntfName_ , buf, sizeof(IntfName_));
+    return NxProcSUCCESS;
 }
 
 int TestObject::ConvertToObjInst(char *buf, TestObject *ptr_alloc_obj) {
     (ptr_alloc_obj)->Speed_ = (int)*buf;  buf += sizeof(Speed_);
     (ptr_alloc_obj)->Stats_ = (int)*buf;  buf += sizeof(Stats_);
     strncpy((ptr_alloc_obj)->IntfName_ , buf, sizeof(IntfName_));
+    return NxProcSUCCESS;
+
 }
 
 int TestObject::ConvertToObjInst(char *buf) {
     Speed_ = (int)*buf;  buf += sizeof(Speed_);
     Stats_ = (int)*buf +100 ;  buf += sizeof(Stats_);
     strncpy(IntfName_ , buf, sizeof(IntfName_));
+    return NxProcSUCCESS;
 }
 
 int TestObject::ConvertToBuffer(int objectId, char *buf,  int max_length, ClientApiObjAction obj_action, syserr_t obj_status) {
